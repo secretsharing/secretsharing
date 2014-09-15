@@ -6,7 +6,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.SecureRandom;
 
-public class Secrets {
+public class IntSecrets {
 	private static SecureRandom random = new SecureRandom();
 	
 	private static BigDecimal toY(int y) {
@@ -45,5 +45,5 @@ public class Secrets {
 		return fromY(poly.y(BigDecimal.ZERO));
 	}
 	
-	private Secrets() {}
+	private IntSecrets() {}
 }

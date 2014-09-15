@@ -14,7 +14,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class SecretsTest {
+public class IntSecretsTest {
 	
 	@Parameters(name = "{0} {1} {2}")
 	public static Iterable<Object[]> params() {
@@ -34,7 +34,7 @@ public class SecretsTest {
 	private int requiredParts;
 	private int totalParts;
 	
-	public SecretsTest(int secret, int requiredParts, int totalParts) {
+	public IntSecretsTest(int secret, int requiredParts, int totalParts) {
 		this.secret = secret;
 		this.requiredParts = requiredParts;
 		this.totalParts = totalParts;
@@ -42,9 +42,9 @@ public class SecretsTest {
 	
 	@Test
 	public void testSecrets() {
-		BigDecimal[][] parts = Secrets.split(secret, totalParts, requiredParts);
+		BigDecimal[][] parts = IntSecrets.split(secret, totalParts, requiredParts);
 		parts = Arrays.copyOf(parts, requiredParts);
-		int reconstructed = Secrets.join(parts);
+		int reconstructed = IntSecrets.join(parts);
 		Assert.assertEquals(secret, reconstructed);
 	}
 }
