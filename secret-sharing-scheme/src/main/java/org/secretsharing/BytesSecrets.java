@@ -35,7 +35,7 @@ public class BytesSecrets {
 	public static byte[][] split(byte[] secret, int totalParts, int requiredParts) {
 		String[] parts = new String[totalParts];
 		for(int i = 0; i < parts.length; i++)
-			parts[i] = String.valueOf(secret.length);
+			parts[i] = String.valueOf(secret.length) + "," + totalParts + "," + requiredParts;
 		for(int pos = 0; pos < secret.length; pos += 4) {
 			BigDecimal[][] part = IntSecrets.split(toInt(secret, pos), totalParts, requiredParts);
 			for(int i = 0; i < parts.length; i++)
@@ -75,6 +75,8 @@ public class BytesSecrets {
 			}
 		}
 		int len = -1;
+		int posmax = -1;
+		int requiredParts = -1;
 		String[][] ps = new String[parts.length][];
 		for(int i = 0; i < p.length; i++) {
 			ps[i] = p[i].split(",");
@@ -83,11 +85,21 @@ public class BytesSecrets {
 				len = pl;
 			else if(len != pl)
 				throw new RuntimeException("part length mismatch");
+			int pm = ps[i].length;
+			if(posmax == -1)
+				posmax = pm;
+			else if(posmax != pm)
+				throw new RuntimeException("part length mismatch");
+			int rp = Integer.parseInt(ps[i][2]);
+			if(requiredParts == -1)
+				requiredParts = rp;
+			else if(requiredParts != rp)
+				throw new RuntimeException("required parts mismatch");
 		}
 		byte[] secret = new byte[0];
-		for(int pos = 1; pos < ps[0].length; pos += 2) {
-			BigDecimal[][] dp = new BigDecimal[ps.length][2];
-			for(int i = 0; i < ps.length; i++) {
+		for(int pos = 3; pos < posmax; pos += 2) {
+			BigDecimal[][] dp = new BigDecimal[requiredParts][2];
+			for(int i = 0; i < requiredParts; i++) {
 				dp[i][0] = new BigDecimal(ps[i][pos]);
 				dp[i][1] = new BigDecimal(ps[i][pos+1]);
 			}
