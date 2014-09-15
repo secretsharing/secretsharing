@@ -27,7 +27,8 @@ public class Secrets {
 		
 		BigDecimal[][] ret = new BigDecimal[totalParts][];
 		for(int i = 0; i < totalParts; i++) {
-			BigDecimal x = new BigDecimal(requiredParts).multiply(new BigDecimal(random.nextDouble()));
+			BigDecimal x = new BigDecimal(i).add(BigDecimal.ONE).divide(new BigDecimal(totalParts), MathContext.DECIMAL128);
+			x = x.multiply(new BigDecimal(requiredParts-1));
 			BigDecimal y = poly.y(x);
 			ret[i] = new BigDecimal[] {x, y};
 		}
