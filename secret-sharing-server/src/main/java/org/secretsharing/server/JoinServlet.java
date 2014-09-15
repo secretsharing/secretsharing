@@ -12,20 +12,20 @@ import org.secretsharing.BytesSecrets;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.core.Base64Variants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 public class JoinServlet extends HttpServlet {
 	public static class Request {
 		public List<byte[]> parts;
-		public Boolean joinString;
+		public Boolean base64;
 	}
 	
 	@JsonInclude(Include.NON_NULL)
 	public static class Response {
 		public String status;
-		public byte[] secret;
-		public String string;
+		public String secret;
 	}
 	
 	@Override
@@ -43,13 +43,12 @@ public class JoinServlet extends HttpServlet {
 			byte[] secret = BytesSecrets.join(jreq.parts.toArray(new byte[0][]));
 
 			Response jresp = new Response();
-			jresp.secret = secret;
 			jresp.status = "ok";
 
-			if(jreq.joinString != null && jreq.joinString) {
-				jresp.string = new String(secret, "UTF-8");
-				jresp.secret = null;
-			}
+			if(jreq.base64 != null && jreq.base64)
+				jresp.secret = Base64Variants.MIME_NO_LINEFEEDS.encode(secret);
+			else
+				jresp.secret = new String(secret, "UTF-8");
 
 			mapper.writeValue(resp.getOutputStream(), jresp);
 		} catch(Throwable t) {

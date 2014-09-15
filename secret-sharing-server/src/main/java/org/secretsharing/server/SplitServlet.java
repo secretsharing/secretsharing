@@ -20,11 +20,10 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 public class SplitServlet extends HttpServlet {
 	public static class Request {
-		public byte[] secret;
-		public String string;
+		public String secret;
 		public Integer totalParts;
 		public Integer requiredParts;
-		public Boolean splitString;
+		public Boolean base64;
 	}
 	
 	@JsonInclude(Include.NON_NULL)
@@ -42,13 +41,17 @@ public class SplitServlet extends HttpServlet {
 		try {
 			Request jreq = mapper.readValue(req.getInputStream(), Request.class);
 
-			if(jreq.splitString != null && jreq.splitString)
-				jreq.secret = jreq.string.getBytes("UTF-8");
+			byte[] secret;
+			
+			if(jreq.base64 != null && jreq.base64)
+				secret = Base64Variants.MIME_NO_LINEFEEDS.decode(jreq.secret);
+			else
+				secret = jreq.secret.getBytes("UTF-8");
 			
 			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
 				throw new IllegalArgumentException();
 
-			byte[][] parts = BytesSecrets.split(jreq.secret, jreq.totalParts, jreq.requiredParts);
+			byte[][] parts = BytesSecrets.split(secret, jreq.totalParts, jreq.requiredParts);
 
 			Response jresp = new Response();
 			jresp.parts = Arrays.asList(parts);
