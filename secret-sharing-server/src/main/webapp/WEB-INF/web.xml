@@ -6,37 +6,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet>
 		<servlet-name>split</servlet-name>
 		<servlet-class>org.secretsharing.server.SplitServlet</servlet-class>
-		<init-param>
-			<param-name>string</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet>
-		<servlet-name>string-split</servlet-name>
-		<servlet-class>org.secretsharing.server.SplitServlet</servlet-class>
-		<init-param>
-			<param-name>string</param-name>
-			<param-value>true</param-value>
-		</init-param>
 	</servlet>
 
 	<servlet>
 		<servlet-name>join</servlet-name>
 		<servlet-class>org.secretsharing.server.JoinServlet</servlet-class>
-		<init-param>
-			<param-name>string</param-name>
-			<param-value>false</param-value>
-		</init-param>
-	</servlet>
-
-	<servlet>
-		<servlet-name>string-join</servlet-name>
-		<servlet-class>org.secretsharing.server.JoinServlet</servlet-class>
-		<init-param>
-			<param-name>string</param-name>
-			<param-value>true</param-value>
-		</init-param>
 	</servlet>
 
 	<servlet-mapping>
@@ -47,16 +21,6 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet-mapping>
 		<servlet-name>join</servlet-name>
 		<url-pattern>/join</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>string-split</servlet-name>
-		<url-pattern>/string-split</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>string-join</servlet-name>
-		<url-pattern>/string-join</url-pattern>
 	</servlet-mapping>
 
 </web-app>

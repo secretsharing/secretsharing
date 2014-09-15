@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 public class JoinServlet extends HttpServlet {
 	public static class Request {
 		public List<byte[]> parts;
+		public Boolean joinString;
 	}
 	
 	@JsonInclude(Include.NON_NULL)
@@ -45,7 +46,7 @@ public class JoinServlet extends HttpServlet {
 			jresp.secret = secret;
 			jresp.status = "ok";
 
-			if("true".equals(getInitParameter("string"))) {
+			if(jreq.joinString != null && jreq.joinString) {
 				jresp.string = new String(secret, "UTF-8");
 				jresp.secret = null;
 			}

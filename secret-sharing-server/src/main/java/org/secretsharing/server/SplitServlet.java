@@ -24,6 +24,7 @@ public class SplitServlet extends HttpServlet {
 		public String string;
 		public Integer totalParts;
 		public Integer requiredParts;
+		public Boolean splitString;
 	}
 	
 	@JsonInclude(Include.NON_NULL)
@@ -41,7 +42,7 @@ public class SplitServlet extends HttpServlet {
 		try {
 			Request jreq = mapper.readValue(req.getInputStream(), Request.class);
 
-			if("true".equals(getInitParameter("string")))
+			if(jreq.splitString != null && jreq.splitString)
 				jreq.secret = jreq.string.getBytes("UTF-8");
 			
 			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
