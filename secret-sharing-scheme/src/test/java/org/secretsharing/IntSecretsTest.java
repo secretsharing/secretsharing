@@ -1,6 +1,5 @@
 package org.secretsharing;
 
-import java.awt.geom.Point2D;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;

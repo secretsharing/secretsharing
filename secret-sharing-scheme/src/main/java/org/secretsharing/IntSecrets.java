@@ -1,8 +1,6 @@
 package org.secretsharing;
 
-import java.awt.geom.Point2D;
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 import java.security.SecureRandom;
 
