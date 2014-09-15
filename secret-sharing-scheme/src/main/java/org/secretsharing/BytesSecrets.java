@@ -10,25 +10,37 @@ import java.util.zip.GZIPOutputStream;
 
 public class BytesSecrets {
 	
-	private static int toInt(byte[] b, int offset) {
-		int i = 0;
+	private static long toLong(byte[] b, int offset) {
+		long v = 0;
 		if(offset < b.length)
-			i |= (b[offset] & 0xff) << 24;
+			v |= (b[offset] & 0xffL) << 56;
 		if(offset + 1 < b.length)
-			i |= (b[offset+1] & 0xff) << 16;
+			v |= (b[offset+1] & 0xffL) << 48;
 		if(offset + 2 < b.length)
-			i |= (b[offset+2] & 0xff) << 8;
+			v |= (b[offset+2] & 0xffL) << 40;
 		if(offset + 3 < b.length)
-			i |= b[offset+3] & 0xff;
-		return i;
+			v |= (b[offset+3] & 0xffL) << 32;
+		if(offset + 4 < b.length)
+			v |= (b[offset+4] & 0xffL) << 24;
+		if(offset + 5 < b.length)
+			v |= (b[offset+5] & 0xffL) << 16;
+		if(offset + 6 < b.length)
+			v |= (b[offset+6] & 0xffL) << 8;
+		if(offset + 7 < b.length)
+			v |= b[offset+7] & 0xffL;
+		return v;
 	}
 	
-	private static byte[] fromInt(int i) {
+	private static byte[] fromLong(long v) {
 		return new byte[] {
-			(byte)(i >>> 24),
-			(byte)(i >>> 16),
-			(byte)(i >>> 8),
-			(byte) i
+			(byte)(v >>> 56),
+			(byte)(v >>> 48),
+			(byte)(v >>> 40),
+			(byte)(v >>> 32),
+			(byte)(v >>> 24),
+			(byte)(v >>> 16),
+			(byte)(v >>> 8),
+			(byte) v
 		};
 	}
 	
@@ -36,8 +48,8 @@ public class BytesSecrets {
 		String[] parts = new String[totalParts];
 		for(int i = 0; i < parts.length; i++)
 			parts[i] = String.valueOf(secret.length) + "," + totalParts + "," + requiredParts;
-		for(int pos = 0; pos < secret.length; pos += 4) {
-			BigDecimal[][] part = IntSecrets.split(toInt(secret, pos), totalParts, requiredParts);
+		for(int pos = 0; pos < secret.length; pos += 8) {
+			BigDecimal[][] part = LongSecrets.split(toLong(secret, pos), totalParts, requiredParts);
 			for(int i = 0; i < parts.length; i++)
 				parts[i] += "," + part[i][0] + "," + part[i][1];
 		}
@@ -103,9 +115,9 @@ public class BytesSecrets {
 				dp[i][0] = new BigDecimal(ps[i][pos]);
 				dp[i][1] = new BigDecimal(ps[i][pos+1]);
 			}
-			int sp = IntSecrets.join(dp);
-			secret = Arrays.copyOf(secret, secret.length + 4);
-			System.arraycopy(fromInt(sp), 0, secret, secret.length-4, 4);
+			long sp = LongSecrets.join(dp);
+			secret = Arrays.copyOf(secret, secret.length + 8);
+			System.arraycopy(fromLong(sp), 0, secret, secret.length-8, 8);
 		}
 		return Arrays.copyOf(secret, len);
 	}

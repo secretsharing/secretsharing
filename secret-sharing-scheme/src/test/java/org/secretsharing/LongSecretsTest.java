@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 @RunWith(Parameterized.class)
-public class IntSecretsTest {
+public class LongSecretsTest {
 	
 	@Parameters(name = "{0} {1} {2}")
 	public static Iterable<Object[]> params() {
@@ -23,17 +23,17 @@ public class IntSecretsTest {
 		for(int i = 0; i < 1000; i++) {
 			int requiredParts = 2 + random.nextInt(10);
 			int totalParts = requiredParts + random.nextInt(10);
-			params.add(new Object[] {random.nextInt(), requiredParts, totalParts});
+			params.add(new Object[] {random.nextLong(), requiredParts, totalParts});
 		}
 		
 		return params;
 	}
 	
-	private int secret;
+	private long secret;
 	private int requiredParts;
 	private int totalParts;
 	
-	public IntSecretsTest(int secret, int requiredParts, int totalParts) {
+	public LongSecretsTest(long secret, int requiredParts, int totalParts) {
 		this.secret = secret;
 		this.requiredParts = requiredParts;
 		this.totalParts = totalParts;
@@ -41,9 +41,9 @@ public class IntSecretsTest {
 	
 	@Test
 	public void testSecrets() {
-		BigDecimal[][] parts = IntSecrets.split(secret, totalParts, requiredParts);
+		BigDecimal[][] parts = LongSecrets.split(secret, totalParts, requiredParts);
 		parts = Arrays.copyOf(parts, requiredParts);
-		int reconstructed = IntSecrets.join(parts);
+		long reconstructed = LongSecrets.join(parts);
 		Assert.assertEquals(secret, reconstructed);
 	}
 }

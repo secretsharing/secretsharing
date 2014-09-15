@@ -5,24 +5,24 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.security.SecureRandom;
 
-public class IntSecrets {
+public class LongSecrets {
 	private static SecureRandom random = new SecureRandom();
 	
-	private static BigDecimal toY(int y) {
+	private static BigDecimal toY(long y) {
 		return new BigDecimal(y);
 	}
 	
-	private static int fromY(BigDecimal y) {
-		return y.round(MathContext.DECIMAL128).intValue();
+	private static long fromY(BigDecimal y) {
+		return y.round(MathContext.DECIMAL128).longValue();
 	}
 	
-	public static BigDecimal[][] split(int secret, int totalParts, int requiredParts) {
+	public static BigDecimal[][] split(long secret, int totalParts, int requiredParts) {
 		LagrangePolynomial poly = new LagrangePolynomial();
 		
 		poly.add(BigDecimal.ZERO, toY(secret));
 		
 		for(int i = 1; i < requiredParts; i++)
-			poly.add(new BigDecimal(random.nextInt()), toY(random.nextInt()));
+			poly.add(new BigDecimal(random.nextLong()), toY(random.nextLong()));
 		
 		BigDecimal[][] ret = new BigDecimal[totalParts][];
 		for(int i = 0; i < totalParts; i++) {
@@ -34,7 +34,7 @@ public class IntSecrets {
 		return ret;
 	}
 	
-	public static int join(BigDecimal[][] parts) {
+	public static long join(BigDecimal[][] parts) {
 		LagrangePolynomial poly = new LagrangePolynomial();
 		
 		for(BigDecimal[] part : parts)
@@ -43,5 +43,5 @@ public class IntSecrets {
 		return fromY(poly.y(BigDecimal.ZERO));
 	}
 	
-	private IntSecrets() {}
+	private LongSecrets() {}
 }
