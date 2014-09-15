@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 public class Base32 {
-	private static byte[] ENCODE_SYMBOLS = "0123456789ABCDEFGHJKMNPQRSTVWXYZ".getBytes(Charset.forName("ASCII"));
+	private static byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
 	private static byte[] DECODE_SYMBOLS = new byte[256];
 	static {
 		Arrays.fill(DECODE_SYMBOLS, (byte) -1);
@@ -15,7 +15,7 @@ public class Base32 {
 			DECODE_SYMBOLS[b] = (byte) i;
 			// treat lower-case letters as upepr-case letters
 			if(Character.isLetter(b))
-				DECODE_SYMBOLS[Character.toLowerCase(b)] = (byte) i;
+				DECODE_SYMBOLS[Character.toUpperCase(b)] = (byte) i;
 		}
 		// special cases
 		DECODE_SYMBOLS['O'] = DECODE_SYMBOLS['o'] = 0;
