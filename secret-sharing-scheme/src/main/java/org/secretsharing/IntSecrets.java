@@ -2,17 +2,18 @@ package org.secretsharing;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.math.RoundingMode;
 import java.security.SecureRandom;
 
 public class IntSecrets {
 	private static SecureRandom random = new SecureRandom();
 	
 	private static BigDecimal toY(int y) {
-		return new BigDecimal(y & 0xffffffffL);
+		return new BigDecimal(y);
 	}
 	
 	private static int fromY(BigDecimal y) {
-		return (int)y.round(MathContext.DECIMAL128).longValue();
+		return y.round(MathContext.DECIMAL128).intValue();
 	}
 	
 	public static BigDecimal[][] split(int secret, int totalParts, int requiredParts) {
