@@ -21,12 +21,11 @@ public class IntSecrets {
 		poly.add(BigDecimal.ZERO, toY(secret));
 		
 		for(int i = 1; i < requiredParts; i++)
-			poly.add(new BigDecimal(i), toY(random.nextInt()));
+			poly.add(new BigDecimal(random.nextInt()), toY(random.nextInt()));
 		
 		BigDecimal[][] ret = new BigDecimal[totalParts][];
 		for(int i = 0; i < totalParts; i++) {
-			BigDecimal x = new BigDecimal(i).add(BigDecimal.ONE).divide(new BigDecimal(totalParts), MathContext.DECIMAL128);
-			x = x.multiply(new BigDecimal(requiredParts-1));
+			BigDecimal x = new BigDecimal(random.nextInt());
 			BigDecimal y = poly.y(x);
 			ret[i] = new BigDecimal[] {x, y};
 		}
