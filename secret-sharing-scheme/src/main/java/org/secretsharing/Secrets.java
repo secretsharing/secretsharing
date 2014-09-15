@@ -10,11 +10,11 @@ public class Secrets {
 	private static SecureRandom random = new SecureRandom();
 	
 	private static BigDecimal toY(int y) {
-		return new BigDecimal((y & 0xffffffffL) << 31);
+		return new BigDecimal(y & 0xffffffffL);
 	}
 	
 	private static int fromY(BigDecimal y) {
-		return y.divide(new BigDecimal(1L << 31), MathContext.DECIMAL128).intValue();
+		return (int)y.round(MathContext.DECIMAL128).longValue();
 	}
 	
 	public static BigDecimal[][] split(int secret, int totalParts, int requiredParts) {
