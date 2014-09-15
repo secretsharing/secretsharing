@@ -33,5 +33,6 @@
 
 	<modules>
 		<module>../secret-sharing-scheme</module>
+		<module>../secret-sharing-server</module>
 	</modules>
 </project>

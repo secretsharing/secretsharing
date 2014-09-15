@@ -19,7 +19,7 @@ public class BytesSecretsTest {
 		Random random = new Random(0L);
 		
 		List<Object[]> params = new ArrayList<Object[]>();
-		for(int i = 0; i < 1000; i++) {
+		for(int i = 0; i < 100; i++) {
 			byte[] secret = new byte[random.nextInt(128)];
 			random.nextBytes(secret);
 			int requiredParts = 2 + random.nextInt(10);
