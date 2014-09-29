@@ -3,11 +3,13 @@ package org.secretsharing;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-public class TermPolynomial implements Polynomial {
+public class TermPolynomial {
 	public static final TermPolynomial ZERO = new TermPolynomial(new Term[0]);
 	public static final TermPolynomial ONE = new TermPolynomial(new Term[] {Term.ONE});
 	
 	private Term[] terms;
+	
+	protected TermPolynomial() {}
 	
 	public TermPolynomial(Term[] terms) {
 		this.terms = Arrays.copyOf(terms, terms.length);
@@ -25,6 +27,10 @@ public class TermPolynomial implements Polynomial {
 	
 	public Term[] getTerms() {
 		return Arrays.copyOf(terms, terms.length);
+	}
+	
+	protected void setTerms(Term[] terms) {
+		this.terms = Arrays.copyOf(terms, terms.length);
 	}
 	
 	public Term y(BigInteger x) {

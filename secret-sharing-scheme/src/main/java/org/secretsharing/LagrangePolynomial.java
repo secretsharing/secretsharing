@@ -2,9 +2,7 @@ package org.secretsharing;
 
 import java.math.BigInteger;
 
-public class LagrangePolynomial implements Polynomial {
-	private TermPolynomial poly;
-	
+public class LagrangePolynomial extends TermPolynomial {
 	public LagrangePolynomial(BigPoint[] pts) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
@@ -12,22 +10,10 @@ public class LagrangePolynomial implements Polynomial {
 			px[i] = pts[i].getX();
 			py[i] = pts[i].getY();
 		}
-		poly = TermPolynomial.ZERO;
+		TermPolynomial poly = TermPolynomial.ZERO;
 		for(int j = 0; j < px.length; j++)
 			poly = poly.add(l(px, py, j));
-	}
-	
-	public LagrangePolynomial(BigInteger[] px, BigInteger[] py) {
-		if(px.length != py.length)
-			throw new IllegalArgumentException();
-		poly = TermPolynomial.ZERO;
-		for(int j = 0; j < px.length; j++)
-			poly = poly.add(l(px, py, j));
-	}
-	
-	@Override
-	public String toString() {
-		return poly.toString();
+		setTerms(poly.getTerms());
 	}
 	
 	private TermPolynomial l(BigInteger[] px, BigInteger[] py, int j) {
@@ -41,10 +27,5 @@ public class LagrangePolynomial implements Polynomial {
 			result = result.multiply(t);
 		}
 		return result.multiply(py[j]);
-	}
-
-	@Override
-	public Term y(BigInteger x) {
-		return poly.y(x);
 	}
 }
