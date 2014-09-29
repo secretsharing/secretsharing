@@ -35,5 +35,6 @@
 		<module>../secret-sharing-scheme</module>
 		<module>../secret-sharing-server</module>
 		<module>../codec</module>
+		<module>../secrets</module>
 	</modules>
 </project>

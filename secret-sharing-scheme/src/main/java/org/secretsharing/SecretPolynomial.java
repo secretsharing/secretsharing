@@ -16,7 +16,7 @@ public class SecretPolynomial extends TermPolynomial {
 	public SecretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		prime = BigInteger.probablePrime(secretBits + 1, rnd);
 		TermPolynomial poly = TermPolynomial.ONE.multiply(secret);
-		for(int i = 1; i < powx; i++) {
+		for(int i = 1; i <= powx; i++) {
 			poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(secretBits, rnd)).powX(i));
 		}
 		setTerms(poly.getTerms());

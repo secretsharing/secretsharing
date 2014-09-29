@@ -41,7 +41,7 @@ public class TermPolynomial {
 			result = result.add(terms[i].multiply(xp));
 			xp = xp.multiply(x);
 		}
-		return result.simplify();
+		return result;
 	}
 	
 	public TermPolynomial add(TermPolynomial other) {
