@@ -12,10 +12,15 @@ public class SecretPolynomial extends TermPolynomial {
 	private BigInteger prime;
 	
 	public SecretPolynomial(BigInteger secret, int secretBits, int powx) {
-		prime = BigInteger.probablePrime(secretBits + 8, rnd);
+		prime = BigInteger.probablePrime(secretBits+1, rnd);
+		while(prime.compareTo(secret) < 0)
+			prime = BigInteger.probablePrime(secretBits+1, rnd);
 		TermPolynomial poly = TermPolynomial.ONE.multiply(secret);
 		for(int i = 1; i <= powx; i++) {
-			poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(secretBits, rnd).add(BigInteger.ONE)).powX(i));
+			BigInteger a = new BigInteger(16, rnd).add(BigInteger.ONE);
+			while(a.compareTo(prime) > 0)
+				a = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+			poly = poly.add(TermPolynomial.ONE.multiply(a).powX(i));
 		}
 		setTerms(poly.getTerms());
 	}
@@ -25,13 +30,9 @@ public class SecretPolynomial extends TermPolynomial {
 	}
 	
 	public BigPoint[] p(int count, int secretBits) {
-		Set<BigInteger> xs = new HashSet<BigInteger>();
-		xs.add(BigInteger.ZERO);
 		BigPoint[] p = new BigPoint[count];
 		for(int i = 0; i < count; i++) {
-			BigInteger x = BigInteger.ZERO;
-			while(xs.contains(x))
-				x = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+			BigInteger x = BigInteger.valueOf(i+1);
 			p[i] = p(x);
 		}
 		return p;
@@ -41,6 +42,6 @@ public class SecretPolynomial extends TermPolynomial {
 		Term t = y(x);
 		if(!t.getDenominator().equals(BigInteger.ONE))
 			throw new IllegalStateException();
-		return new BigPoint(x, t.getNumerator());
+		return new BigPoint(x, t.getNumerator().mod(prime));
 	}
 }
