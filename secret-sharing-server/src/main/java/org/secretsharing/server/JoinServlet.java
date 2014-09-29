@@ -35,7 +35,7 @@ public class JoinServlet extends HttpServlet {
 		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
 		try {
-			Request jreq = mapper.readValue(req.getInputStream(), Request.class);
+			Request jreq = mapper.readValue(req.getParameter("q"), Request.class);
 
 			if(jreq.parts == null)
 				throw new IllegalArgumentException();
