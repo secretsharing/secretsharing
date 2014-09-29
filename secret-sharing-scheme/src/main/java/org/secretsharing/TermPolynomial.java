@@ -3,14 +3,33 @@ package org.secretsharing;
 import java.math.BigInteger;
 import java.util.Arrays;
 
+/**
+ * A polynomial composed of terms
+ * @author robin
+ *
+ */
 public class TermPolynomial {
+	/**
+	 * Constant zero-valued polynomial
+	 */
 	public static final TermPolynomial ZERO = new TermPolynomial(new Term[] {Term.ZERO});
+	/**
+	 * Constant one-valued polynomial
+	 */
 	public static final TermPolynomial ONE = new TermPolynomial(new Term[] {Term.ONE});
 	
+	/**
+	 * The terms in this polynomial.  The ith element in the array
+	 * is multiplied by x^i in the polynomial
+	 */
 	private Term[] terms;
 	
 	protected TermPolynomial() {}
 	
+	/**
+	 * Create a new {@link TermPolynomial} from an array of terms.
+	 * @param terms
+	 */
 	public TermPolynomial(Term[] terms) {
 		this.terms = Arrays.copyOf(terms, terms.length);
 	}
@@ -25,14 +44,27 @@ public class TermPolynomial {
 		return sb.toString();
 	}
 	
+	/**
+	 * Return the terms in this polynomial
+	 * @return
+	 */
 	public Term[] getTerms() {
 		return Arrays.copyOf(terms, terms.length);
 	}
 	
+	/**
+	 * Set the terms in this polynomial
+	 * @param terms
+	 */
 	protected void setTerms(Term[] terms) {
 		this.terms = Arrays.copyOf(terms, terms.length);
 	}
 	
+	/**
+	 * Compute the y-value for a given x-value
+	 * @param x
+	 * @return
+	 */
 	public Term y(BigInteger x) {
 		Term result = Term.ZERO;
 		Term[] terms = getTerms();
@@ -44,6 +76,11 @@ public class TermPolynomial {
 		return result.simplify();
 	}
 	
+	/**
+	 * Add this polynomial to another polynomial and return a new polynomial
+	 * @param other
+	 * @return
+	 */
 	public TermPolynomial add(TermPolynomial other) {
 		Term[] terms = getTerms();
 		Term[] otherTerms = other.getTerms();
@@ -56,6 +93,12 @@ public class TermPolynomial {
 		return new TermPolynomial(t);
 	}
 	
+	/**
+	 * Multiply this polynomial by a power of X and return
+	 * a new polynomial
+	 * @param powx
+	 * @return
+	 */
 	public TermPolynomial powX(int powx) {
 		Term[] t = new Term[terms.length + powx];
 		Arrays.fill(t, Term.ZERO);
@@ -63,6 +106,13 @@ public class TermPolynomial {
 		return new TermPolynomial(t);
 	}
 	
+	/**
+	 * Multiply this polynomial by a term, and a power of X,
+	 * and return a new polynomial
+	 * @param term
+	 * @param powx
+	 * @return
+	 */
 	public TermPolynomial multiply(Term term, int powx) {
 		Term[] t = getTerms();
 		for(int i = 0; i < t.length; i++)
@@ -70,6 +120,12 @@ public class TermPolynomial {
 		return new TermPolynomial(t).powX(powx);
 	}
 	
+	/**
+	 * Multiply this polynomial by another polynomial
+	 * and return a new polynomial
+	 * @param other
+	 * @return
+	 */
 	public TermPolynomial multiply(TermPolynomial other) {
 		TermPolynomial result = TermPolynomial.ZERO;
 		Term[] terms = getTerms();
@@ -81,6 +137,12 @@ public class TermPolynomial {
 		return result;
 	}
 	
+	/**
+	 * Multiply this polynomial by a constant and return
+	 * a new polynomial
+	 * @param val
+	 * @return
+	 */
 	public TermPolynomial multiply(BigInteger val) {
 		Term[] terms = getTerms();
 		for(int i = 0; i < terms.length; i++)

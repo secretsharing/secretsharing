@@ -6,9 +6,24 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+/**
+ * Randomly generated polynomial for a given Y-intercept, modulo a prime
+ * @author robin
+ *
+ */
 public class SecretPolynomial extends TermPolynomial {
+	/**
+	 * The prime that this polynomial is modulo
+	 */
 	private BigInteger prime;
 	
+	/**
+	 * Create a new {@link SecretPolynomial} with a given Y-intercept and degree
+	 * @param secret The Y-intercept
+	 * @param secretBits The expected number of bits in the Y-intercept
+	 * @param powx The degree of this polynomial
+	 * @param rnd A source of random
+	 */
 	public SecretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
@@ -23,6 +38,10 @@ public class SecretPolynomial extends TermPolynomial {
 		setTerms(poly.getTerms());
 	}
 	
+	/**
+	 * Return the prime that this polynomial is modulo
+	 * @return
+	 */
 	public BigInteger getPrime() {
 		return prime;
 	}
@@ -32,18 +51,26 @@ public class SecretPolynomial extends TermPolynomial {
 		return super.toString() + " ( mod " + prime + ")";
 	}
 	
-	public BigPoint[] p(int count, int secretBits) {
+	/**
+	 * Return an array of points on this polynomial
+	 * @param count The number of points
+	 * @param secretBits
+	 * @return
+	 */
+	public BigPoint[] p(int count) {
 		BigPoint[] p = new BigPoint[count];
-		int off = 2;
 		for(int i = 0; i < count; i++) {
-			BigInteger x = BigInteger.valueOf(i+off);
-			while(!x.isProbablePrime(200))
-				x = BigInteger.valueOf(i+(++off));
+			BigInteger x = BigInteger.valueOf(i+1);
 			p[i] = p(x);
 		}
 		return p;
 	}
 	
+	/**
+	 * Return a single point on this polynomial
+	 * @param x
+	 * @return
+	 */
 	public BigPoint p(BigInteger x) {
 		Term t = y(x);
 		if(!t.getDenominator().equals(BigInteger.ONE))

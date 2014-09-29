@@ -12,9 +12,18 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Random;
 
+/**
+ * Utility class for splitting and joining secret and secret parts
+ * @author robin
+ *
+ */
 public class BytesSecrets {
-	private static final Charset UTF8 = Charset.forName("UTF-8");
-	
+	/**
+	 * Write a {@link BigInteger} with a minimal size
+	 * @param i
+	 * @param data
+	 * @throws IOException
+	 */
 	private static void write(BigInteger i, DataOutput data) throws IOException {
 		byte[] b = i.toByteArray();
 		int len = b.length;
@@ -26,6 +35,12 @@ public class BytesSecrets {
 		data.write(b);
 	}
 	
+	/**
+	 * Read a {@link BigInteger} written by {@link #write(BigInteger, DataOutput)}
+	 * @param data
+	 * @return
+	 * @throws IOException
+	 */
 	private static BigInteger read(DataInput data) throws IOException {
 		int len = 0;
 		int off = 0;
@@ -41,10 +56,18 @@ public class BytesSecrets {
 		return new BigInteger(b);
 	}
 	
+	/**
+	 * Split a secret into a number of parts
+	 * @param secret The secret to split
+	 * @param totalParts The number of parts to create
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param rnd A source of random
+	 * @return
+	 */
 	public static byte[][] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		BigInteger secretBits = BigInteger.valueOf(secret.length * 8);
 		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBits.intValue(), requiredParts-1, rnd);
-		BigPoint[] pts = poly.p(totalParts, secretBits.intValue());
+		BigPoint[] pts = poly.p(totalParts);
 		byte[][] s = new byte[totalParts][];
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		DataOutputStream data = new DataOutputStream(buf);
@@ -63,6 +86,11 @@ public class BytesSecrets {
 		return s;
 	}
 	
+	/**
+	 * Recover a secret from its parts
+	 * @param parts
+	 * @return
+	 */
 	public static byte[] join(byte[][] parts) {
 		BigPoint[] pts = new BigPoint[parts.length];
 		Integer secretLength = null;

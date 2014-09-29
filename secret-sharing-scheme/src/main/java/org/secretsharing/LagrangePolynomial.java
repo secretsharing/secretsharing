@@ -2,7 +2,19 @@ package org.secretsharing;
 
 import java.math.BigInteger;
 
+/**
+ * A polynomial created using Lagrange interpolation, and then simplified modulo
+ * some number
+ * @author robin
+ *
+ */
 public class LagrangePolynomial extends TermPolynomial {
+	/**
+	 * Create a {@link LagrangePolynomial} from the given points
+	 * with the given modulus
+	 * @param pts
+	 * @param mod
+	 */
 	public LagrangePolynomial(BigPoint[] pts, BigInteger mod) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
@@ -19,6 +31,13 @@ public class LagrangePolynomial extends TermPolynomial {
 		setTerms(terms);
 	}
 	
+	/**
+	 * A single term-expression in the lagrange interpolation
+	 * @param px point X values
+	 * @param py point Y values
+	 * @param j The jth expression
+	 * @return
+	 */
 	private TermPolynomial l(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
 		for(int i = 0; i < px.length; i++) {
