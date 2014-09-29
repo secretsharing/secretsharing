@@ -37,10 +37,8 @@ public class SecretPolynomialTest {
 	@Test
 	public void testReconstructSecret() {
 		SecretPolynomial sp = new SecretPolynomial(secret, secret.bitLength(), powx, rnd);
-		System.out.println(sp);
 		BigPoint[] pts = sp.p(powx+1, secret.bitLength());
 		LagrangePolynomial lp = new LagrangePolynomial(pts);
-		System.out.println(lp);
 		Term t = lp.y(BigInteger.ZERO);
 		Assert.assertEquals(BigInteger.ONE, t.getDenominator());
 		BigInteger s = t.getNumerator().mod(sp.getPrime()).add(sp.getPrime()).mod(sp.getPrime());
