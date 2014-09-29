@@ -1,45 +1,33 @@
 package org.secretsharing;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.Arrays;
+import java.math.BigInteger;
 
-public class LagrangePolynomial {
-	private static final MathContext CTX = new MathContext(128, RoundingMode.HALF_EVEN);
+public class LagrangePolynomial implements Polynomial {
+	private TermPolynomial poly;
 	
-	private BigDecimal[] x = new BigDecimal[0];
-	private BigDecimal[] y = new BigDecimal[0];
-	
-	public void add(BigDecimal x, BigDecimal y) {
-		this.x = Arrays.copyOf(this.x, this.x.length + 1);
-		this.x[this.x.length-1] = x;
-		
-		this.y = Arrays.copyOf(this.y, this.y.length + 1);
-		this.y[this.y.length-1] = y;
+	public LagrangePolynomial(BigInteger[] px, BigInteger[] py) {
+		if(px.length != py.length)
+			throw new IllegalArgumentException();
+		poly = TermPolynomial.ZERO;
+		for(int j = 0; j < px.length; j++)
+			poly = poly.add(l(px, py, j));
 	}
 	
-	public BigDecimal y(BigDecimal x) {
-		BigDecimal y = BigDecimal.ZERO;
-		for(int j = 0; j < this.x.length; j++)
-			y = y.add(term(j, x), CTX);
-		return y;
-	}
-	
-	private BigDecimal term(int j, BigDecimal x) {
-		BigDecimal t = y[j];
-		for(int i = 0; i < this.x.length; i++) {
+	private TermPolynomial l(BigInteger[] px, BigInteger[] py, int j) {
+		TermPolynomial result = TermPolynomial.ONE;
+		for(int i = 0; i < px.length; i++) {
 			if(i == j)
 				continue;
-			t = t.multiply(x.subtract(this.x[i], CTX), CTX);
+			Term t1 = new Term(BigInteger.ONE, px[i].subtract(px[j]));
+			Term t0 = new Term(px[i].negate(), px[i].subtract(px[j]));
+			TermPolynomial t = new TermPolynomial(new Term[] {t1, t0});
+			result = result.multiply(t);
 		}
-		BigDecimal d = BigDecimal.ONE;
-		for(int i = 0; i < this.x.length; i++) {
-			if(i == j)
-				continue;
-			d = d.multiply(this.x[j].subtract(this.x[i], CTX), CTX);
-		}
-		return t.divide(d, CTX);
+		return result.multiply(py[j]);
 	}
-	
+
+	@Override
+	public Term y(BigInteger x) {
+		return poly.y(x);
+	}
 }
