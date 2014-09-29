@@ -9,7 +9,7 @@
 </head>
 <body>
 
-<form action="join.jsp" method="post">
+<form action="join.html" method="post">
 Enter your secret parts below, 1 per line<br/>
 <% if(request.getParameter("parts") != null) { %>
 <textarea rows="8" cols="120" name="parts" style="width:100%;"><%= request.getParameter("parts") %></textarea>

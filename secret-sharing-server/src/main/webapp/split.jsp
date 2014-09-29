@@ -10,7 +10,7 @@
 <body>
 
 
-<form action="split.jsp" method="post">
+<form action="split.html" method="post">
 Enter your secret:<br />
 <% if(request.getParameter("secret") != null) { %>
 <textarea rows="5" cols="120" name="secret"><%= request.getParameter("secret") %></textarea>
