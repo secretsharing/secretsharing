@@ -12,9 +12,10 @@ public class BytesSecrets {
 	public static byte[][] split(byte[] secret, int totalParts, int requiredParts) {
 		int secretBits = secret.length * 8;
 		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBits, requiredParts-1);
+		BigPoint[] pts = poly.p(totalParts, secretBits);
 		byte[][] s = new byte[totalParts][];
 		for(int i = 0; i < totalParts; i++) {
-			s[i] = (secret.length + "," + poly.getPrime() + "," + poly.p(new BigInteger(secretBits, rnd))).getBytes(UTF8);
+			s[i] = (secret.length + "," + poly.getPrime() + "," + pts[i]).getBytes(UTF8);
 		}
 		return s;
 	}
