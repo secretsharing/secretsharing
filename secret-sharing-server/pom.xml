@@ -43,11 +43,6 @@
 							<stopPort>${jetty.stopPort}</stopPort>
 							<stopKey>${jetty.stopKey}</stopKey>
 							<waitForChild>false</waitForChild>
-							<jvmArgs>
-								-Djetty.stopPort=${jetty.stopPort} 
-								-Djetty.stopKey=${jetty.stopKey}
-								-Djetty.port=${jetty.port}
-							</jvmArgs>
 						</configuration>
 					</plugin>
 				</plugins>
