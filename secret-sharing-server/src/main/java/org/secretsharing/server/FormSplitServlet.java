@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.secretsharing.BytesSecrets;
+import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -72,7 +73,7 @@ public class FormSplitServlet extends HttpServlet {
 
 			String sep = "";
 			for(byte[] part : parts) {
-				resp.getWriter().println(sep + Base64Variants.MIME_NO_LINEFEEDS.encode(part));
+				resp.getWriter().println(sep + Base32.encode(part));
 				sep = "\n";
 			}
 		} catch(Throwable t) {

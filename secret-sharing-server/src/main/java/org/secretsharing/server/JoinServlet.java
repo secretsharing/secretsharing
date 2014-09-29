@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.secretsharing.BytesSecrets;
+import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -18,7 +19,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 public class JoinServlet extends HttpServlet {
 	public static class Request {
-		public List<byte[]> parts;
+		public List<String> parts;
 		public Boolean base64;
 	}
 	
@@ -39,8 +40,12 @@ public class JoinServlet extends HttpServlet {
 
 			if(jreq.parts == null)
 				throw new IllegalArgumentException();
+
+			byte[][] parts = new byte[jreq.parts.size()][];
+			for(int i = 0; i < parts.length; i++)
+				parts[i] = Base32.decode(jreq.parts.get(i));
 			
-			byte[] secret = BytesSecrets.join(jreq.parts.toArray(new byte[0][]));
+			byte[] secret = BytesSecrets.join(parts);
 
 			Response jresp = new Response();
 			jresp.status = "ok";

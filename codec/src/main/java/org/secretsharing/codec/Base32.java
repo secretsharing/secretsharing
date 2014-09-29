@@ -6,8 +6,9 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 public class Base32 {
-	private static byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
-	private static byte[] DECODE_SYMBOLS = new byte[256];
+	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
+	private static final byte[] DECODE_SYMBOLS = new byte[256];
 	static {
 		Arrays.fill(DECODE_SYMBOLS, (byte) -1);
 		for(int i = 0; i < ENCODE_SYMBOLS.length; i++) {
@@ -54,6 +55,10 @@ public class Base32 {
 			throw new IllegalArgumentException("Not a valid base32 encoded data length:" + dataLength);
 		
 		return len;
+	}
+	
+	public static String encode(byte[] data) {
+		return new String(encode(null, data), UTF8);
 	}
 	
 	public static byte[] encode(byte[] dest, byte[] data) {
@@ -104,6 +109,10 @@ public class Base32 {
 		}
 		
 		return dest;
+	}
+	
+	public static byte[] decode(String data) {
+		return decode(null, data.getBytes(UTF8));
 	}
 	
 	public static byte[] decode(byte[] dest, byte[] data) {

@@ -2,6 +2,7 @@ package org.secretsharing.server;
 
 import java.io.IOException;
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.secretsharing.BytesSecrets;
+import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -33,7 +35,7 @@ public class SplitServlet extends HttpServlet {
 	@JsonInclude(Include.NON_NULL)
 	public static class Response {
 		public String status;
-		public List<byte[]> parts;
+		public List<String> parts;
 	}
 	
 	@Override
@@ -58,7 +60,9 @@ public class SplitServlet extends HttpServlet {
 			byte[][] parts = BytesSecrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
 
 			Response jresp = new Response();
-			jresp.parts = Arrays.asList(parts);
+			jresp.parts = new ArrayList<String>();
+			for(byte[] part : parts)
+				jresp.parts.add(Base32.encode(part));
 			jresp.status = "ok";
 
 			mapper.writeValue(resp.getOutputStream(), jresp);

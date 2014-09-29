@@ -27,6 +27,11 @@
 			<artifactId>secret-sharing-scheme</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>org.secretsharing</groupId>
+			<artifactId>codec</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<profiles>

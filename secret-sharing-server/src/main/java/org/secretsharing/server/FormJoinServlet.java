@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.secretsharing.BytesSecrets;
+import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -35,7 +36,7 @@ public class FormJoinServlet extends HttpServlet {
 				if(s.trim().isEmpty())
 					continue;
 				try {
-					partsBytes.add(Base64Variants.MIME_NO_LINEFEEDS.decode(s));
+					partsBytes.add(Base32.decode(s));
 				} catch(Exception e) {
 					throw new RuntimeException("Improper encoding of secret parts:" + s);
 				}
