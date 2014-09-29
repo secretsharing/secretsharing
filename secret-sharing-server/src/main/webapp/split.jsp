@@ -34,7 +34,7 @@ Check this box if your secret is already base64 encoded:<br />
 <br>
 <hr/>
 <br>
-Your secret parts:<br/>
+Your secret parts, 1 per line:<br/>
 <% if(request.getParameter("submit") != null) { %>
 <textarea rows="8" cols="120" readonly="readonly"><jsp:include page="/form-split"></jsp:include></textarea>
 <% } else { %>
