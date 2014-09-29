@@ -10,4 +10,17 @@ public class BigPoint {
 		this.x = x;
 		this.y = y;
 	}
+	
+	@Override
+	public String toString() {
+		return "(" + x + "," + y + ")";
+	}
+
+	public BigInteger getX() {
+		return x;
+	}
+
+	public BigInteger getY() {
+		return y;
+	}
 }

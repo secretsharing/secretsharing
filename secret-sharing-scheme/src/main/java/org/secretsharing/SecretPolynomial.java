@@ -16,10 +16,19 @@ public class SecretPolynomial implements Polynomial {
 	
 	public SecretPolynomial(BigInteger secret, int powx, Random rnd) {
 		prime = BigInteger.probablePrime(secret.bitLength() + 1, rnd);
-		poly = TermPolynomial.ZERO;
-		for(int i = 0; i < powx; i++) {
+		poly = TermPolynomial.ONE.multiply(secret);
+		for(int i = 1; i < powx; i++) {
 			poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(secret.bitLength(), rnd)).powX(i));
 		}
+	}
+	
+	public BigInteger getPrime() {
+		return prime;
+	}
+	
+	@Override
+	public String toString() {
+		return poly.toString();
 	}
 	
 	public BigPoint p(BigInteger x) {

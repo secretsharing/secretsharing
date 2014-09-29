@@ -22,23 +22,38 @@ public class Term {
 		return denominator;
 	}
 	
+	@Override
+	public String toString() {
+		if(denominator.equals(BigInteger.ONE))
+			return numerator.toString();
+		return "(" + numerator + "/" + denominator + ")";
+	}
+	
 	public Term add(Term other) {
 		BigInteger n = numerator.multiply(other.denominator).add(other.numerator.multiply(denominator));
 		BigInteger d = denominator.multiply(other.denominator);
-		BigInteger gcd = n.gcd(d);
-		return new Term(n.divide(gcd), d.divide(gcd));
+		return new Term(n, d).simplify();
 	}
 	
 	public Term multiply(Term other) {
 		BigInteger n = numerator.multiply(other.numerator);
 		BigInteger d = denominator.multiply(other.denominator);
-		BigInteger gcd = n.gcd(d);
-		return new Term(n.divide(gcd), d.divide(gcd));
+		return new Term(n, d).simplify();
 	}
 	
 	public Term multiply(BigInteger val) {
 		BigInteger n = numerator.multiply(val);
 		BigInteger d = denominator;
+		return new Term(n, d).simplify();
+	}
+	
+	public Term simplify() {
+		BigInteger n = numerator;
+		BigInteger d = denominator;
+		if(d.compareTo(BigInteger.ZERO) < 0) {
+			n = n.negate();
+			d = d.negate();
+		}
 		BigInteger gcd = n.gcd(d);
 		return new Term(n.divide(gcd), d.divide(gcd));
 	}

@@ -13,6 +13,16 @@ public class TermPolynomial implements Polynomial {
 		this.terms = Arrays.copyOf(terms, terms.length);
 	}
 	
+	@Override
+	public String toString() {
+		if(terms.length == 0)
+			return "0";
+		StringBuilder sb = new StringBuilder(terms[0].toString());
+		for(int i = 1; i < terms.length; i++)
+			sb.append(" + " + terms[i] + "x^" + i);
+		return sb.toString();
+	}
+	
 	public Term[] getTerms() {
 		return Arrays.copyOf(terms, terms.length);
 	}
@@ -20,9 +30,12 @@ public class TermPolynomial implements Polynomial {
 	public Term y(BigInteger x) {
 		Term result = Term.ZERO;
 		Term[] terms = getTerms();
-		for(int i = 0; i < terms.length; i++)
-			result = result.add(terms[i].multiply(x.pow(i)));
-		return result;
+		BigInteger xp = BigInteger.ONE;
+		for(int i = 0; i < terms.length; i++) {
+			result = result.add(terms[i].multiply(xp));
+			xp = xp.multiply(x);
+		}
+		return result.simplify();
 	}
 	
 	public TermPolynomial add(TermPolynomial other) {
