@@ -36,7 +36,7 @@ public class SecretPolynomialTest {
 	
 	@Test
 	public void testReconstructSecret() {
-		SecretPolynomial sp = new SecretPolynomial(secret, powx);
+		SecretPolynomial sp = new SecretPolynomial(secret, secret.bitLength(), powx);
 		System.out.println("sp:" + sp);
 		BigPoint[] pts = new BigPoint[powx];
 		for(int i = 0; i < pts.length; i++)

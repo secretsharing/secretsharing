@@ -10,15 +10,15 @@ public class SecretPolynomial implements Polynomial {
 	private TermPolynomial poly;
 	private BigInteger prime;
 	
-	public SecretPolynomial(BigInteger secret, int powx) {
-		this(secret, powx, rnd);
+	public SecretPolynomial(BigInteger secret, int secretBits, int powx) {
+		this(secret, secretBits, powx, rnd);
 	}
 	
-	public SecretPolynomial(BigInteger secret, int powx, Random rnd) {
-		prime = BigInteger.probablePrime(secret.bitLength() + 1, rnd);
+	public SecretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
+		prime = BigInteger.probablePrime(secretBits + 1, rnd);
 		poly = TermPolynomial.ONE.multiply(secret);
 		for(int i = 1; i < powx; i++) {
-			poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(secret.bitLength(), rnd)).powX(i));
+			poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(secretBits, rnd)).powX(i));
 		}
 	}
 	
