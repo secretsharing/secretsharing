@@ -17,12 +17,25 @@ public class BytesSecrets {
 	
 	private static void write(BigInteger i, DataOutput data) throws IOException {
 		byte[] b = i.toByteArray();
-		data.writeInt(b.length);
+		int len = b.length;
+		do {
+			boolean term = (len & ~0x7f) == 0;
+			data.write((len & 0x7f) | (term ? 0x80 : 0));
+			len = len >>> 7;
+		} while(len != 0);
 		data.write(b);
 	}
 	
 	private static BigInteger read(DataInput data) throws IOException {
-		int len = data.readInt();
+		int len = 0;
+		int off = 0;
+		boolean term;
+		do {
+			int l = data.readUnsignedByte();
+			term = (l & 0x80) != 0;
+			len |= (l & 0x7f) << off;
+			off += 7;
+		} while(!term);
 		byte[] b = new byte[len];
 		data.readFully(b);
 		return new BigInteger(b);
