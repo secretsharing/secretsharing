@@ -5,7 +5,7 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <link rel="stylesheet" type="text/css" href="splitjoin.css">
-<title>Join Secret Parts</title>
+<title>Recover a Secret</title>
 </head>
 <body>
 
@@ -21,7 +21,7 @@ Check this box if your secret was base64 encoded:<br />
 <input name="base64" type="checkbox" value="true" id="base64"  <%= request.getParameter("base64") != null && Boolean.parseBoolean(request.getParameter("base64")) ? "checked" : "" %> />
 <label for="base64">Base 64</label>
 <br /><br/>
-<button type="submit" name="submit">Join Secret Parts</button>
+<button type="submit" name="submit">Recover My Secret</button>
 </form>
 
 <br/>
