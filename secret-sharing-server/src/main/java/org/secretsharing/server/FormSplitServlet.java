@@ -71,10 +71,8 @@ public class FormSplitServlet extends HttpServlet {
 
 			byte[][] parts = BytesSecrets.split(secretBytes, totalParts, requiredParts, rnd);
 
-			String sep = "";
 			for(byte[] part : parts) {
-				resp.getWriter().println(sep + Base32.encode(part));
-				sep = "\n";
+				resp.getWriter().println(Base32.encode(part));
 			}
 		} catch(Throwable t) {
 			if(t.getMessage() != null)
