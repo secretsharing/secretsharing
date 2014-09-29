@@ -33,7 +33,7 @@ if(request.getParameter("submit") != null) {
 %>
 <textarea rows="5" cols="120" readonly="readonly" style="width:100%;"><jsp:include page="/form-join"></jsp:include></textarea>
 <% } else { %>
-<textarea rows="5" cols="120" readonly="readonly" style="width:100%;">Joined secret returned here</textarea>
+<textarea rows="5" cols="120" readonly="readonly" style="width:100%;">Recovered secret returned here</textarea>
 <% } %>
 </body>
 </html>
