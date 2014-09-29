@@ -26,13 +26,22 @@ public class BytesSecrets {
 	 */
 	private static void write(BigInteger i, DataOutput data) throws IOException {
 		byte[] b = i.toByteArray();
-		int len = b.length;
-		do {
-			boolean term = (len & ~0x7f) == 0;
-			data.write((len & 0x7f) | (term ? 0x80 : 0));
-			len = len >>> 7;
-		} while(len != 0);
+		writeInt(b.length, data);
 		data.write(b);
+	}
+	
+	/**
+	 * Read a minimalized int, optimized for positive numbers
+	 * @param i
+	 * @param data
+	 * @throws IOException
+	 */
+	private static void writeInt(int i, DataOutput data) throws IOException {
+		do {
+			boolean term = (i & ~0x7f) == 0;
+			data.write((i & 0x7f) | (term ? 0x80 : 0));
+			i = i >>> 7;
+		} while(i != 0);
 	}
 	
 	/**
@@ -42,18 +51,29 @@ public class BytesSecrets {
 	 * @throws IOException
 	 */
 	private static BigInteger read(DataInput data) throws IOException {
-		int len = 0;
+		int len = readInt(data);
+		byte[] b = new byte[len];
+		data.readFully(b);
+		return new BigInteger(b);
+	}
+	
+	/**
+	 * Read an int written with {@link #writeInt(int, DataOutput)}
+	 * @param data
+	 * @return
+	 * @throws IOException
+	 */
+	private static int readInt(DataInput data) throws IOException {
+		int i = 0;
 		int off = 0;
 		boolean term;
 		do {
 			int l = data.readUnsignedByte();
 			term = (l & 0x80) != 0;
-			len |= (l & 0x7f) << off;
+			i |= (l & 0x7f) << off;
 			off += 7;
 		} while(!term);
-		byte[] b = new byte[len];
-		data.readFully(b);
-		return new BigInteger(b);
+		return i;
 	}
 	
 	/**
@@ -65,15 +85,15 @@ public class BytesSecrets {
 	 * @return
 	 */
 	public static byte[][] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
-		BigInteger secretBits = BigInteger.valueOf(secret.length * 8);
-		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBits.intValue(), requiredParts-1, rnd);
+		int secretBytes = secret.length;
+		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBytes * 8, requiredParts-1, rnd);
 		BigPoint[] pts = poly.p(totalParts);
 		byte[][] s = new byte[totalParts][];
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		DataOutputStream data = new DataOutputStream(buf);
 		for(int i = 0; i < totalParts; i++) {
 			try {
-				write(secretBits, data);
+				writeInt(secretBytes, data);
 				write(poly.getPrime(), data);
 				write(pts[i].getX(), data);
 				write(pts[i].getY(), data);
@@ -99,12 +119,12 @@ public class BytesSecrets {
 			ByteArrayInputStream buf = new ByteArrayInputStream(parts[i]);
 			DataInputStream data = new DataInputStream(buf);
 			
-			BigInteger sl;
+			int sl;
 			BigInteger p;
 			BigInteger x;
 			BigInteger y;
 			try {
-				sl = read(data);
+				sl = readInt(data);
 				p = read(data);
 				x = read(data);
 				y = read(data);
@@ -113,8 +133,8 @@ public class BytesSecrets {
 			}
 			
 			if(secretLength == null)
-				secretLength = sl.intValue() / 8;
-			else if(!secretLength.equals(sl.intValue() / 8))
+				secretLength = sl;
+			else if(!secretLength.equals(sl))
 				throw new IllegalArgumentException();
 			if(prime == null)
 				prime = p;
