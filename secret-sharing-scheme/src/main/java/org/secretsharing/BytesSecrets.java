@@ -85,8 +85,8 @@ public class BytesSecrets {
 			}
 			
 			if(secretLength == null)
-				secretLength = sl.intValue();
-			else if(!secretLength.equals(sl.intValue()))
+				secretLength = sl.intValue() / 8;
+			else if(!secretLength.equals(sl.intValue() / 8))
 				throw new IllegalArgumentException();
 			if(prime == null)
 				prime = p;
