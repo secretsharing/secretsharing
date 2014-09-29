@@ -3,11 +3,46 @@
 <head>
 <meta charset="UTF-8">
 <title>Shamir's Secret Sharing Scheme</title>
+<style type="text/css">
+
+#frames {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	width: 100%;
+	height: 100%;
+	border-style: none;
+	text-align: center;
+}
+
+#frames-row {
+	height: 100%;
+}
+
+td {
+	margin: 10px 10px 10px 10px;
+}
+
+iframe {
+	width: 100%;
+	height: 100%;
+}
+
+</style>
 </head>
 <body>
-<a href="split.html">Split a secret</a><br/>
-<a href="join.html">Join secret parts</a><br/>
 
+<table id="frames">
+<tr><th colspan="2">Shamir's Secret Sharing Scheme</th></tr>
+<tr><th>Share a Secret</th><th>Recover a Secret</th></tr>
+<tr id="frames-row">
+<td><iframe src="split.html" id="split"></iframe></td>
+<td><iframe src="join.html" id="join"></iframe></td>
+</tr>
+<tr><td colspan="2"><a href="http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing">Wikipedia</a></td></tr>
+</table>
 
 </body>
 </html>
