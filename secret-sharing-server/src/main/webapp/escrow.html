@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Secret Sharing Escrow Protocol</title>
+</head>
+<body>
+
+<h1>Secret Sharing Escrow Protocol</h1>
+<p><i>Like multisig escrow but it actually works!</i></p>
+
+<p>The holy grail of escrow services is to be able to facilitate payments
+and arbitrate disputes without having direct access to the funds.  This goal,
+commonly called "multisig escrow", is trivial using the Shamir secret sharing
+scheme.</p>
+
+<p>The protocol is simple, and involves three parties: Alice, the buyer, Bob,
+the seller, and Trent, the escrow service.</p>
+
+<h2>Setup:</h2>
+<ol>
+	<li>Trent creates a new bitcoin private key and address, and shares it with Alice.</li>
+	<li>Alice transfers the escrowed funds to Trent's address.</li>
+	<li>Trent splits the bitcoin address's private key into 3 parts, with 2 parts required to
+	reconstruct the secret.</li>
+	<li>Trent <b>PERMANENTLY</b> discards the private key.</li>
+	<li>Trent distributes one key part to Alice, and <b>PERMANENTLY</b> discards it.</li>
+	<li>Trent distributes one key part to Bob, and <b>PERMANENTLY</b> discards it.</li>
+	<li>Trent retains one key part.</li>
+</ol>
+
+<h2>Outcomes:</h2>
+
+<h3>Goods are received, Alice wishes to pay Bob.</h3>
+<p>Alice sends her key part to Bob.  Bob now has two parts, reconstructs the private key,
+and transfers the funds to his wallet.</p>
+
+<h3>Goods are not received, Bob wishes to refund Alice</h3>
+<p>Bob sends his key part to Alice.  Alice now has two parts, reconstructs the private key,
+and transfers the funds to her wallet.</p>
+
+<h3>Transaction is disputed, Trent wishes to refund Alice</h3> 
+<p>Trent sends his key part to Alice.  Alice now has two parts, reconstructs the private key,
+and transfers the funds to her wallet.</p>
+
+<h3>Transaction is disputed, Trent wishes to pay Bob</h3>
+<p>Trent sends his key part to Bob.  Bob now has two parts, reconstructs the private key,
+nd transfers the funds to his wallet.</p>
+
+<h2>Properties of the Protocol</h2>
+<p>Once Trent has distributed the key parts, he no longer has access to the funds.
+With only one key part, Trent cannot reconstruct the private key.  Therefore, should Trent
+become a malicious entity (such as by hostile server takeover), the funds cannot be seized
+by Trent or anyone controlling the escrow service.</p>
+
+<p>Alice and Bob never share their key parts with Trent, so Trent will never be able to
+reconstruct the private key.</p>
+
+<p>If the transaction is not in dispute, Alice can pay Bob without Trent being involved at all.</p>
+
+<p>If the transaction is not in dispute, Bob can refund Alice without Trent being involved at all.</p>
+
+<h2>Modifications</h2>
+<p>If Trent is using a third-party secret splitting service, then the bitcoin private key
+should be encrypted prior to being split.  The encryption key used is shared with Alice and
+Bob, and <b>PERMANENTLY</b> discarded by Trent.  Then, Alice and Bob can still both be fund recipients,
+Trent is still unable to seize the funds, and the secret splitting service never sees anything
+but encrypted data (and is therefore also unable to seize the funds).</p>
+
+</body>
+</html>
