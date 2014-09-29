@@ -55,6 +55,8 @@ public class Term {
 			d = d.negate();
 		}
 		BigInteger gcd = n.gcd(d);
+		if(gcd.equals(BigInteger.ZERO))
+			return this;
 		return new Term(n.divide(gcd), d.divide(gcd));
 	}
 }

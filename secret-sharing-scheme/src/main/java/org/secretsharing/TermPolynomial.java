@@ -4,7 +4,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 public class TermPolynomial {
-	public static final TermPolynomial ZERO = new TermPolynomial(new Term[0]);
+	public static final TermPolynomial ZERO = new TermPolynomial(new Term[] {Term.ZERO});
 	public static final TermPolynomial ONE = new TermPolynomial(new Term[] {Term.ONE});
 	
 	private Term[] terms;
@@ -41,7 +41,7 @@ public class TermPolynomial {
 			result = result.add(terms[i].multiply(xp));
 			xp = xp.multiply(x);
 		}
-		return result;
+		return result.simplify();
 	}
 	
 	public TermPolynomial add(TermPolynomial other) {

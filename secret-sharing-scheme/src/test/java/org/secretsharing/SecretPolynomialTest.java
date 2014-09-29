@@ -19,7 +19,7 @@ public class SecretPolynomialTest {
 	public static Iterable<Object[]> params() {
 		List<Object[]> p = new ArrayList<Object[]>();
 		for(int i = 0; i < 100; i++) {
-			BigInteger secret = new BigInteger(8, rnd);
+			BigInteger secret = new BigInteger(128, rnd);
 			int powx = 2 + (i % 7);
 			p.add(new Object[] {secret, powx});
 		}
@@ -36,10 +36,8 @@ public class SecretPolynomialTest {
 	
 	@Test
 	public void testReconstructSecret() {
-		SecretPolynomial sp = new SecretPolynomial(secret, secret.bitLength(), powx);
-		BigPoint[] pts = new BigPoint[powx+1];
-		for(int i = 0; i < pts.length; i++)
-			pts[i] = sp.p(BigInteger.valueOf(1 + i));
+		SecretPolynomial sp = new SecretPolynomial(secret, secret.bitLength()+8, powx);
+		BigPoint[] pts = sp.p(powx+1, secret.bitLength()+8);
 		LagrangePolynomial lp = new LagrangePolynomial(pts);
 		Term t = lp.y(BigInteger.ZERO);
 		Assert.assertEquals(BigInteger.ONE, t.getDenominator());
