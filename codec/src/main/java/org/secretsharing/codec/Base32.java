@@ -5,6 +5,11 @@ import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
+/**
+ * Encoder/decoder for Base-32 binary representation.
+ * @author robin
+ *
+ */
 public class Base32 {
 	private static final Charset ASCII = Charset.forName("ASCII");
 	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
@@ -24,6 +29,12 @@ public class Base32 {
 		DECODE_SYMBOLS['L'] = DECODE_SYMBOLS['l'] = 1;
 	}
 	
+	/**
+	 * Return the length of the base32-encoded result for data
+	 * of the argument length
+	 * @param dataLength
+	 * @return
+	 */
 	public static int encodedLength(int dataLength) {
 		int len = (dataLength / 5) * 8;
 		int addl = dataLength % 5;
@@ -38,6 +49,12 @@ public class Base32 {
 		return len;
 	}
 	
+	/**
+	 * Return the length of the base32-decoded result
+	 * for encoded data of the argument length
+	 * @param dataLength
+	 * @return
+	 */
 	public static int decodedLength(int dataLength) {
 		int len = (dataLength / 8) * 5;
 		int addl = dataLength % 8;
@@ -57,10 +74,23 @@ public class Base32 {
 		return len;
 	}
 	
+	/**
+	 * Encode bytes to a Base 32 string
+	 * @param data The data to encode
+	 * @return A string of Base 32 representation
+	 */
 	public static String encode(byte[] data) {
 		return new String(encode(null, data), ASCII);
 	}
 	
+	/**
+	 * Encode bytes to a Base 32 byte array, returning an array of encoded data.
+	 * If the destination array is null or too small to fit the data then
+	 * a new array is created and returned.
+	 * @param dest The destination array.  May be {@code null}.
+	 * @param data The data to encode
+	 * @return
+	 */
 	public static byte[] encode(byte[] dest, byte[] data) {
 		int dlen = encodedLength(data.length);
 		
@@ -111,10 +141,23 @@ public class Base32 {
 		return dest;
 	}
 	
+	/**
+	 * Decode a string of Base 32 representation to the original bytes
+	 * @param data The string to decode
+	 * @return The original bytes as a new array
+	 */
 	public static byte[] decode(String data) {
 		return decode(null, data.getBytes(ASCII));
 	}
 	
+	/**
+	 * Decode an array of Base 32 encoded data to its original bytes.
+	 * If the destination array is null or too small, a new array is
+	 * created and returned.
+	 * @param dest The destination array.  May be {@code null}
+	 * @param data The data to decode
+	 * @return
+	 */
 	public static byte[] decode(byte[] dest, byte[] data) {
 		int dlen = decodedLength(data.length);
 		
