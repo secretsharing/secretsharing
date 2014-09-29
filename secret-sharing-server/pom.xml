@@ -48,7 +48,6 @@
 							<scanIntervalSeconds>1</scanIntervalSeconds>
 							<stopPort>${jetty.stopPort}</stopPort>
 							<stopKey>${jetty.stopKey}</stopKey>
-							<waitForChild>false</waitForChild>
 							<jettyXml>jetty.xml</jettyXml>
 						</configuration>
 					</plugin>
