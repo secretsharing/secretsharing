@@ -6,7 +6,7 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 public class Base32 {
-	private static final Charset UTF8 = Charset.forName("UTF-8");
+	private static final Charset ASCII = Charset.forName("ASCII");
 	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
 	private static final byte[] DECODE_SYMBOLS = new byte[256];
 	static {
@@ -58,7 +58,7 @@ public class Base32 {
 	}
 	
 	public static String encode(byte[] data) {
-		return new String(encode(null, data), UTF8);
+		return new String(encode(null, data), ASCII);
 	}
 	
 	public static byte[] encode(byte[] dest, byte[] data) {
@@ -112,7 +112,7 @@ public class Base32 {
 	}
 	
 	public static byte[] decode(String data) {
-		return decode(null, data.getBytes(UTF8));
+		return decode(null, data.getBytes(ASCII));
 	}
 	
 	public static byte[] decode(byte[] dest, byte[] data) {

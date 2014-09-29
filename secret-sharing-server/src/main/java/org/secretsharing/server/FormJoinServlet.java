@@ -36,9 +36,9 @@ public class FormJoinServlet extends HttpServlet {
 				if(s.trim().isEmpty())
 					continue;
 				try {
-					partsBytes.add(Base32.decode(s));
+					partsBytes.add(Base32.decode(s.trim()));
 				} catch(Exception e) {
-					throw new RuntimeException("Improper encoding of secret parts:" + s);
+					throw new RuntimeException("Improper encoding of secret parts:" + s, e);
 				}
 			}
 
@@ -49,6 +49,7 @@ public class FormJoinServlet extends HttpServlet {
 			else
 				resp.getWriter().print(new String(secret, "UTF-8"));
 		} catch(Throwable t) {
+			t.printStackTrace();
 			if(t.getMessage() != null)
 				resp.getWriter().print(t.getMessage());
 			else
