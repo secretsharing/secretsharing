@@ -27,12 +27,6 @@
 			<artifactId>secret-sharing-scheme</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-server</artifactId>
-			<version>9.3.0.M0</version>
-			<scope>provided</scope>
-		</dependency>
 	</dependencies>
 
 	<profiles>
@@ -48,7 +42,6 @@
 							<scanIntervalSeconds>1</scanIntervalSeconds>
 							<stopPort>${jetty.stopPort}</stopPort>
 							<stopKey>${jetty.stopKey}</stopKey>
-							<jettyXml>jetty.xml</jettyXml>
 						</configuration>
 					</plugin>
 				</plugins>
