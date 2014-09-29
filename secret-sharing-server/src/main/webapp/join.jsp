@@ -12,9 +12,9 @@
 <form action="join.jsp" method="post">
 Enter your secret parts below, 1 per line<br/>
 <% if(request.getParameter("parts") != null) { %>
-<textarea rows="15" cols="120" name="parts" style="width:100%;"><%= request.getParameter("parts") %></textarea>
+<textarea rows="8" cols="120" name="parts" style="width:100%;"><%= request.getParameter("parts") %></textarea>
 <% } else { %>
-<textarea rows="15" cols="120" name="parts" style="width:100%;">Enter Secret Parts</textarea>
+<textarea rows="8" cols="120" name="parts" style="width:100%;">Enter Secret Parts</textarea>
 <% } %>
 <br/><br/>
 Check this box if your secret was base64 encoded:<br />
