@@ -40,6 +40,8 @@
 						<version>8.1.15.v20140411</version>
 						<configuration>
 							<scanIntervalSeconds>1</scanIntervalSeconds>
+							<stopPort>${jetty.stopPort}</stopPort>
+							<stopKey>${jetty.stopKey}</stopKey>
 						</configuration>
 					</plugin>
 				</plugins>

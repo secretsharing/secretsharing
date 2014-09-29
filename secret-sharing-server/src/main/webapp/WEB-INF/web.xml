@@ -23,6 +23,16 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<servlet-class>org.secretsharing.server.FormJoinServlet</servlet-class>
 	</servlet>
 
+	<servlet>
+		<servlet-name>jsp-split</servlet-name>
+		<jsp-file>/split.jsp</jsp-file>
+	</servlet>
+
+	<servlet>
+		<servlet-name>jsp-join</servlet-name>
+		<jsp-file>/join.jsp</jsp-file>
+	</servlet>
+
 	<servlet-mapping>
 		<servlet-name>split</servlet-name>
 		<url-pattern>/split</url-pattern>
@@ -43,4 +53,13 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<url-pattern>/form-join</url-pattern>
 	</servlet-mapping>
 
+	<servlet-mapping>
+		<servlet-name>jsp-split</servlet-name>
+		<url-pattern>/split.html</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>jsp-join</servlet-name>
+		<url-pattern>/join.html</url-pattern>
+	</servlet-mapping>
 </web-app>
