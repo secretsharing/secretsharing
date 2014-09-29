@@ -27,10 +27,18 @@ public class SecretPolynomial extends TermPolynomial {
 		return prime;
 	}
 	
+	@Override
+	public String toString() {
+		return super.toString() + " ( mod " + prime + ")";
+	}
+	
 	public BigPoint[] p(int count, int secretBits) {
 		BigPoint[] p = new BigPoint[count];
+		int off = 2;
 		for(int i = 0; i < count; i++) {
-			BigInteger x = BigInteger.valueOf(i+1);
+			BigInteger x = BigInteger.valueOf(i+off);
+			while(!x.isProbablePrime(200))
+				x = BigInteger.valueOf(i+(++off));
 			p[i] = p(x);
 		}
 		return p;

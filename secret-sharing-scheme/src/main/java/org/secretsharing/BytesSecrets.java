@@ -94,7 +94,7 @@ public class BytesSecrets {
 				throw new IllegalArgumentException();
 			pts[i] = new BigPoint(x, y);
 		}
-		LagrangePolynomial poly = new LagrangePolynomial(pts);
+		LagrangePolynomial poly = new LagrangePolynomial(pts, prime);
 		byte[] secret = poly.y(BigInteger.ZERO).getNumerator().mod(prime).add(prime).mod(prime).toByteArray();
 		byte[] ret = new byte[secretLength];
 		System.arraycopy(secret, 0, ret, ret.length - secret.length, secret.length);

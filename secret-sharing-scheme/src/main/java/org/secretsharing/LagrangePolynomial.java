@@ -3,7 +3,7 @@ package org.secretsharing;
 import java.math.BigInteger;
 
 public class LagrangePolynomial extends TermPolynomial {
-	public LagrangePolynomial(BigPoint[] pts) {
+	public LagrangePolynomial(BigPoint[] pts, BigInteger mod) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
 		for(int i = 0; i < pts.length; i++) {
@@ -13,7 +13,10 @@ public class LagrangePolynomial extends TermPolynomial {
 		TermPolynomial poly = TermPolynomial.ZERO;
 		for(int j = 0; j < px.length; j++)
 			poly = poly.add(l(px, py, j));
-		setTerms(poly.getTerms());
+		Term[] terms = poly.getTerms();
+		for(int i = 0; i < terms.length; i++)
+			terms[i] = terms[i].modulo(mod);
+		setTerms(terms);
 	}
 	
 	private TermPolynomial l(BigInteger[] px, BigInteger[] py, int j) {

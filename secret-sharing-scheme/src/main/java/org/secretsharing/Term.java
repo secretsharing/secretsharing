@@ -47,6 +47,13 @@ public class Term {
 		return new Term(n, d).simplify();
 	}
 	
+	public Term modulo(BigInteger mod) {
+		BigInteger n = numerator;
+		BigInteger d = denominator;
+		d = d.modInverse(mod);
+		return new Term(n.multiply(d).mod(mod), BigInteger.ONE);
+	}
+	
 	public Term simplify() {
 		BigInteger n = numerator;
 		BigInteger d = denominator;
