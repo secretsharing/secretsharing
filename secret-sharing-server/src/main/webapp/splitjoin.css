@@ -1,0 +1,11 @@
+@CHARSET "UTF-8";
+
+body {
+	overflow-x: hidden;
+	margin: 20px;
+}
+
+textarea {
+	width: 100%;
+	margin-right: 20px;
+}

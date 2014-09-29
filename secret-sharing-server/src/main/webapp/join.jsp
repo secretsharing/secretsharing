@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="splitjoin.css">
 <title>Join Secret Parts</title>
 </head>
 <body>
