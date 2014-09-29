@@ -7,11 +7,10 @@ import java.util.Random;
 
 public class BytesSecrets {
 	private static final Charset UTF8 = Charset.forName("UTF-8");
-	private static final Random rnd = new SecureRandom();
 	
-	public static byte[][] split(byte[] secret, int totalParts, int requiredParts) {
+	public static byte[][] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		int secretBits = secret.length * 8;
-		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBits, requiredParts-1);
+		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBits, requiredParts-1, rnd);
 		BigPoint[] pts = poly.p(totalParts, secretBits);
 		byte[][] s = new byte[totalParts][];
 		for(int i = 0; i < totalParts; i++) {

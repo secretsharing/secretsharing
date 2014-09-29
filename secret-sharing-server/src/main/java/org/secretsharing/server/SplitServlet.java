@@ -1,8 +1,10 @@
 package org.secretsharing.server;
 
 import java.io.IOException;
+import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -19,6 +21,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
 public class SplitServlet extends HttpServlet {
+	private static Random rnd = new SecureRandom();
+	
 	public static class Request {
 		public String secret;
 		public Integer totalParts;
@@ -51,7 +55,7 @@ public class SplitServlet extends HttpServlet {
 			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
 				throw new IllegalArgumentException();
 
-			byte[][] parts = BytesSecrets.split(secret, jreq.totalParts, jreq.requiredParts);
+			byte[][] parts = BytesSecrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
 
 			Response jresp = new Response();
 			jresp.parts = Arrays.asList(parts);

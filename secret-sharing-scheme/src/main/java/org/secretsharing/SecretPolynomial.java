@@ -7,11 +7,9 @@ import java.util.Random;
 import java.util.Set;
 
 public class SecretPolynomial extends TermPolynomial {
-	private static final Random rnd = new SecureRandom();
-	
 	private BigInteger prime;
 	
-	public SecretPolynomial(BigInteger secret, int secretBits, int powx) {
+	public SecretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
 			prime = BigInteger.probablePrime(secretBits+1, rnd);
