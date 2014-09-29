@@ -2,11 +2,76 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>HTTP API</title>
+<title>JSON API</title>
 </head>
 <body>
 
+<h1>Splitting a Secret</h1>
 
+<p>Submit an HTTP POST request to <a href="split">/split</a> with one parameter, <code>q</code>,
+a JSON object.  The JSON object has 4 recognized fields: <code>secret</code>, <code>total_parts</code>,
+<code>required_parts</code>, and (optionally) <code>base64</code>.  The secret is a string, total parts
+and required parts are integers, and base64 is a boolean indicating (if true) that the secret is
+already base64 encoded.</p>
+
+<p>Example JSON request:</p>
+<pre>
+{
+	"secret":"Super Duper Secret",
+	"total_parts":4,
+	"required_parts":2,
+	"base64":false
+}
+</pre>
+
+<p>The response to a request is also a JSON object, with two fields: <code>status</code>, and 
+(optionally) <code>parts</code>.  The status is a string, either <code>"ok"</code> or <code>"error"</code>.
+The parts are an array of strings representing the split secret pieces, if there was no error.</p>
+
+<p>Example JSON response: (formatted for readability)</p>
+<pre>
+{
+	"status":"ok",
+	"parts":[
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BAZMAsThQ+JcZIPTY0ibx01JNubW5",
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BApMBDvsxi7wR/XRBPtvDUz84AQX+",
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BA5MBbL4SHuEK2fOpq5CU0ywiSFZD",
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BBJIxXmqeCerT4xCOpA5yD1ZjbTs="
+	]
+}
+</pre>
+
+<h1>Joining a Split Secret</h1>
+
+<p>Submit an HTTP POST request to <a href="join">/join</a> with one parameter, <code>q</code>,
+a JSON object.  The JSON object has 2 recognized fields: <code>parts</code>, and (optionally)
+<code>base64</code>.  The parts are an array of secret parts of the same size as the number of
+required parts, and base64 is a boolean indicating (if true) that the secret was base64 encoded,
+and should be returned in base64 notation.</p>
+
+<p>Example JSON request:</p>
+<pre>
+{
+	"parts":[
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BAZMAsThQ+JcZIPTY0ibx01JNubW5",
+		"ggCQkwGZIogT/BjikAGJoVfhCbYsOU2BApMBDvsxi7wR/XRBPtvDUz84AQX+"
+	],
+	"base64":false
+}
+</pre>
+
+<p>The response to a request is also a JSON object, with two fields: <code>status</code>, and
+(optionally) <code>secret</code>.  The status is a string, either <code>"ok"</code> or <code>"error"</code>.
+The secret is a string, either the original or a base64 representation of the original, depending
+on whether base64 was specified, and if there were no errors.</p>
+
+<p>Example JSON response: (formatted for readability)</p>
+<pre>
+{
+	"status":"ok",
+	"secret":"Super Duper Secret"
+}
+</pre>
 
 </body>
 </html>
