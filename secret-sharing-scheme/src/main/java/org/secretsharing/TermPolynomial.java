@@ -2,6 +2,8 @@ package org.secretsharing;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Objects;
+import java.util.Random;
 
 /**
  * A polynomial composed of terms
@@ -12,11 +14,61 @@ public class TermPolynomial {
 	/**
 	 * Constant zero-valued polynomial
 	 */
-	public static final TermPolynomial ZERO = new TermPolynomial(new Term[] {Term.ZERO});
+	public static final TermPolynomial ZERO = new TermPolynomial(Term.ZERO);
 	/**
 	 * Constant one-valued polynomial
 	 */
-	public static final TermPolynomial ONE = new TermPolynomial(new Term[] {Term.ONE});
+	public static final TermPolynomial ONE = new TermPolynomial(Term.ONE);
+	
+	private static Term[] lagrange(BigPoint[] pts, BigInteger modulus) {
+		BigInteger[] px = new BigInteger[pts.length];
+		BigInteger[] py = new BigInteger[pts.length];
+		for(int i = 0; i < pts.length; i++) {
+			px[i] = pts[i].getX();
+			py[i] = pts[i].getY();
+		}
+		TermPolynomial poly = TermPolynomial.ZERO;
+		for(int j = 0; j < px.length; j++)
+			poly = poly.add(lagrange_l(px, py, j));
+		Term[] terms = poly.getTerms();
+		for(int i = 0; i < terms.length; i++)
+			terms[i] = modulo(terms[i],modulus);
+		return terms;
+	}
+	
+	private static TermPolynomial lagrange_l(BigInteger[] px, BigInteger[] py, int j) {
+		TermPolynomial result = TermPolynomial.ONE;
+		for(int i = 0; i < px.length; i++) {
+			if(i == j)
+				continue;
+			Term t1 = new Term(BigInteger.ONE, px[j].subtract(px[i]));
+			Term t0 = new Term(px[i].negate(), px[j].subtract(px[i]));
+			TermPolynomial t = new TermPolynomial(new Term[] {t0, t1});
+			result = result.multiply(t);
+		}
+		return result.multiply(py[j]);
+	}
+	
+	private static Term modulo(Term term, BigInteger mod) {
+		BigInteger n = term.getNumerator();
+		BigInteger d = term.getDenominator();
+		d = d.modInverse(mod);
+		return new Term(n.multiply(d).mod(mod), BigInteger.ONE);
+	}
+	
+	private static TermPolynomial secret(BigInteger secret, int secretBits, int powx, Random rnd) {
+		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
+		while(prime.compareTo(secret) < 0)
+			prime = BigInteger.probablePrime(secretBits+1, rnd);
+		TermPolynomial poly = TermPolynomial.ONE.multiply(secret);
+		for(int i = 1; i <= powx; i++) {
+			BigInteger a = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+			while(a.compareTo(prime) > 0)
+				a = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+			poly = poly.add(TermPolynomial.ONE.multiply(a).powX(i));
+		}
+		return new TermPolynomial(poly.getTerms(), prime);
+	}
 	
 	/**
 	 * The terms in this polynomial.  The ith element in the array
@@ -24,24 +76,66 @@ public class TermPolynomial {
 	 */
 	private Term[] terms;
 	
-	protected TermPolynomial() {}
+	private BigInteger modulus;
+	
+	public TermPolynomial(Term... terms) {
+		this(terms, null);
+	}
+	
+	public TermPolynomial(TermPolynomial other) {
+		this(other.getTerms(), other.getModulus());
+	}
 	
 	/**
 	 * Create a new {@link TermPolynomial} from an array of terms.
 	 * @param terms
 	 */
-	public TermPolynomial(Term[] terms) {
+	public TermPolynomial(Term[] terms, BigInteger modulus) {
 		this.terms = Arrays.copyOf(terms, terms.length);
+		this.modulus = modulus;
+	}
+	
+	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
+		this(lagrange(pts, modulus), modulus);
+	}
+	
+	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
+		this(secret(secret, secretBits, powx, rnd));
+	}
+	
+	protected BigInteger mod(BigInteger val) {
+		if(getModulus() == null)
+			return val;
+		return val.mod(getModulus()).add(getModulus()).mod(getModulus());
 	}
 	
 	@Override
 	public String toString() {
+		Term[] terms = getTerms();
 		if(terms.length == 0)
 			return "0";
 		StringBuilder sb = new StringBuilder(terms[0].toString());
 		for(int i = 1; i < terms.length; i++)
 			sb.append(" + " + terms[i] + "x^" + i);
+		if(getModulus() != null)
+			sb.append(" (mod " + getModulus() + ")");
 		return sb.toString();
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj == this)
+			return true;
+		if(obj instanceof TermPolynomial) {
+			TermPolynomial p = (TermPolynomial) obj;
+			return Arrays.equals(getTerms(), p.getTerms()) && Objects.equals(getModulus(), p.getModulus());
+		}
+		return false;
+	}
+	
+	@Override
+	public int hashCode() {
+		return Arrays.hashCode(getTerms()) + Objects.hashCode(getModulus());
 	}
 	
 	/**
@@ -52,12 +146,8 @@ public class TermPolynomial {
 		return Arrays.copyOf(terms, terms.length);
 	}
 	
-	/**
-	 * Set the terms in this polynomial
-	 * @param terms
-	 */
-	protected void setTerms(Term[] terms) {
-		this.terms = Arrays.copyOf(terms, terms.length);
+	public BigInteger getModulus() {
+		return modulus;
 	}
 	
 	/**
@@ -73,7 +163,23 @@ public class TermPolynomial {
 			result = result.add(terms[i].multiply(xp));
 			xp = xp.multiply(x);
 		}
-		return result.simplify();
+		return result;
+	}
+	
+	/**
+	 * Compute the y-value for a given x-value
+	 * @param x
+	 * @return
+	 */
+	public BigInteger wholeY(BigInteger x) {
+		Term result = Term.ZERO;
+		Term[] terms = getTerms();
+		BigInteger xp = BigInteger.ONE;
+		for(int i = 0; i < terms.length; i++) {
+			result = result.add(terms[i].multiply(xp));
+			xp = xp.multiply(x);
+		}
+		return mod(result.whole());
 	}
 	
 	/**
@@ -100,6 +206,7 @@ public class TermPolynomial {
 	 * @return
 	 */
 	public TermPolynomial powX(int powx) {
+		Term[] terms = getTerms();
 		Term[] t = new Term[terms.length + powx];
 		Arrays.fill(t, Term.ZERO);
 		System.arraycopy(terms, 0, t, powx, terms.length);
@@ -148,5 +255,21 @@ public class TermPolynomial {
 		for(int i = 0; i < terms.length; i++)
 			terms[i] = terms[i].multiply(val);
 		return new TermPolynomial(terms);
+	}
+
+	/**
+	 * Return a single point on this polynomial
+	 * @param x
+	 * @return
+	 */
+	public BigPoint p(BigInteger x) {
+		return new BigPoint(x, mod(y(x).whole()));
+	}
+	
+	public BigPoint[] p(BigInteger[] x) {
+		BigPoint[] pts = new BigPoint[x.length];
+		for(int i = 0; i < x.length; i++)
+			pts[i] = p(x[i]);
+		return pts;
 	}
 }

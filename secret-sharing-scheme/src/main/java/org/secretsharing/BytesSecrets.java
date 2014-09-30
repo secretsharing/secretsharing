@@ -12,6 +12,8 @@ import java.nio.charset.Charset;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import org.secretsharing.util.BigIntegers;
+
 /**
  * Utility class for splitting and joining secret and secret parts
  * @author robin
@@ -86,15 +88,15 @@ public class BytesSecrets {
 	 */
 	public static byte[][] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		int secretBytes = secret.length;
-		SecretPolynomial poly = new SecretPolynomial(new BigInteger(secret), secretBytes * 8, requiredParts-1, rnd);
-		BigPoint[] pts = poly.p(totalParts);
+		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBytes * 8, requiredParts-1, rnd);
+		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
 		byte[][] s = new byte[totalParts][];
 		ByteArrayOutputStream buf = new ByteArrayOutputStream();
 		DataOutputStream data = new DataOutputStream(buf);
 		for(int i = 0; i < totalParts; i++) {
 			try {
 				writeInt(secretBytes, data);
-				write(poly.getPrime(), data);
+				write(poly.getModulus(), data);
 				write(pts[i].getX(), data);
 				write(pts[i].getY(), data);
 			} catch(IOException e) {
@@ -142,7 +144,7 @@ public class BytesSecrets {
 				throw new IllegalArgumentException();
 			pts[i] = new BigPoint(x, y);
 		}
-		LagrangePolynomial poly = new LagrangePolynomial(pts, prime);
+		TermPolynomial poly = new TermPolynomial(pts, prime);
 		byte[] secret = poly.y(BigInteger.ZERO).getNumerator().mod(prime).add(prime).mod(prime).toByteArray();
 		byte[] ret = new byte[secretLength];
 		System.arraycopy(secret, 0, ret, ret.length - secret.length, secret.length);

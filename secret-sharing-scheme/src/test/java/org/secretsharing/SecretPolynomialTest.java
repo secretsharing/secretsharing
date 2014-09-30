@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import org.junit.runner.RunWith;
+import org.secretsharing.util.BigIntegers;
 
 @RunWith(Parameterized.class)
 public class SecretPolynomialTest {
@@ -36,15 +37,10 @@ public class SecretPolynomialTest {
 	
 	@Test
 	public void testReconstructSecret() {
-		SecretPolynomial sp = new SecretPolynomial(secret, secret.bitLength(), powx, rnd);
-		BigPoint[] pts = sp.p(powx+1);
-		LagrangePolynomial lp = new LagrangePolynomial(pts, sp.getPrime());
-		// sanity check
-		for(BigPoint p : pts)
-			Assert.assertEquals(p.getY(), lp.y(p.getX()).getNumerator().mod(sp.getPrime()));
-		Term t = lp.y(BigInteger.ZERO);
-		Assert.assertEquals(BigInteger.ONE, t.getDenominator());
-		BigInteger s = t.getNumerator().mod(sp.getPrime()).add(sp.getPrime()).mod(sp.getPrime());
+		TermPolynomial sp = new TermPolynomial(secret, secret.bitLength(), powx, rnd);
+		BigPoint[] pts = sp.p(BigIntegers.range(1, powx+2));
+		TermPolynomial lp = new TermPolynomial(pts, sp.getModulus());
+		BigInteger s = lp.wholeY(BigInteger.ZERO);
 		Assert.assertEquals(secret, s);
 	}
 }
