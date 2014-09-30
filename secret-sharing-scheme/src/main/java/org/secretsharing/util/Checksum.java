@@ -6,8 +6,19 @@ import java.security.NoSuchAlgorithmException;
 
 import org.secretsharing.codec.Base32;
 
+/**
+ * Simple checksum.  Makes absolutely no attempt at error correction.
+ * @author robin
+ *
+ */
 public final class Checksum {
 
+	/**
+	 * Compute a 2-byte checksum by XORing the bytes of the SHA-1
+	 * of the argument
+	 * @param buf
+	 * @return
+	 */
 	public static int checksum(byte[] buf) {
 		MessageDigest digest;
 		try {
@@ -24,24 +35,46 @@ public final class Checksum {
 		return cx;
 	}
 	
+	/**
+	 * The int value of the checksum
+	 */
 	private int cx;
+	/**
+	 * The bytes composing the checksum
+	 */
 	private byte[] cxb;
 	
+	/**
+	 * Compute the checksum of a byte array
+	 * @param buf
+	 */
 	public Checksum(byte[] buf) {
 		this.cx = checksum(buf);
 		cxb = new byte[] {(byte) cx, (byte)(cx >>> 8)};
 	}
 	
+	/**
+	 * Parse a checksum from a string
+	 * @param s
+	 */
 	public Checksum(String s) {
 		cxb = Base32.decode(s);
 		cx = (0xff & cxb[0]) | ((0xff & cxb[1]) << 8);
 	}
 	
+	/**
+	 * Create a new {@link Checksum} from a literal checksum int
+	 * @param cx
+	 */
 	public Checksum(int cx) {
 		this.cx = cx;
 		cxb = new byte[] {(byte) cx, (byte)(cx >>> 8)};
 	}
 	
+	/**
+	 * Read a {@link Checksum} from bytes
+	 * @param r
+	 */
 	public Checksum(BytesReadable r) {
 		cxb = r.readBytes(2);
 		cx = (0xff & cxb[0]) | ((0xff & cxb[1]) << 8);
@@ -52,14 +85,26 @@ public final class Checksum {
 		return Base32.encode(cxb);
 	}
 	
+	/**
+	 * Return the 16-bit checksum
+	 * @return
+	 */
 	public int getChecksum() {
 		return cx;
 	}
 	
+	/**
+	 * Return the 16-bit checksum as a byte array
+	 * @return
+	 */
 	public byte[] getChecksumBytes() {
 		return cxb;
 	}
 	
+	/**
+	 * Write the checksum to bytes
+	 * @param w
+	 */
 	public void write(BytesWritable w) {
 		w.writeBytes(cxb);
 	}

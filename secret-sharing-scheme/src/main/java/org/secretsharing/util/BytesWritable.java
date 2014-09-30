@@ -8,10 +8,26 @@ import java.math.BigInteger;
 
 import org.secretsharing.codec.Base32;
 
+/**
+ * Utility class for writing values to byte arrays
+ * @author robin
+ *
+ */
 public class BytesWritable {
+	/**
+	 * Backing buffer
+	 */
 	private ByteArrayOutputStream buf = new ByteArrayOutputStream();
+	/**
+	 * Handles the writing of data
+	 */
 	private DataOutput data = new DataOutputStream(buf);
 	
+	/**
+	 * Write a {@link BigInteger}
+	 * @param val
+	 * @return
+	 */
 	public BytesWritable writeBigInteger(BigInteger val) {
 		try {
 			byte[] b = val.toByteArray();
@@ -23,6 +39,11 @@ public class BytesWritable {
 		return this;
 	}
 	
+	/**
+	 * Write an int, optimized for space for non-negative values
+	 * @param val
+	 * @return
+	 */
 	public BytesWritable writeInt(int val) {
 		try {
 			do {
@@ -36,6 +57,11 @@ public class BytesWritable {
 		return this;
 	}
 	
+	/**
+	 * Write a raw byte array
+	 * @param b
+	 * @return
+	 */
 	public BytesWritable writeBytes(byte[] b) {
 		try {
 			data.write(b);
@@ -45,16 +71,28 @@ public class BytesWritable {
 		return this;
 	}
 	
+	/**
+	 * Return the bytes written
+	 * @return
+	 */
 	public byte[] toByteArray() {
 		return buf.toByteArray();
 	}
 	
+	/**
+	 * Convert to a string, reset the buffer, then return the string
+	 * @return
+	 */
 	public String reset() {
 		String s = toString();
 		buf.reset();
 		return s;
 	}
 	
+	/**
+	 * Return the number of bytes written
+	 * @return
+	 */
 	public int size() {
 		return buf.size();
 	}

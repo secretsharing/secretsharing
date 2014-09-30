@@ -26,6 +26,10 @@ public final class Term implements Comparable<Term> {
 	 */
 	private BigInteger denominator;
 	
+	/**
+	 * Create a whole-number term
+	 * @param val
+	 */
 	public Term(BigInteger val) {
 		this(val, BigInteger.ONE);
 	}
@@ -110,6 +114,11 @@ public final class Term implements Comparable<Term> {
 		return new Term(n, d);
 	}
 	
+	/**
+	 * Subtract another term from this term and return a new term
+	 * @param other
+	 * @return
+	 */
 	public Term subtract(Term other) {
 		return add(new Term(other.numerator.negate(), other.denominator));
 	}
@@ -136,11 +145,21 @@ public final class Term implements Comparable<Term> {
 		return new Term(n, d);
 	}
 	
+	/**
+	 * Returns whether this term is a whole number (denominator == 1)
+	 * @return
+	 */
 	public boolean isWhole() {
 		return denominator.equals(BigInteger.ONE);
 	}
 	
-	public BigInteger whole() {
+	/**
+	 * Returns the whole-number value of this term.  Throws an exception
+	 * if this term is not a whole number.
+	 * @return
+	 * @throws ArithmeticException If this term is not a whole number.
+	 */
+	public BigInteger whole() throws ArithmeticException {
 		if(!denominator.equals(BigInteger.ONE))
 			throw new ArithmeticException("Cannot get whole value of fraction");
 		return numerator;

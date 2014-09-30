@@ -78,6 +78,14 @@ public class TermPolynomial {
 		return new Term(n.multiply(d).mod(mod));
 	}
 	
+	/**
+	 * Create a random secret-generating polynomial for the argument secret
+	 * @param secret
+	 * @param secretBits
+	 * @param powx
+	 * @param rnd
+	 * @return
+	 */
 	public static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
@@ -98,12 +106,23 @@ public class TermPolynomial {
 	 */
 	private Term[] terms;
 	
+	/**
+	 * The modulus for this polynomial.  May be null.
+	 */
 	private BigInteger modulus;
 	
+	/**
+	 * Create a {@link TermPolynomial} from an array of {@link Term}s
+	 * @param terms
+	 */
 	public TermPolynomial(Term... terms) {
 		this(terms, null);
 	}
 	
+	/**
+	 * Copy a {@link TermPolynomial}
+	 * @param other
+	 */
 	public TermPolynomial(TermPolynomial other) {
 		this(other.getTerms(), other.getModulus());
 	}
@@ -117,14 +136,32 @@ public class TermPolynomial {
 		this.modulus = modulus;
 	}
 	
+	/**
+	 * Create a Lagrange interpolating polynomial for the argument points
+	 * and optional modulus
+	 * @param pts
+	 * @param modulus
+	 */
 	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
 		this(lagrangePolynomial(pts, modulus));
 	}
 	
+	/**
+	 * Create a random secret-generating polynomial for the argument secret
+	 * @param secret
+	 * @param secretBits
+	 * @param powx
+	 * @param rnd
+	 */
 	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		this(secretPolynomial(secret, secretBits, powx, rnd));
 	}
 	
+	/**
+	 * Apply the modulus, if there is one.  Otherwise return the argument.
+	 * @param val
+	 * @return
+	 */
 	protected BigInteger mod(BigInteger val) {
 		if(getModulus() == null)
 			return val;
@@ -168,6 +205,10 @@ public class TermPolynomial {
 		return Arrays.copyOf(terms, terms.length);
 	}
 	
+	/**
+	 * Return the modulus.  May be null.
+	 * @return
+	 */
 	public BigInteger getModulus() {
 		return modulus;
 	}
@@ -288,6 +329,12 @@ public class TermPolynomial {
 		return new BigPoint(x, mod(y(x).whole()));
 	}
 	
+	/**
+	 * Return an array of points on this polynomial for
+	 * the argument array of X values
+	 * @param x
+	 * @return
+	 */
 	public BigPoint[] p(BigInteger[] x) {
 		BigPoint[] pts = new BigPoint[x.length];
 		for(int i = 0; i < x.length; i++)

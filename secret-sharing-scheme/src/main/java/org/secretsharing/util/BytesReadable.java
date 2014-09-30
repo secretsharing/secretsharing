@@ -9,15 +9,37 @@ import java.math.BigInteger;
 
 import org.secretsharing.codec.Base32;
 
+/**
+ * Utility class for reading byte arrays
+ * @author robin
+ *
+ */
 public class BytesReadable {
+	/**
+	 * The raw backing array
+	 */
 	private byte[] b;
+	/**
+	 * The stream buffer
+	 */
 	private ByteArrayInputStream buf;
+	/**
+	 * Handles data input
+	 */
 	private DataInput data;
 	
+	/**
+	 * Base 32 decode the argument then create a {@link BytesReadable}
+	 * @param b
+	 */
 	public BytesReadable(String b) {
 		this(Base32.decode(b));
 	}
 	
+	/**
+	 * Create a {@link BytesReadable} that reads the argument
+	 * @param b
+	 */
 	public BytesReadable(byte[] b) {
 		this.b = b;
 		buf = new ByteArrayInputStream(b);
@@ -29,6 +51,10 @@ public class BytesReadable {
 		return Base32.encode(b);
 	}
 	
+	/**
+	 * Read a {@link BigInteger}
+	 * @return
+	 */
 	public BigInteger readBigInteger() {
 		try {
 			int len = readInt();
@@ -40,6 +66,10 @@ public class BytesReadable {
 		}
 	}
 	
+	/**
+	 * Read an int, optimized for space for non-negative values
+	 * @return
+	 */
 	public int readInt() {
 		try {
 			int i = 0;
@@ -57,6 +87,11 @@ public class BytesReadable {
 		}
 	}
 	
+	/**
+	 * Read some raw bytes
+	 * @param len
+	 * @return
+	 */
 	public byte[] readBytes(int len) {
 		try {
 			byte[] b = new byte[len];
