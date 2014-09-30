@@ -20,7 +20,7 @@ public class TermPolynomial {
 	 */
 	public static final TermPolynomial ONE = new TermPolynomial(Term.ONE);
 	
-	private static Term[] lagrangeTerms(BigPoint[] pts, BigInteger modulus) {
+	private static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
 		for(int i = 0; i < pts.length; i++) {
@@ -29,14 +29,14 @@ public class TermPolynomial {
 		}
 		TermPolynomial poly = TermPolynomial.ZERO;
 		for(int j = 0; j < px.length; j++)
-			poly = poly.add(lagrangeL(px, py, j));
+			poly = poly.add(lagrangeSubPolynomial(px, py, j));
 		Term[] terms = poly.getTerms();
 		for(int i = 0; i < terms.length; i++)
-			terms[i] = lagrangeModulo(terms[i],modulus);
-		return terms;
+			terms[i] = lagrangeTermModulo(terms[i],modulus);
+		return new TermPolynomial(terms, modulus);
 	}
 	
-	private static TermPolynomial lagrangeL(BigInteger[] px, BigInteger[] py, int j) {
+	private static TermPolynomial lagrangeSubPolynomial(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
 		for(int i = 0; i < px.length; i++) {
 			if(i == j)
@@ -49,7 +49,7 @@ public class TermPolynomial {
 		return result.multiply(py[j]);
 	}
 	
-	private static Term lagrangeModulo(Term term, BigInteger mod) {
+	private static Term lagrangeTermModulo(Term term, BigInteger mod) {
 		BigInteger n = term.getNumerator();
 		BigInteger d = term.getDenominator();
 		d = d.modInverse(mod);
@@ -96,7 +96,7 @@ public class TermPolynomial {
 	}
 	
 	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
-		this(lagrangeTerms(pts, modulus), modulus);
+		this(lagrangePolynomial(pts, modulus));
 	}
 	
 	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
