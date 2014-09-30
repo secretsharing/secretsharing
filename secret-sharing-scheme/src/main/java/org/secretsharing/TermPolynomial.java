@@ -20,7 +20,13 @@ public class TermPolynomial {
 	 */
 	public static final TermPolynomial ONE = new TermPolynomial(Term.ONE);
 	
-	private static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
+	/**
+	 * Compute a Lagrange polynomial from an array of points, with an (optional) specified modulus
+	 * @param pts
+	 * @param modulus
+	 * @return
+	 */
+	public static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
 		for(int i = 0; i < pts.length; i++) {
@@ -36,6 +42,13 @@ public class TermPolynomial {
 		return new TermPolynomial(terms, modulus);
 	}
 	
+	/**
+	 * Compute a sub-polynomial as part of a Lagrange polynomial
+	 * @param px
+	 * @param py
+	 * @param j
+	 * @return
+	 */
 	private static TermPolynomial lagrangeSubPolynomial(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
 		for(int i = 0; i < px.length; i++) {
@@ -49,14 +62,23 @@ public class TermPolynomial {
 		return result.multiply(py[j]);
 	}
 	
+	/**
+	 * Return the term as a coefficient of some power of X, adjusted to be
+	 * an integer for some modulus
+	 * @param term
+	 * @param mod
+	 * @return
+	 */
 	private static Term lagrangeTermModulo(Term term, BigInteger mod) {
+		if(mod == null)
+			return term;
 		BigInteger n = term.getNumerator();
 		BigInteger d = term.getDenominator();
 		d = d.modInverse(mod);
-		return new Term(n.multiply(d).mod(mod), BigInteger.ONE);
+		return new Term(n.multiply(d).mod(mod));
 	}
 	
-	private static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
+	public static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
 			prime = BigInteger.probablePrime(secretBits+1, rnd);
