@@ -198,6 +198,10 @@ public class SecretPart {
 			return point;
 		}
 		
+		public Checksum getChecksum() {
+			return cx;
+		}
+		
 		@Override
 		public String toString() {
 			BytesWritable w = new BytesWritable()
@@ -259,6 +263,8 @@ public class SecretPart {
 	 * @param s
 	 */
 	public SecretPart(String s) {
+		if(s == null)
+			throw new IllegalArgumentException();
 		String[] f = s.split("(:|//)");
 		int version = new BytesReadable(f[0]).readInt();
 		if(version > CURRENT_VERSION || version < 0)
@@ -357,5 +363,9 @@ public class SecretPart {
 	 */
 	public BigPoint getPoint() {
 		return getPrivatePart().getPoint();
+	}
+	
+	public Checksum getChecksum() {
+		return getPrivatePart().getChecksum();
 	}
 }

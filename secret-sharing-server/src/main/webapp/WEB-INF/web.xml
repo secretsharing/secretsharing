@@ -24,6 +24,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	</servlet>
 
 	<servlet>
+		<servlet-name>form-inspect</servlet-name>
+		<servlet-class>org.secretsharing.server.FormInspectorServlet</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>jsp-split</servlet-name>
 		<jsp-file>/split.jsp</jsp-file>
 	</servlet>
@@ -31,6 +36,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet>
 		<servlet-name>jsp-join</servlet-name>
 		<jsp-file>/join.jsp</jsp-file>
+	</servlet>
+
+	<servlet>
+		<servlet-name>jsp-inspect</servlet-name>
+		<jsp-file>/inspect.jsp</jsp-file>
 	</servlet>
 
 	<servlet-mapping>
@@ -54,6 +64,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	</servlet-mapping>
 
 	<servlet-mapping>
+		<servlet-name>form-inspect</servlet-name>
+		<url-pattern>/form-inspect</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
 		<servlet-name>jsp-split</servlet-name>
 		<url-pattern>/split.html</url-pattern>
 	</servlet-mapping>
@@ -61,5 +76,10 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet-mapping>
 		<servlet-name>jsp-join</servlet-name>
 		<url-pattern>/join.html</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>jsp-inspect</servlet-name>
+		<url-pattern>/inspect.html</url-pattern>
 	</servlet-mapping>
 </web-app>

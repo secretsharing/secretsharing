@@ -54,7 +54,6 @@ public class FormJoinServlet extends HttpServlet {
 			else
 				resp.getWriter().print(new String(secret, "UTF-8"));
 		} catch(Throwable t) {
-			t.printStackTrace();
 			if(t.getMessage() != null)
 				resp.getWriter().print(t.getMessage());
 			else
