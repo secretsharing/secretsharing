@@ -20,7 +20,7 @@ public class TermPolynomial {
 	 */
 	public static final TermPolynomial ONE = new TermPolynomial(Term.ONE);
 	
-	private static Term[] lagrange(BigPoint[] pts, BigInteger modulus) {
+	private static Term[] lagrangeTerms(BigPoint[] pts, BigInteger modulus) {
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
 		for(int i = 0; i < pts.length; i++) {
@@ -29,14 +29,14 @@ public class TermPolynomial {
 		}
 		TermPolynomial poly = TermPolynomial.ZERO;
 		for(int j = 0; j < px.length; j++)
-			poly = poly.add(lagrange_l(px, py, j));
+			poly = poly.add(lagrangeL(px, py, j));
 		Term[] terms = poly.getTerms();
 		for(int i = 0; i < terms.length; i++)
-			terms[i] = modulo(terms[i],modulus);
+			terms[i] = lagrangeModulo(terms[i],modulus);
 		return terms;
 	}
 	
-	private static TermPolynomial lagrange_l(BigInteger[] px, BigInteger[] py, int j) {
+	private static TermPolynomial lagrangeL(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
 		for(int i = 0; i < px.length; i++) {
 			if(i == j)
@@ -49,14 +49,14 @@ public class TermPolynomial {
 		return result.multiply(py[j]);
 	}
 	
-	private static Term modulo(Term term, BigInteger mod) {
+	private static Term lagrangeModulo(Term term, BigInteger mod) {
 		BigInteger n = term.getNumerator();
 		BigInteger d = term.getDenominator();
 		d = d.modInverse(mod);
 		return new Term(n.multiply(d).mod(mod), BigInteger.ONE);
 	}
 	
-	private static TermPolynomial secret(BigInteger secret, int secretBits, int powx, Random rnd) {
+	private static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
 			prime = BigInteger.probablePrime(secretBits+1, rnd);
@@ -96,11 +96,11 @@ public class TermPolynomial {
 	}
 	
 	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
-		this(lagrange(pts, modulus), modulus);
+		this(lagrangeTerms(pts, modulus), modulus);
 	}
 	
 	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
-		this(secret(secret, secretBits, powx, rnd));
+		this(secretPolynomial(secret, secretBits, powx, rnd));
 	}
 	
 	protected BigInteger mod(BigInteger val) {
