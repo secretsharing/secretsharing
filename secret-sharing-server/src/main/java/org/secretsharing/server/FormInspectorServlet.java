@@ -27,7 +27,13 @@ public class FormInspectorServlet extends HttpServlet {
 		try {
 			Field f = Field.valueOf(req.getParameter("field"));
 			
-			SecretPart part = new SecretPart(req.getParameter("part").trim());
+			SecretPart part;
+			try {
+				part = new SecretPart(req.getParameter("part").trim());
+			} catch(Exception e) {
+				String em = (e.getMessage() != null) ? ": " + e.getMessage() : "";
+				throw new RuntimeException("Corrupt secret part" + em, e);
+			}
 			
 			switch(f) {
 			case version:
