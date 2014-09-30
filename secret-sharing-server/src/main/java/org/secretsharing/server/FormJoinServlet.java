@@ -9,7 +9,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.BytesSecrets;
+import org.secretsharing.SecretPart;
+import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -31,18 +32,22 @@ public class FormJoinServlet extends HttpServlet {
 			if(req.getParameter("base64") != null)
 				base64 = Boolean.parseBoolean(req.getParameter("base64"));
 
-			List<byte[]> partsBytes = new ArrayList<byte[]>();
+			List<SecretPart> partsBytes = new ArrayList<SecretPart>();
 			for(String s : parts.split("\n")) {
-				if(s.trim().isEmpty())
+				s = s.trim();
+				if(s.isEmpty())
 					continue;
 				try {
-					partsBytes.add(Base32.decode(s.trim()));
+					partsBytes.add(new SecretPart(s));
 				} catch(Exception e) {
-					throw new RuntimeException("Improper encoding of secret parts:" + s, e);
+					throw new RuntimeException("Corrupt key part \"" + s + "\"" + (
+							e.getMessage() == null ? 
+									": Improper encoding of secret parts" : 
+									": " + e.getMessage()), e);
 				}
 			}
 
-			byte[] secret = BytesSecrets.join(partsBytes.toArray(new byte[0][]));
+			byte[] secret = Secrets.join(partsBytes.toArray(new SecretPart[0]));
 
 			if(base64)
 				resp.getWriter().print(Base64Variants.MIME.encode(secret));

@@ -11,7 +11,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.BytesSecrets;
+import org.secretsharing.SecretPart;
+import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -69,10 +70,10 @@ public class FormSplitServlet extends HttpServlet {
 			} else
 				secretBytes = secret.getBytes("UTF-8");
 
-			byte[][] parts = BytesSecrets.split(secretBytes, totalParts, requiredParts, rnd);
+			SecretPart[] parts = Secrets.split(secretBytes, totalParts, requiredParts, rnd);
 
-			for(byte[] part : parts) {
-				resp.getWriter().println(Base32.encode(part));
+			for(SecretPart part : parts) {
+				resp.getWriter().println(part);
 			}
 		} catch(Throwable t) {
 			if(t.getMessage() != null)

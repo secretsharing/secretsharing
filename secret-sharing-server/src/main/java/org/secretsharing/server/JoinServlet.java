@@ -8,7 +8,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.BytesSecrets;
+import org.secretsharing.SecretPart;
+import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -41,11 +42,11 @@ public class JoinServlet extends HttpServlet {
 			if(jreq.parts == null)
 				throw new IllegalArgumentException();
 
-			byte[][] parts = new byte[jreq.parts.size()][];
+			SecretPart[] parts = new SecretPart[jreq.parts.size()];
 			for(int i = 0; i < parts.length; i++)
-				parts[i] = Base32.decode(jreq.parts.get(i));
+				parts[i] = new SecretPart(jreq.parts.get(i));
 			
-			byte[] secret = BytesSecrets.join(parts);
+			byte[] secret = Secrets.join(parts);
 
 			Response jresp = new Response();
 			jresp.status = "ok";
