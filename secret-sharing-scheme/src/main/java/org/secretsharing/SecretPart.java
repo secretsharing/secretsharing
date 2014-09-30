@@ -63,46 +63,6 @@ public class SecretPart {
 		}
 		
 		/**
-		 * Parse a string representation of a {@link PublicSecretPart}
-		 * @param version
-		 * @param s
-		 */
-		private PublicSecretPart(int version, String s) {
-			if(s == null)
-				throw new IllegalArgumentException();
-			if(version == 0) {
-				BytesReadable r = new BytesReadable(s.replace("-", ""));
-				length = r.readInt();
-				modulus = r.readBigInteger();
-			} else if(version == 1) {
-				BytesReadable r = new BytesReadable(s.replace("-", ""));
-				length = r.readInt();
-				requiredParts = r.readInt();
-				modulus = r.readBigInteger();
-			} else
-				throw new IllegalArgumentException("Invalid version:" + version);
-		}
-		
-		/**
-		 * Parse a byte representation of a {@link PublicSecretPart}
-		 * @param version
-		 * @param r
-		 */
-		private PublicSecretPart(int version, BytesReadable r) {
-			if(r == null)
-				throw new IllegalArgumentException();
-			if(version == 0) {
-				length = r.readInt();
-				modulus = r.readBigInteger();
-			} else if(version == 1) {
-				length = r.readInt();
-				requiredParts = r.readInt();
-				modulus = r.readBigInteger();
-			} else
-				throw new IllegalArgumentException("Invalid version:" + version);
-		}
-
-		/**
 		 * The length (in bytes) of the secret
 		 * @return
 		 */
@@ -131,16 +91,6 @@ public class SecretPart {
 			BytesWritable w = new BytesWritable();
 			return dash(w.writeInt(length).writeInt(requiredParts).writeBigInteger(modulus).reset());
 		}
-		
-		/**
-		 * Write this {@link PublicSecretPart} as bytes
-		 * @param w
-		 */
-		private void toBytes(BytesWritable w) {
-			w.writeInt(length);
-			w.writeInt(requiredParts);
-			w.writeBigInteger(modulus);
-		}
 	}
 	
 	/**
@@ -154,7 +104,7 @@ public class SecretPart {
 		 * @param point
 		 * @return
 		 */
-		private static Checksum pcx(BigPoint point) {
+		public static Checksum pcx(BigPoint point) {
 			return new Checksum(new BytesWritable().writeBigInteger(point.getX()).writeBigInteger(point.getY()).toByteArray());
 		}
 		
@@ -177,41 +127,6 @@ public class SecretPart {
 			this.point = point;
 			cx = pcx(point);
 		}
-		
-		/**
-		 * Parse a string representation of a {@link PrivateSecretPart}
-		 * @param version
-		 * @param s
-		 */
-		private PrivateSecretPart(int version, String s) {
-			if(version == 0 || version == 1) {
-				BytesReadable r = new BytesReadable(s.replace("-", ""));
-				BigInteger x = r.readBigInteger();
-				BigInteger y = r.readBigInteger();
-				point = new BigPoint(x, y);
-				cx = new Checksum(r);
-				if(!cx.equals(pcx(point)))
-					throw new IllegalArgumentException("Checksum mismatch");
-			} else
-				throw new IllegalArgumentException("Invalid version:" + version);
-		}
-		
-		/**
-		 * Parse a bytes representation of a {@link PrivateSecretPart}
-		 * @param version
-		 * @param r
-		 */
-		private PrivateSecretPart(int version, BytesReadable r) {
-			if(version == 0 || version == 1) {
-				BigInteger x = r.readBigInteger();
-				BigInteger y = r.readBigInteger();
-				point = new BigPoint(x, y);
-				cx = new Checksum(r);
-				if(!cx.equals(pcx(point)))
-					throw new IllegalArgumentException("Checksum mismatch");
-			} else
-				throw new IllegalArgumentException("Invalid version:" + version);
-		}
 
 		/**
 		 * Return the point on the polynomial
@@ -232,17 +147,6 @@ public class SecretPart {
 				.writeBigInteger(point.getY());
 			cx.write(w);
 			return dash(w.reset());
-		}
-		
-		/**
-		 * Write the {@link PrivateSecretPart} to bytes
-		 * @param w
-		 * @return
-		 */
-		private BytesWritable toBytes(BytesWritable w) {
-			w.writeBigInteger(point.getX()).writeBigInteger(point.getY());
-			cx.write(w);
-			return w;
 		}
 	}
 	
@@ -281,43 +185,26 @@ public class SecretPart {
 		this(CURRENT_VERSION, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 	
+	private SecretPart(SecretPart other) {
+		this(other.getVersion(), other.getPublicPart(), other.getPrivatePart());
+	}
+	
+	private static SecretPart parse(String s) {
+		if(s == null)
+			throw new IllegalArgumentException();
+		String[] f = s.split(":");
+		int version = new BytesReadable(f[0]).readInt();
+		return SecretPartParser.values()[version].parse(f[1]);
+	}
+	
 	/**
 	 * Parse a string representation of a {@link SecretPart}
 	 * @param s
 	 */
 	public SecretPart(String s) {
-		if(s == null)
-			throw new IllegalArgumentException();
-		String[] f = s.split("(:|//)");
-		int version = new BytesReadable(f[0]).readInt();
-		if(version > CURRENT_VERSION || version < 0)
-			throw new IllegalArgumentException("Unknown secret part version:" + version);
-		this.version = version;
-		if(version == 0 || version == 1) {
-			publicPart = new PublicSecretPart(version, f[1]);
-			privatePart = new PrivateSecretPart(version, f[2]);
-		} else
-			throw new IllegalArgumentException("Invalid version:" + version);
-		
+		this(parse(s));
 	}
 	
-	/**
-	 * Parse a bytes representation of a {@link SecretPart}
-	 * @param b
-	 */
-	public SecretPart(byte[] b) {
-		BytesReadable r = new BytesReadable(b);
-		int version = r.readInt();
-		if(version > CURRENT_VERSION || version < 0)
-			throw new IllegalArgumentException("Unknown secret part version:" + version);
-		this.version = version;
-		if(version == 0 || version == 1) {
-			publicPart = new PublicSecretPart(version, r);
-			privatePart = new PrivateSecretPart(version, r);
-		} else
-			throw new IllegalArgumentException("Invalid version:" + version);
-	}
-
 	@Override
 	public String toString() {
 		BytesWritable w = new BytesWritable().writeInt(version);
@@ -327,17 +214,6 @@ public class SecretPart {
 		sb.append("//");
 		sb.append(getPrivatePart());
 		return sb.toString();
-	}
-	
-	/**
-	 * Convert this {@link SecretPart} to bytes
-	 * @return
-	 */
-	public byte[] toBytes() {
-		BytesWritable w = new BytesWritable().writeInt(version);
-		getPublicPart().toBytes(w);
-		getPrivatePart().toBytes(w);
-		return w.toByteArray();
 	}
 
 	/**
