@@ -45,6 +45,8 @@ public class SplitServlet extends HttpServlet {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
 
+		resp.setContentType("application/json");
+		
 		try {
 			Request jreq = mapper.readValue(req.getParameter("q"), Request.class);
 

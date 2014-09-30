@@ -82,4 +82,9 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 		<servlet-name>jsp-inspect</servlet-name>
 		<url-pattern>/inspect.html</url-pattern>
 	</servlet-mapping>
+	
+	<error-page>
+		<error-code>405</error-code>
+		<location>/405.txt</location>
+	</error-page>
 </web-app>
