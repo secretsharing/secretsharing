@@ -84,6 +84,7 @@ Enter your secret part below<br/>
 <table class="details">
 <tr><td>Format version</td><td class="details"><input class="version" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="version"/></jsp:include>"></td></tr>
 <tr><td>Secret length (bytes)</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="length"/></jsp:include>"></td></tr>
+<tr><td>Required secret parts</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="required"/></jsp:include>"></td></tr>
 <tr><td>Polynomial prime modulus</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="modulus"/></jsp:include>"></td></tr>
 <tr><td>Polynomial point X coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="x"/></jsp:include>"></td></tr>
 <tr><td>Polynomial point Y coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="y"/></jsp:include>"></td></tr>
@@ -95,7 +96,7 @@ Enter your secret part below<br/>
 <p>
 	<span class="format version">version</span>
 	<span class="format delim">:</span>
-	<span class="format public">length & modulus</span>
+	<span class="format public">length, required parts, & modulus</span>
 	<span class="format delim">//</span>
 	<span class="format private">point & checksum</span>
 </p>
@@ -103,7 +104,7 @@ Enter your secret part below<br/>
 <table class="format">
 <tr><td><span class="format version">version</span></td><td>Identifies how to parse this secret part</td></tr>
 <tr><td><span class="format delim">:</span></td><td>Delimeter; no information content</td></tr>
-<tr><td><span class="format public">length & modulus</span></td><td><b>PUBLIC</b> information, shared among all secret parts</td></tr>
+<tr><td><span class="format public">length, required parts, & modulus</span></td><td><b>PUBLIC</b> information, shared among all secret parts</td></tr>
 <tr><td><span class="format delim">//</span></td><td>Delimeter; no information content</td></tr>
 <tr><td><span class="format private">point & checksum</span></td><td><b>PRIVATE</b> information, specific to this secret part</td></tr>
 </table>

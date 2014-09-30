@@ -34,7 +34,7 @@ public class Secrets {
 		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
 		SecretPart[] s = new SecretPart[totalParts];
 		for(int i = 0; i < totalParts; i++)
-			s[i] = new SecretPart(secretBytes, poly.getModulus(), pts[i]);
+			s[i] = new SecretPart(secretBytes, requiredParts, poly.getModulus(), pts[i]);
 		return s;
 	}
 	
@@ -46,6 +46,7 @@ public class Secrets {
 	public static byte[] join(SecretPart[] parts) {
 		BigPoint[] pts = new BigPoint[parts.length];
 		Integer secretLength = null;
+		Integer requiredParts = null;
 		BigInteger prime = null;
 		for(int i = 0; i < pts.length; i++) {
 			int sl = parts[i].getLength();
@@ -55,12 +56,18 @@ public class Secrets {
 				secretLength = sl;
 			else if(!secretLength.equals(sl))
 				throw new IllegalArgumentException();
+			if(requiredParts == null)
+				requiredParts = parts[i].getRequiredParts();
+			else if(!requiredParts.equals(parts[i].getRequiredParts()))
+				throw new IllegalArgumentException();
 			if(prime == null)
 				prime = p;
 			else if(!prime.equals(p))
 				throw new IllegalArgumentException();
 			pts[i] = parts[i].getPoint();
 		}
+		if(requiredParts > 0 && parts.length < requiredParts)
+			throw new IllegalArgumentException(requiredParts + " parts are required but only " + parts.length + " supplied");
 		TermPolynomial poly = new TermPolynomial(pts, prime);
 		byte[] secret = poly.y(BigInteger.ZERO).getNumerator().mod(prime).add(prime).mod(prime).toByteArray();
 		byte[] ret = new byte[secretLength];

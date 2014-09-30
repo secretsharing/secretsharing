@@ -13,6 +13,7 @@ public class FormInspectorServlet extends HttpServlet {
 	private static enum Field {
 		version,
 		length,
+		required,
 		modulus,
 		x,
 		y,
@@ -41,6 +42,9 @@ public class FormInspectorServlet extends HttpServlet {
 				break;
 			case length:
 				resp.getWriter().println(part.getLength());
+				break;
+			case required:
+				resp.getWriter().println(part.getRequiredParts());
 				break;
 			case modulus:
 				resp.getWriter().println(part.getModulus());

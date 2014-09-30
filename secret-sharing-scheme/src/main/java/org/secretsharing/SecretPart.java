@@ -15,7 +15,7 @@ public class SecretPart {
 	/**
 	 * The current version of {@link SecretPart} written and stringified
 	 */
-	private static final int CURRENT_VERSION = 0;
+	private static final int CURRENT_VERSION = 1;
 	
 	/**
 	 * Insert dashes in the argument string
@@ -41,6 +41,10 @@ public class SecretPart {
 		 */
 		private int length;
 		/**
+		 * The number of parts required to reconstruct the secret
+		 */
+		private int requiredParts = -1;
+		/**
 		 * The prime modulo for the secret parts
 		 */
 		private BigInteger modulus;
@@ -50,10 +54,11 @@ public class SecretPart {
 		 * @param length
 		 * @param modulus
 		 */
-		private PublicSecretPart(int length, BigInteger modulus) {
+		private PublicSecretPart(int length, int requiredParts, BigInteger modulus) {
 			if(modulus == null)
 				throw new IllegalArgumentException();
 			this.length = length;
+			this.requiredParts = requiredParts;
 			this.modulus = modulus;
 		}
 		
@@ -68,6 +73,11 @@ public class SecretPart {
 			if(version == 0) {
 				BytesReadable r = new BytesReadable(s.replace("-", ""));
 				length = r.readInt();
+				modulus = r.readBigInteger();
+			} else if(version == 1) {
+				BytesReadable r = new BytesReadable(s.replace("-", ""));
+				length = r.readInt();
+				requiredParts = r.readInt();
 				modulus = r.readBigInteger();
 			} else
 				throw new IllegalArgumentException("Invalid version:" + version);
@@ -84,6 +94,10 @@ public class SecretPart {
 			if(version == 0) {
 				length = r.readInt();
 				modulus = r.readBigInteger();
+			} else if(version == 1) {
+				length = r.readInt();
+				requiredParts = r.readInt();
+				modulus = r.readBigInteger();
 			} else
 				throw new IllegalArgumentException("Invalid version:" + version);
 		}
@@ -97,6 +111,14 @@ public class SecretPart {
 		}
 
 		/**
+		 * The number of parts required to reconstruct the secret
+		 * @return
+		 */
+		public int getRequiredParts() {
+			return requiredParts;
+		}
+		
+		/**
 		 * The prime modulus for the key parts
 		 * @return
 		 */
@@ -107,7 +129,7 @@ public class SecretPart {
 		@Override
 		public String toString() {
 			BytesWritable w = new BytesWritable();
-			return dash(w.writeInt(length).writeBigInteger(modulus).reset());
+			return dash(w.writeInt(length).writeInt(requiredParts).writeBigInteger(modulus).reset());
 		}
 		
 		/**
@@ -116,6 +138,7 @@ public class SecretPart {
 		 */
 		private void toBytes(BytesWritable w) {
 			w.writeInt(length);
+			w.writeInt(requiredParts);
 			w.writeBigInteger(modulus);
 		}
 	}
@@ -161,7 +184,7 @@ public class SecretPart {
 		 * @param s
 		 */
 		private PrivateSecretPart(int version, String s) {
-			if(version == 0) {
+			if(version == 0 || version == 1) {
 				BytesReadable r = new BytesReadable(s.replace("-", ""));
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
@@ -179,7 +202,7 @@ public class SecretPart {
 		 * @param r
 		 */
 		private PrivateSecretPart(int version, BytesReadable r) {
-			if(version == 0) {
+			if(version == 0 || version == 1) {
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
 				point = new BigPoint(x, y);
@@ -254,8 +277,8 @@ public class SecretPart {
 	 * @param modulus
 	 * @param point
 	 */
-	public SecretPart(int length, BigInteger modulus, BigPoint point) {
-		this(CURRENT_VERSION, new PublicSecretPart(length, modulus), new PrivateSecretPart(point));
+	public SecretPart(int length, int requiredParts, BigInteger modulus, BigPoint point) {
+		this(CURRENT_VERSION, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 	
 	/**
@@ -270,7 +293,7 @@ public class SecretPart {
 		if(version > CURRENT_VERSION || version < 0)
 			throw new IllegalArgumentException("Unknown secret part version:" + version);
 		this.version = version;
-		if(version == 0) {
+		if(version == 0 || version == 1) {
 			publicPart = new PublicSecretPart(version, f[1]);
 			privatePart = new PrivateSecretPart(version, f[2]);
 		} else
@@ -288,7 +311,7 @@ public class SecretPart {
 		if(version > CURRENT_VERSION || version < 0)
 			throw new IllegalArgumentException("Unknown secret part version:" + version);
 		this.version = version;
-		if(version == 0) {
+		if(version == 0 || version == 1) {
 			publicPart = new PublicSecretPart(version, r);
 			privatePart = new PrivateSecretPart(version, r);
 		} else
@@ -347,6 +370,10 @@ public class SecretPart {
 	 */
 	public int getLength() {
 		return getPublicPart().getLength();
+	}
+	
+	public int getRequiredParts() {
+		return getPublicPart().getRequiredParts();
 	}
 	
 	/**
