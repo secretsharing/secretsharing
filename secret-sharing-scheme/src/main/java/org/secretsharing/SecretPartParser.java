@@ -5,6 +5,13 @@ import java.math.BigInteger;
 import org.secretsharing.util.BytesReadable;
 import org.secretsharing.util.Checksum;
 
+/**
+ * Parsers for the various versions of {@link SecretPart}.  Each version
+ * is parsed by the enum element with the corresponding ordinal, so the
+ * order in this class matters.
+ * @author robin
+ *
+ */
 public enum SecretPartParser {
 	V0 {
 
@@ -58,5 +65,10 @@ public enum SecretPartParser {
 	}
 	;
 	
+	/**
+	 * Parse a secret part from a string, after the version declaration
+	 * @param s
+	 * @return
+	 */
 	public abstract SecretPart parse(String s);
 }
