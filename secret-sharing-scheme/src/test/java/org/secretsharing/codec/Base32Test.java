@@ -1,6 +1,5 @@
 package org.secretsharing.codec;
 
-import java.io.ByteArrayOutputStream;
 import java.nio.charset.Charset;
 
 import org.junit.Test;

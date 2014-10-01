@@ -4,8 +4,6 @@ import java.math.BigInteger;
 
 import org.secretsharing.codec.Checksum;
 import org.secretsharing.codec.PartFormats;
-import org.secretsharing.util.BytesReadable;
-import org.secretsharing.util.BytesWritable;
 
 /**
  * Utility class for holding split parts of a secret

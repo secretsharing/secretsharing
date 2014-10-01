@@ -3,7 +3,6 @@ package org.secretsharing.server;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
@@ -14,11 +13,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.secretsharing.Part;
 import org.secretsharing.Secrets;
-import org.secretsharing.codec.Base32;
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.Base64Variant;
 import com.fasterxml.jackson.core.Base64Variants;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;

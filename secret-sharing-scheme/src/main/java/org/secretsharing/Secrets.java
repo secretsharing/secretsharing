@@ -1,15 +1,6 @@
 package org.secretsharing;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.security.SecureRandom;
 import java.util.Random;
 
 import org.secretsharing.util.BigIntegers;
