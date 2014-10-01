@@ -10,6 +10,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.secretsharing.Part;
 
 public class FormInspectorServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private static enum Field {
 		version,
 		length,

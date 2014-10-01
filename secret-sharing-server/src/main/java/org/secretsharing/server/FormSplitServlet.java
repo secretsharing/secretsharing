@@ -14,6 +14,10 @@ import org.secretsharing.Secrets;
 import com.fasterxml.jackson.core.Base64Variants;
 
 public class FormSplitServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private static Random rnd = new SecureRandom();
 
 	@Override

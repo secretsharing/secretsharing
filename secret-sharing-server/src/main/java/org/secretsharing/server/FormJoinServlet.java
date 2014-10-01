@@ -14,6 +14,11 @@ import org.secretsharing.Secrets;
 import com.fasterxml.jackson.core.Base64Variants;
 
 public class FormJoinServlet extends HttpServlet {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
