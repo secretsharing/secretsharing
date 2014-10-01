@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.SecretPart;
+import org.secretsharing.Part;
 import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
@@ -60,11 +60,11 @@ public class SplitServlet extends HttpServlet {
 			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
 				throw new IllegalArgumentException();
 
-			SecretPart[] parts = Secrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
+			Part[] parts = Secrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
 
 			Response jresp = new Response();
 			jresp.parts = new ArrayList<String>();
-			for(SecretPart part : parts)
+			for(Part part : parts)
 				jresp.parts.add(part.toString());
 			jresp.status = "ok";
 

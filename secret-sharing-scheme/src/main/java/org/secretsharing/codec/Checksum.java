@@ -1,10 +1,12 @@
-package org.secretsharing.util;
+package org.secretsharing.codec;
 
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.secretsharing.codec.Base32;
+import org.secretsharing.BigPoint;
+import org.secretsharing.util.BytesReadable;
+import org.secretsharing.util.BytesWritable;
 
 /**
  * Simple checksum.  Makes absolutely no attempt at error correction.
@@ -13,6 +15,10 @@ import org.secretsharing.codec.Base32;
  */
 public final class Checksum {
 
+	public static Checksum fromBytes(byte[] cxb) {
+		return new Checksum((0xff & cxb[0]) | ((0xff & cxb[1]) << 8));
+	}
+	
 	/**
 	 * Compute a 2-byte checksum by XORing the bytes of the SHA-1
 	 * of the argument
@@ -80,6 +86,10 @@ public final class Checksum {
 		cx = (0xff & cxb[0]) | ((0xff & cxb[1]) << 8);
 	}
 	
+	public Checksum(BigPoint point) {
+		this(new BytesWritable().writeBigInteger(point.getX()).writeBigInteger(point.getY()).toByteArray());
+	}
+	
 	@Override
 	public String toString() {
 		return Base32.encode(cxb);
@@ -99,14 +109,6 @@ public final class Checksum {
 	 */
 	public byte[] getChecksumBytes() {
 		return cxb;
-	}
-	
-	/**
-	 * Write the checksum to bytes
-	 * @param w
-	 */
-	public void write(BytesWritable w) {
-		w.writeBytes(cxb);
 	}
 	
 	@Override

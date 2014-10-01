@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 /**
  * Encoder/decoder for Base-32 binary representation.
@@ -11,6 +12,9 @@ import java.util.Arrays;
  *
  */
 public class Base32 {
+	public static final Pattern DIGIT = Pattern.compile("[0-9a-tv-zA-TV-Z]");
+	public static final Pattern ENCODED = Pattern.compile("(D{8})*(DD(DD(D(DD)?)?)?)?".replace("D", DIGIT.pattern()));
+	
 	private static final Charset ASCII = Charset.forName("ASCII");
 	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
 	private static final byte[] DECODE_SYMBOLS = new byte[256];

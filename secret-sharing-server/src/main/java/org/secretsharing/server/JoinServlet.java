@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.SecretPart;
+import org.secretsharing.Part;
 import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
@@ -44,9 +44,9 @@ public class JoinServlet extends HttpServlet {
 			if(jreq.parts == null)
 				throw new IllegalArgumentException();
 
-			SecretPart[] parts = new SecretPart[jreq.parts.size()];
+			Part[] parts = new Part[jreq.parts.size()];
 			for(int i = 0; i < parts.length; i++)
-				parts[i] = new SecretPart(jreq.parts.get(i));
+				parts[i] = new Part(jreq.parts.get(i));
 			
 			byte[] secret = Secrets.join(parts);
 

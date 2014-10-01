@@ -28,13 +28,13 @@ public class Secrets {
 	 * @param rnd A source of random
 	 * @return
 	 */
-	public static SecretPart[] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
+	public static Part[] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		int secretBytes = secret.length;
 		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBytes * 8, requiredParts-1, rnd);
 		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
-		SecretPart[] s = new SecretPart[totalParts];
+		Part[] s = new Part[totalParts];
 		for(int i = 0; i < totalParts; i++)
-			s[i] = new SecretPart(secretBytes, requiredParts, poly.getModulus(), pts[i]);
+			s[i] = new Part(secretBytes, requiredParts, poly.getModulus(), pts[i]);
 		return s;
 	}
 	
@@ -43,7 +43,7 @@ public class Secrets {
 	 * @param parts
 	 * @return
 	 */
-	public static byte[] join(SecretPart[] parts) {
+	public static byte[] join(Part[] parts) {
 		BigPoint[] pts = new BigPoint[parts.length];
 		Integer secretLength = null;
 		Integer requiredParts = null;

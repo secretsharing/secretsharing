@@ -2,18 +2,19 @@ package org.secretsharing;
 
 import java.math.BigInteger;
 
+import org.secretsharing.codec.Checksum;
+import org.secretsharing.codec.PartFormats;
 import org.secretsharing.util.BytesReadable;
 import org.secretsharing.util.BytesWritable;
-import org.secretsharing.util.Checksum;
 
 /**
  * Utility class for holding split parts of a secret
  * @author robin
  *
  */
-public class SecretPart {
+public class Part {
 	/**
-	 * The current version of {@link SecretPart} written and stringified
+	 * The current version of {@link Part} written and stringified
 	 */
 	private static final int CURRENT_VERSION = 1;
 	
@@ -85,12 +86,6 @@ public class SecretPart {
 		public BigInteger getModulus() {
 			return modulus;
 		}
-		
-		@Override
-		public String toString() {
-			BytesWritable w = new BytesWritable();
-			return dash(w.writeInt(length).writeInt(requiredParts).writeBigInteger(modulus).reset());
-		}
 	}
 	
 	/**
@@ -99,15 +94,6 @@ public class SecretPart {
 	 *
 	 */
 	public static class PrivateSecretPart {
-		/**
-		 * Compute the {@link Checksum} for a {@link BigPoint}
-		 * @param point
-		 * @return
-		 */
-		public static Checksum pcx(BigPoint point) {
-			return new Checksum(new BytesWritable().writeBigInteger(point.getX()).writeBigInteger(point.getY()).toByteArray());
-		}
-		
 		/**
 		 * The point on the polynomial
 		 */
@@ -125,7 +111,7 @@ public class SecretPart {
 			if(point == null)
 				throw new IllegalArgumentException();
 			this.point = point;
-			cx = pcx(point);
+			cx = new Checksum(point);
 		}
 
 		/**
@@ -139,19 +125,10 @@ public class SecretPart {
 		public Checksum getChecksum() {
 			return cx;
 		}
-		
-		@Override
-		public String toString() {
-			BytesWritable w = new BytesWritable()
-				.writeBigInteger(point.getX())
-				.writeBigInteger(point.getY());
-			cx.write(w);
-			return dash(w.reset());
-		}
 	}
 	
 	/**
-	 * The format version of this {@link SecretPart}
+	 * The format version of this {@link Part}
 	 */
 	private int version;
 	/**
@@ -164,56 +141,52 @@ public class SecretPart {
 	private PrivateSecretPart privatePart;
 	
 	/**
-	 * Create a new {@link SecretPart}
+	 * Create a new {@link Part}
 	 * @param version
 	 * @param publicPart
 	 * @param privatePart
 	 */
-	public SecretPart(int version, PublicSecretPart publicPart, PrivateSecretPart privatePart) {
+	public Part(int version, PublicSecretPart publicPart, PrivateSecretPart privatePart) {
 		this.version = version;
 		this.publicPart = publicPart;
 		this.privatePart = privatePart;
 	}
 	
 	/**
-	 * Create a new {@link SecretPart}
+	 * Create a new {@link Part}
 	 * @param length
 	 * @param modulus
 	 * @param point
 	 */
-	public SecretPart(int length, int requiredParts, BigInteger modulus, BigPoint point) {
+	public Part(int length, int requiredParts, BigInteger modulus, BigPoint point) {
 		this(CURRENT_VERSION, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 	
-	private SecretPart(SecretPart other) {
+	/**
+	 * Create a new {@link Part}
+	 * @param length
+	 * @param modulus
+	 * @param point
+	 */
+	public Part(int version, int length, int requiredParts, BigInteger modulus, BigPoint point) {
+		this(version, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
+	}
+
+	private Part(Part other) {
 		this(other.getVersion(), other.getPublicPart(), other.getPrivatePart());
 	}
 	
-	private static SecretPart parse(String s) {
-		if(s == null)
-			throw new IllegalArgumentException();
-		String[] f = s.split(":");
-		int version = new BytesReadable(f[0]).readInt();
-		return SecretPartParser.values()[version].parse(f[1]);
-	}
-	
 	/**
-	 * Parse a string representation of a {@link SecretPart}
+	 * Parse a string representation of a {@link Part}
 	 * @param s
 	 */
-	public SecretPart(String s) {
-		this(parse(s));
+	public Part(String s) {
+		this(PartFormats.parse(s));
 	}
 	
 	@Override
 	public String toString() {
-		BytesWritable w = new BytesWritable().writeInt(version);
-		StringBuilder sb = new StringBuilder(w.reset());
-		sb.append(":");
-		sb.append(getPublicPart());
-		sb.append("//");
-		sb.append(getPrivatePart());
-		return sb.toString();
+		return PartFormats.currentStringFormat().format(this);
 	}
 
 	/**

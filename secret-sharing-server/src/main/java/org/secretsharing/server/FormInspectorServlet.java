@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.SecretPart;
+import org.secretsharing.Part;
 
 public class FormInspectorServlet extends HttpServlet {
 	private static enum Field {
@@ -28,9 +28,9 @@ public class FormInspectorServlet extends HttpServlet {
 		try {
 			Field f = Field.valueOf(req.getParameter("field"));
 			
-			SecretPart part;
+			Part part;
 			try {
-				part = new SecretPart(req.getParameter("part").trim());
+				part = new Part(req.getParameter("part").trim());
 			} catch(Exception e) {
 				String em = (e.getMessage() != null) ? ": " + e.getMessage() : "";
 				throw new RuntimeException("Corrupt secret part" + em, e);

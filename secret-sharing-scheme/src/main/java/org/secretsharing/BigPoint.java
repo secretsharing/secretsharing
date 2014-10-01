@@ -2,6 +2,9 @@ package org.secretsharing;
 
 import java.math.BigInteger;
 
+import org.secretsharing.util.BytesReadable;
+import org.secretsharing.util.BytesWritable;
+
 /**
  * An x/y point using {@link BigInteger} for its coordinates
  * @author robin

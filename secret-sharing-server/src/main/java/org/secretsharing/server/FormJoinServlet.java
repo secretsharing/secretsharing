@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.SecretPart;
+import org.secretsharing.Part;
 import org.secretsharing.Secrets;
 import org.secretsharing.codec.Base32;
 
@@ -32,13 +32,13 @@ public class FormJoinServlet extends HttpServlet {
 			if(req.getParameter("base64") != null)
 				base64 = Boolean.parseBoolean(req.getParameter("base64"));
 
-			List<SecretPart> partsBytes = new ArrayList<SecretPart>();
+			List<Part> partsBytes = new ArrayList<Part>();
 			for(String s : parts.split("\n")) {
 				s = s.trim();
 				if(s.isEmpty())
 					continue;
 				try {
-					partsBytes.add(new SecretPart(s));
+					partsBytes.add(new Part(s));
 				} catch(Exception e) {
 					throw new RuntimeException("Corrupt key part \"" + s + "\"" + (
 							e.getMessage() == null ? 
@@ -47,7 +47,7 @@ public class FormJoinServlet extends HttpServlet {
 				}
 			}
 
-			byte[] secret = Secrets.join(partsBytes.toArray(new SecretPart[0]));
+			byte[] secret = Secrets.join(partsBytes.toArray(new Part[0]));
 
 			if(base64)
 				resp.getWriter().print(Base64Variants.MIME.encode(secret));
