@@ -85,6 +85,11 @@ public class PartFormats {
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
 			}
+
+			@Override
+			public int getVersion() {
+				return 0;
+			}
 			
 		},
 		
@@ -138,6 +143,11 @@ public class PartFormats {
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
 			}
+
+			@Override
+			public int getVersion() {
+				return 1;
+			}
 			
 		}
 		
@@ -155,6 +165,9 @@ public class PartFormats {
 		
 		@Override
 		public abstract Part parse(String data);
+		
+		@Override
+		public abstract int getVersion();
 		
 		public static int detectVersion(String data) {
 			return new BytesReadable(data.replaceAll(":.*", "")).readInt();
@@ -186,6 +199,11 @@ public class PartFormats {
 				BigInteger y = r.readBigInteger();
 				return new Part(0, length, -1, modulus, new BigPoint(x, y));
 			}
+
+			@Override
+			public int getVersion() {
+				return 0;
+			}
 			
 		},
 		
@@ -215,6 +233,11 @@ public class PartFormats {
 				BigInteger y = r.readBigInteger();
 				return new Part(0, length, requiredParts, modulus, new BigPoint(x, y));
 			}
+
+			@Override
+			public int getVersion() {
+				return 1;
+			}
 			
 		}
 		
@@ -226,6 +249,9 @@ public class PartFormats {
 		@Override
 		public abstract Part parse(byte[] data);
 		
+		@Override
+		public abstract int getVersion();
+
 		public static int detectVersion(byte[] data) {
 			return new BytesReadable(data).readInt();
 		}

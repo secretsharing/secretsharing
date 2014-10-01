@@ -12,23 +12,6 @@ import org.secretsharing.codec.PartFormats;
  */
 public class Part {
 	/**
-	 * The current version of {@link Part} written and stringified
-	 */
-	private static final int CURRENT_VERSION = 1;
-	
-	/**
-	 * Insert dashes in the argument string
-	 * @param s
-	 * @return
-	 */
-	private static String dash(String s) {
-		s = s.replaceAll("(......)", "$1-");
-		if(s.endsWith("-"))
-			s = s.substring(0, s.length()-1);
-		return s;
-	}
-	
-	/**
 	 * The public components of a secret part.  These are the same
 	 * for all parts of a secret.
 	 * @author robin
@@ -157,7 +140,7 @@ public class Part {
 	 * @param point
 	 */
 	public Part(int length, int requiredParts, BigInteger modulus, BigPoint point) {
-		this(CURRENT_VERSION, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
+		this(PartFormats.currentStringFormat().getVersion(), new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 	
 	/**
