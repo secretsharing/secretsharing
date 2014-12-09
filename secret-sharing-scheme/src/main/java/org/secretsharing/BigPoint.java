@@ -29,7 +29,7 @@ import java.math.BigInteger;
 
 /**
  * An x/y point using {@link BigInteger} for its coordinates
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class BigPoint {

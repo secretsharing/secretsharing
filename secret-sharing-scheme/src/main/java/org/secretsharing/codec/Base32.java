@@ -31,7 +31,7 @@ import java.util.regex.Pattern;
 
 /**
  * Encoder/decoder for Base-32 binary representation.
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class Base32 {

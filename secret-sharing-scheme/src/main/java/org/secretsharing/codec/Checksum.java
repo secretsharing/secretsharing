@@ -34,7 +34,7 @@ import org.secretsharing.util.BytesWritable;
 
 /**
  * Simple checksum.  Makes absolutely no attempt at error correction.
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public final class Checksum {

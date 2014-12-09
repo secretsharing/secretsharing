@@ -35,7 +35,7 @@ import org.secretsharing.codec.Base32;
 
 /**
  * Utility class for writing values to byte arrays
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class BytesWritable {

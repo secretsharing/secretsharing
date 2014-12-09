@@ -29,7 +29,7 @@ import java.math.BigInteger;
 
 /**
  * Utility class for dealing with {@link BigInteger}s
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class BigIntegers {

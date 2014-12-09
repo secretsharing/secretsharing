@@ -29,7 +29,7 @@ import java.math.BigInteger;
 
 /**
  * A fractional term used in {@link TermPolynomial}
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public final class Term implements Comparable<Term> {

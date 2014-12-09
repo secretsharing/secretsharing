@@ -35,7 +35,7 @@ import org.secretsharing.codec.Base32;
 
 /**
  * Utility class for reading byte arrays
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class BytesReadable {

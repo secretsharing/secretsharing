@@ -32,7 +32,7 @@ import org.secretsharing.util.BigIntegers;
 
 /**
  * Utility class for splitting and joining secret and secret parts
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class Secrets {

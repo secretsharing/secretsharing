@@ -32,14 +32,14 @@ import org.secretsharing.codec.PartFormats;
 
 /**
  * Utility class for holding split parts of a secret
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class Part {
 	/**
 	 * The public components of a secret part.  These are the same
 	 * for all parts of a secret.
-	 * @author robin
+	 * @author Robin Kirkman
 	 *
 	 */
 	public static class PublicSecretPart {
@@ -96,7 +96,7 @@ public class Part {
 	
 	/**
 	 * The private component of a secret part.  This is different for every secret part.
-	 * @author robin
+	 * @author Robin Kirkman
 	 *
 	 */
 	public static class PrivateSecretPart {

@@ -32,7 +32,7 @@ import java.util.Random;
 
 /**
  * A polynomial composed of terms
- * @author robin
+ * @author Robin Kirkman
  *
  */
 public class TermPolynomial {
