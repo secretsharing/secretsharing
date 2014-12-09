@@ -42,4 +42,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+	<organization>
+		<name>The MITRE Corporation</name>
+		<url>http://www.mitre.org/</url>
+	</organization>
 </project>

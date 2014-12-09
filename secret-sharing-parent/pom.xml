@@ -59,4 +59,8 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 		<module>../secret-sharing-scheme</module>
 		<module>../secret-sharing-server</module>
 	</modules>
+	<organization>
+		<name>The MITRE Corporation</name>
+		<url>http://www.mitre.org/</url>
+	</organization>
 </project>
