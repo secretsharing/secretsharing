@@ -117,9 +117,9 @@ public class TermPolynomial {
 			prime = BigInteger.probablePrime(secretBits+1, rnd);
 		TermPolynomial poly = TermPolynomial.ONE.multiply(secret);
 		for(int i = 1; i <= powx; i++) {
-			BigInteger a = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+			BigInteger a = new BigInteger(secretBits, rnd);
 			while(a.compareTo(prime) > 0)
-				a = new BigInteger(secretBits, rnd).add(BigInteger.ONE);
+				a = new BigInteger(secretBits, rnd);
 			poly = poly.add(TermPolynomial.ONE.multiply(a).powX(i));
 		}
 		return new TermPolynomial(poly.getTerms(), prime);
