@@ -26,7 +26,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 -->
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>secret-sharing-server</artifactId>
-	<groupId>org.secretsharing</groupId>
+	<groupId>org.mitre.secretsharing</groupId>
 	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
 
@@ -48,7 +48,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 			<version>2.4.2</version>
 		</dependency>
 		<dependency>
-			<groupId>org.secretsharing</groupId>
+			<groupId>org.mitre.secretsharing</groupId>
 			<artifactId>secret-sharing-scheme</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
