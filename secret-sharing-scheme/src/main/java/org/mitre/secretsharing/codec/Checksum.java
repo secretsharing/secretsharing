@@ -23,14 +23,14 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.codec;
+package org.mitre.secretsharing.codec;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import org.secretsharing.BigPoint;
-import org.secretsharing.util.BytesReadable;
-import org.secretsharing.util.BytesWritable;
+import org.mitre.secretsharing.BigPoint;
+import org.mitre.secretsharing.util.BytesReadable;
+import org.mitre.secretsharing.util.BytesWritable;
 
 /**
  * Simple checksum.  Makes absolutely no attempt at error correction.

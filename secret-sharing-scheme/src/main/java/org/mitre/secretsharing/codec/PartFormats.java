@@ -23,16 +23,16 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.codec;
+package org.mitre.secretsharing.codec;
 
 import java.math.BigInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.secretsharing.BigPoint;
-import org.secretsharing.Part;
-import org.secretsharing.util.BytesReadable;
-import org.secretsharing.util.BytesWritable;
+import org.mitre.secretsharing.BigPoint;
+import org.mitre.secretsharing.Part;
+import org.mitre.secretsharing.util.BytesReadable;
+import org.mitre.secretsharing.util.BytesWritable;
 
 public class PartFormats {
 	public static PartFormat<String> stringFormat(int version) {

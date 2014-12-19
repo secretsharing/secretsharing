@@ -23,7 +23,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.codec;
+package org.mitre.secretsharing.codec;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;

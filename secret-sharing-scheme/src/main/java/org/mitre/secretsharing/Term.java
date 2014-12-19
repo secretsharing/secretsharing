@@ -23,7 +23,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing;
+package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 

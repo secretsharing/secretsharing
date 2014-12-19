@@ -23,7 +23,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.util;
+package org.mitre.secretsharing.util;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInput;
@@ -31,7 +31,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.math.BigInteger;
 
-import org.secretsharing.codec.Base32;
+import org.mitre.secretsharing.codec.Base32;
 
 /**
  * Utility class for reading byte arrays

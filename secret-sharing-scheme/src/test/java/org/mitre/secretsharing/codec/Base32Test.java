@@ -23,53 +23,21 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing;
+package org.mitre.secretsharing.codec;
 
-import java.math.BigInteger;
+import java.nio.charset.Charset;
 
-/**
- * An x/y point using {@link BigInteger} for its coordinates
- * @author Robin Kirkman
- *
- */
-public class BigPoint {
-	/**
-	 * The X coordinate
-	 */
-	private BigInteger x;
-	/**
-	 * The Y coordinate
-	 */
-	private BigInteger y;
+import org.junit.Test;
+import org.mitre.secretsharing.codec.Base32;
+
+public class Base32Test {
+	private static final Charset ASCII = Charset.forName("ASCII");
 	
-	/**
-	 * Create a new {@link BigPoint} with the specified X and Y coordinates
-	 * @param x The X coordinate
-	 * @param y The Y coordinate
-	 */
-	public BigPoint(BigInteger x, BigInteger y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	@Override
-	public String toString() {
-		return x + "," + y;
-	}
-
-	/**
-	 * Return the X coordinate
-	 * @return
-	 */
-	public BigInteger getX() {
-		return x;
-	}
-
-	/**
-	 * Return the Y coordinate
-	 * @return
-	 */
-	public BigInteger getY() {
-		return y;
+	@Test
+	public void testEncode() throws Exception {
+		byte[] enc = Base32.encode(null, "Hello World".getBytes(ASCII));
+		System.out.println(new String(enc, ASCII));
+		byte[] dec = Base32.decode(null, enc);
+		System.out.println(new String(dec, ASCII));
 	}
 }

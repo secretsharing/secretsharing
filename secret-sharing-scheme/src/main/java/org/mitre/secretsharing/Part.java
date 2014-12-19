@@ -23,12 +23,12 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing;
+package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 
-import org.secretsharing.codec.Checksum;
-import org.secretsharing.codec.PartFormats;
+import org.mitre.secretsharing.codec.Checksum;
+import org.mitre.secretsharing.codec.PartFormats;
 
 /**
  * Utility class for holding split parts of a secret
