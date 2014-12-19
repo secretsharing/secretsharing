@@ -5,27 +5,27 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 
 	<servlet>
 		<servlet-name>split</servlet-name>
-		<servlet-class>org.secretsharing.server.SplitServlet</servlet-class>
+		<servlet-class>org.mitre.secretsharing.server.SplitServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>join</servlet-name>
-		<servlet-class>org.secretsharing.server.JoinServlet</servlet-class>
+		<servlet-class>org.mitre.secretsharing.server.JoinServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>form-split</servlet-name>
-		<servlet-class>org.secretsharing.server.FormSplitServlet</servlet-class>
+		<servlet-class>org.mitre.secretsharing.server.FormSplitServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>form-join</servlet-name>
-		<servlet-class>org.secretsharing.server.FormJoinServlet</servlet-class>
+		<servlet-class>org.mitre.secretsharing.server.FormJoinServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>form-inspect</servlet-name>
-		<servlet-class>org.secretsharing.server.FormInspectorServlet</servlet-class>
+		<servlet-class>org.mitre.secretsharing.server.FormInspectorServlet</servlet-class>
 	</servlet>
 
 	<servlet>
