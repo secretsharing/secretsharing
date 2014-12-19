@@ -23,78 +23,73 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.server;
+package org.mitre.secretsharing.server;
 
 import java.io.IOException;
-import java.security.SecureRandom;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.Part;
-import org.secretsharing.Secrets;
-import com.fasterxml.jackson.core.Base64Variants;
+import org.mitre.secretsharing.Part;
 
-public class FormSplitServlet extends HttpServlet {
+public class FormInspectorServlet extends HttpServlet {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static Random rnd = new SecureRandom();
 
-	@Override
-	protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
-		doPost(req, resp);
+	private static enum Field {
+		version,
+		length,
+		required,
+		modulus,
+		x,
+		y,
+		checksum,
 	}
-
+	
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-
+		if(req.getParameter("part") == null)
+			return;
 		try {
-			String secret = req.getParameter("secret");
-			if(secret == null)
-				throw new RuntimeException("No secret parameter");
-			int totalParts;
+			Field f = Field.valueOf(req.getParameter("field"));
+			
+			Part part;
 			try {
-				totalParts = Integer.parseInt(req.getParameter("total_parts"));
-				if(totalParts < 1)
-					throw new RuntimeException();
+				part = new Part(req.getParameter("part").trim());
 			} catch(Exception e) {
-				throw new RuntimeException("Total parts not an integer at least 1.");
+				String em = (e.getMessage() != null) ? ": " + e.getMessage() : "";
+				throw new RuntimeException("Corrupt secret part" + em, e);
 			}
-			int requiredParts;
-			try {
-				requiredParts = Integer.parseInt(req.getParameter("required_parts"));
-				if(requiredParts < 1 || requiredParts > totalParts)
-					throw new RuntimeException();
-			} catch(Exception e) {
-				throw new RuntimeException("Required parts not an integer at least 1 and not more than total parts.");
+			
+			switch(f) {
+			case version:
+				resp.getWriter().println(part.getVersion());
+				break;
+			case length:
+				resp.getWriter().println(part.getLength());
+				break;
+			case required:
+				resp.getWriter().println(part.getRequiredParts());
+				break;
+			case modulus:
+				resp.getWriter().println(part.getModulus());
+				break;
+			case x:
+				resp.getWriter().println(part.getPoint().getX());
+				break;
+			case y:
+				resp.getWriter().println(part.getPoint().getY());
+				break;
+			case checksum:
+				resp.getWriter().println(String.format("0x%04x", part.getChecksum().getChecksum()));
+				break;
 			}
-			boolean base64 = false;
-			if(req.getParameter("base64") != null)
-				base64 = Boolean.parseBoolean(req.getParameter("base64"));
-
-			byte[] secretBytes;
-
-			if(base64) {
-				try {
-					secretBytes = Base64Variants.MIME.decode(secret);
-				} catch(Exception e) {
-					throw new RuntimeException("Improper encoding of base64 secret");
-				}
-			} else
-				secretBytes = secret.getBytes("UTF-8");
-
-			Part[] parts = Secrets.split(secretBytes, totalParts, requiredParts, rnd);
-
-			for(Part part : parts) {
-				resp.getWriter().println(part);
-			}
+			
 		} catch(Throwable t) {
 			if(t.getMessage() != null)
 				resp.getWriter().print(t.getMessage());

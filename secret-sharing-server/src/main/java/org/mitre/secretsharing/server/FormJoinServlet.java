@@ -23,84 +23,66 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVE
 
  */
 
-package org.secretsharing.server;
+package org.mitre.secretsharing.server;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.secretsharing.Part;
-import org.secretsharing.Secrets;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.core.Base64Variants;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import org.mitre.secretsharing.Part;
+import org.mitre.secretsharing.Secrets;
 
-public class SplitServlet extends HttpServlet {
+import com.fasterxml.jackson.core.Base64Variants;
+
+public class FormJoinServlet extends HttpServlet {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static Random rnd = new SecureRandom();
-	
-	public static class Request {
-		public String secret;
-		public Integer totalParts;
-		public Integer requiredParts;
-		public Boolean base64;
-	}
-	
-	@JsonInclude(Include.NON_NULL)
-	public static class Response {
-		public String status;
-		public List<String> parts;
-	}
-	
+
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.setPropertyNamingStrategy(PropertyNamingStrategy.CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES);
-
-		resp.setContentType("application/json");
-		
 		try {
-			Request jreq = mapper.readValue(req.getParameter("q"), Request.class);
-
-			byte[] secret;
+			String parts = req.getParameter("parts");
+			if(parts == null)
+				throw new RuntimeException("No secret parts provided");
 			
-			if(jreq.base64 != null && jreq.base64)
-				secret = Base64Variants.MIME_NO_LINEFEEDS.decode(jreq.secret);
+			boolean base64 = false;
+			if(req.getParameter("base64") != null)
+				base64 = Boolean.parseBoolean(req.getParameter("base64"));
+
+			List<Part> partsBytes = new ArrayList<Part>();
+			for(String s : parts.split("\n")) {
+				s = s.trim();
+				if(s.isEmpty())
+					continue;
+				try {
+					partsBytes.add(new Part(s));
+				} catch(Exception e) {
+					throw new RuntimeException("Corrupt key part \"" + s + "\"" + (
+							e.getMessage() == null ? 
+									": Improper encoding of secret parts" : 
+									": " + e.getMessage()), e);
+				}
+			}
+
+			byte[] secret = Secrets.join(partsBytes.toArray(new Part[0]));
+
+			if(base64)
+				resp.getWriter().print(Base64Variants.MIME.encode(secret));
 			else
-				secret = jreq.secret.getBytes("UTF-8");
-			
-			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
-				throw new IllegalArgumentException();
-
-			Part[] parts = Secrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
-
-			Response jresp = new Response();
-			jresp.parts = new ArrayList<String>();
-			for(Part part : parts)
-				jresp.parts.add(part.toString());
-			jresp.status = "ok";
-
-			mapper.writeValue(resp.getOutputStream(), jresp);
+				resp.getWriter().print(new String(secret, "UTF-8"));
 		} catch(Throwable t) {
-			t.printStackTrace();
-			
-			Response jresp = new Response();
-			jresp.status = "error";
-			
-			mapper.writeValue(resp.getOutputStream(), jresp);
+			if(t.getMessage() != null)
+				resp.getWriter().print("error: " + t.getMessage());
+			else
+				resp.getWriter().print("error");
 		}
 	}
 }
