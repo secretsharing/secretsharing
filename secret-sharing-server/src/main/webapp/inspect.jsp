@@ -96,17 +96,17 @@ Enter your secret part below<br/>
 <p>
 	<span class="format version">version</span>
 	<span class="format delim">:</span>
-	<span class="format public">length, required parts, & modulus</span>
+	<span class="format public">length, required parts, &amp; modulus</span>
 	<span class="format delim">//</span>
-	<span class="format private">point & checksum</span>
+	<span class="format private">point &amp; checksum</span>
 </p>
 <h2>Secret Part Format: Field Meanings</h2>
 <table class="format">
 <tr><td><span class="format version">version</span></td><td>Identifies how to parse this secret part</td></tr>
 <tr><td><span class="format delim">:</span></td><td>Delimeter; no information content</td></tr>
-<tr><td><span class="format public">length, required parts, & modulus</span></td><td><b>PUBLIC</b> information, shared among all secret parts</td></tr>
+<tr><td><span class="format public">length, required parts, &amp; modulus</span></td><td><b>PUBLIC</b> information, shared among all secret parts</td></tr>
 <tr><td><span class="format delim">//</span></td><td>Delimeter; no information content</td></tr>
-<tr><td><span class="format private">point & checksum</span></td><td><b>PRIVATE</b> information, specific to this secret part</td></tr>
+<tr><td><span class="format private">point &amp; checksum</span></td><td><b>PRIVATE</b> information, specific to this secret part</td></tr>
 </table>
 </body>
 </html>
