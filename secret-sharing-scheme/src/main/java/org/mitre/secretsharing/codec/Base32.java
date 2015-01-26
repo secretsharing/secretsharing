@@ -37,7 +37,7 @@ public class Base32 {
 	public static final Pattern ENCODED = Pattern.compile("(D{8})*(DD(DD(D(DD)?)?)?)?".replace("D", DIGIT.pattern()));
 	
 	private static final Charset ASCII = Charset.forName("ASCII");
-	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(Charset.forName("ASCII"));
+	private static final byte[] ENCODE_SYMBOLS = "0123456789abcdefghjkmnpqrstvwxyz".getBytes(ASCII);
 	private static final byte[] DECODE_SYMBOLS = new byte[256];
 	static {
 		Arrays.fill(DECODE_SYMBOLS, (byte) -1);
