@@ -61,6 +61,8 @@ us know where this software is being used.
 	</dependencies>
 	
 	<build>
+		<finalName>sss</finalName>
+	
 		<pluginManagement>
 			<plugins>
 				<plugin>
