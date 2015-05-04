@@ -1,6 +1,7 @@
 package org.mitre.secretsharing.cli.cmd;
 
-import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -24,7 +25,7 @@ public class RootCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void perform(CommandLine cmd, BufferedReader in, PrintWriter out) throws Exception {
+	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception {
 		String[] args = cmd.getArgs();
 		String subcmd;
 		if(cmd.hasOption("help") || args.length == 0)
@@ -53,7 +54,7 @@ public class RootCommand extends AbstractCommand {
 	}
 	
 	@Override
-	public void showHelp(PrintWriter out) {
+	public void showHelp(PrintStream out) {
 		super.showHelp(out);
 	
 		out.println();
@@ -74,7 +75,8 @@ public class RootCommand extends AbstractCommand {
 				return p1.compareTo(p2);
 			}
 		});
-		h.printHelp(out, 
+		h.printHelp(
+				new PrintWriter(out, true), 
 				80, 
 				"Valid Commands:", 
 				"", 

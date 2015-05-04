@@ -1,5 +1,6 @@
 package org.mitre.secretsharing.cli.cmd;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 
 import org.apache.commons.cli.CommandLine;
@@ -24,14 +25,15 @@ public abstract class AbstractCommand implements Command {
 	}
 	
 	@Override
-	public CommandLine parse(String[] args) throws ParseException {
+	public CommandLine parse(String... args) throws ParseException {
 		return new PosixParser().parse(getOptions(), args, true);
 	}
 	
 	@Override
-	public void showHelp(PrintWriter out) {
+	public void showHelp(PrintStream out) {
 		HelpFormatter h = new HelpFormatter();
-		h.printHelp(out, 
+		h.printHelp(
+				new PrintWriter(out, true), 
 				80, 
 				"java -jar sss.jar " + getName() + " <arguments>", 
 				getHelpHeader(), 
@@ -39,7 +41,6 @@ public abstract class AbstractCommand implements Command {
 				12, 
 				12, 
 				getHelpFooter());
-		out.flush();
 	}
 	
 	@Override

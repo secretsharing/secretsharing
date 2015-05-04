@@ -1,8 +1,7 @@
 package org.mitre.secretsharing.cli.cmd;
 
-import java.io.BufferedReader;
-import java.io.PrintWriter;
-
+import java.io.InputStream;
+import java.io.PrintStream;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 
@@ -18,7 +17,7 @@ public class HelpCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void perform(CommandLine cmd, BufferedReader in, PrintWriter out) throws Exception {
+	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception {
 		String[] args = cmd.getArgs();
 		if(args.length > 1)
 			args = new String[] { "help" };
