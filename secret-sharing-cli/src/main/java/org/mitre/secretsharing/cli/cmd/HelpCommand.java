@@ -2,6 +2,7 @@ package org.mitre.secretsharing.cli.cmd;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
@@ -32,8 +33,7 @@ public class HelpCommand extends AbstractCommand {
 
 	@Override
 	protected List<Option> requiredArguments() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 
 }
