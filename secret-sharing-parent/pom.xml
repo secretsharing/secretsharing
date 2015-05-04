@@ -31,6 +31,7 @@ us know where this software is being used.
 	<modules>
 		<module>../secret-sharing-scheme</module>
 		<module>../secret-sharing-server</module>
+		<module>../secret-sharing-cli</module>
 	</modules>
 
 	<organization>
