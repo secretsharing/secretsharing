@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.util;
 
 import java.math.BigInteger;
+import java.util.Random;
 
 /**
  * Utility class for dealing with {@link BigInteger}s
@@ -44,6 +45,26 @@ public class BigIntegers {
 		BigInteger[] bigs = new BigInteger[to - from];
 		for(int i = 0; i < bigs.length; i++)
 			bigs[i] = BigInteger.valueOf(from + i);
+		return bigs;
+	}
+	
+	/**
+	 * Create an array of {@link BigInteger} with size {@code size}
+	 * composed of random numbers ranging from {@code from} (inclusive)
+	 * to {@code to} (exclusive), with {@code bits} bits of randomness.
+	 * @param from The lower bound of the random numbers, inclusive
+	 * @param to The upper bound of the random numbers, exclusive
+	 * @param rnd The source of randomness
+	 * @param size The size of the returned array
+	 * @param bits The number of bits of randomness
+	 * @return
+	 */
+	public static BigInteger[] random(BigInteger from, BigInteger to, Random rnd, int size, int bits) {
+		BigInteger range = to.subtract(from);
+		BigInteger bitmax = BigInteger.ONE.shiftLeft(bits);
+		BigInteger[] bigs = new BigInteger[size];
+		for(int i = 0; i < bigs.length; i++)
+			bigs[i] = new BigInteger(bits, rnd).multiply(range).divide(bitmax).add(from);
 		return bigs;
 	}
 	
