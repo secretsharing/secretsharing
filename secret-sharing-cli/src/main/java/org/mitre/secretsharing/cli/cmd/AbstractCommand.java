@@ -24,7 +24,7 @@ public abstract class AbstractCommand implements Command {
 	}
 
 	protected String getHelpHeader() {
-		return "";
+		return getDescription();
 	}
 	protected String getHelpFooter() {
 		return "";

@@ -27,7 +27,7 @@ public class SplitCommand extends AbstractCommand {
 	}
 
 	public SplitCommand() {
-		super("split", "split a secret into secret parts");
+		super("split", "splits a secret into secret parts");
 	}
 
 	@Override

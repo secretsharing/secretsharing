@@ -19,7 +19,7 @@ public class JoinCommand extends AbstractCommand {
 	private static final Option BASE64 = new Option(null, "base-64", false, "outupt secret Base64 encoded");
 
 	public JoinCommand() {
-		super("join", "join secret parts to reconstruct a secret");
+		super("join", "joins secret parts to reconstruct a secret");
 	}
 
 	@Override

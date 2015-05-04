@@ -11,7 +11,7 @@ import org.apache.commons.cli.Options;
 public class HelpCommand extends AbstractCommand {
 
 	public HelpCommand() {
-		super("help", "show help for a command");
+		super("help", "shows help for a command");
 	}
 
 	@Override
