@@ -44,8 +44,9 @@ public class Secrets {
 	 */
 	public static Part[] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		int secretBytes = secret.length;
-		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBytes * 8, requiredParts-1, rnd);
-		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
+		int secretBits = secretBytes * 8;
+		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBits, requiredParts-1, rnd);
+		BigPoint[] pts = poly.p(BigIntegers.random(BigInteger.ONE, poly.getModulus(), rnd, totalParts, secretBits));
 		Part[] s = new Part[totalParts];
 		for(int i = 0; i < totalParts; i++)
 			s[i] = new Part(secretBytes, requiredParts, poly.getModulus(), pts[i]);
