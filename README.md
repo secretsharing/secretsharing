@@ -23,3 +23,36 @@ code is used in a deployment or embedded within another project, it is
 requested that you send an email to opensource@mitre.org in order to let 
 us know where this software is being used.
 
+---
+
+# Shamir's Secret Sharing Scheme
+
+Java implementation of Shamir's Secret Sharing Scheme.  See the [wikipedia article](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) for details on the algorithm.  This implementation uses a BigInteger mod-prime polynomial.
+
+## Usage
+
+Splitting a secret `byte[]` into parts:
+
+    byte[] secret = ...;
+    Part[] parts = Secrets.split(secret);
+
+Reconstructing a secret `byte[]` from parts:
+
+    Parts[] parts = ...;
+    byte[] secret = Secrets.join(parts);
+
+Converting a `Part` to a formatted `String`:
+
+    Part part = ...;
+    String formatted = PartFormats.currentStringFormat().format(part);
+
+Parsing a `String` to a `Part`:
+
+    String formatted = ...;
+    Part part = PartFormats.parse(formatted);
+
+## Security
+
+Shamir's Secret Sharing Scheme is a fully secure way to divide a secret into shareable parts.  This Java implementation of the scheme has been reviewed by a MITRE cryptographer and found to be sound.  However, if you have any doubts, inspect the source code and compile it yourself.
+
+This implementation of Shamir's Secret Sharing Scheme is not subject to export control laws in the United States of America.  Please check local laws concerning cryptography before downloading or using this library.
