@@ -51,7 +51,7 @@ public abstract class AbstractCommand implements Command {
 		return getDescription();
 	}
 	protected String getHelpFooter() {
-		return "version " + SecretsCLI.version();
+		return "\nversion " + SecretsCLI.version();
 	}
 	
 	protected String checkArgument(CommandLine cmd, Option o) {
