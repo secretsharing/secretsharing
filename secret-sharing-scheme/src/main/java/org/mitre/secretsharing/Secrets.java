@@ -51,7 +51,40 @@ public class Secrets {
 			s[i] = new Part(secretBytes, requiredParts, poly.getModulus(), pts[i]);
 		return s;
 	}
-	
+
+	/**
+	 * Reconstruct the secret polynomial from a number of parts
+	 * @param parts The parts with which to reconstruct the polynomial
+	 * @return The reconstructed secret polynomial
+	 */
+	public static TermPolynomial polynomialOf(Part[] parts) {
+		BigPoint[] pts = new BigPoint[parts.length];
+		Integer secretLength = null;
+		Integer requiredParts = null;
+		BigInteger prime = null;
+		for(int i = 0; i < pts.length; i++) {
+			int sl = parts[i].getLength();
+			BigInteger p = parts[i].getModulus();
+
+			if(secretLength == null)
+				secretLength = sl;
+			else if(!secretLength.equals(sl))
+				throw new IllegalArgumentException();
+			if(requiredParts == null)
+				requiredParts = parts[i].getRequiredParts();
+			else if(!requiredParts.equals(parts[i].getRequiredParts()))
+				throw new IllegalArgumentException();
+			if(prime == null)
+				prime = p;
+			else if(!prime.equals(p))
+				throw new IllegalArgumentException();
+			pts[i] = parts[i].getPoint();
+		}
+		if(requiredParts > 0 && parts.length < requiredParts)
+			throw new IllegalArgumentException(requiredParts + " parts are required but only " + parts.length + " supplied");
+		return new TermPolynomial(pts, prime);
+	}
+
 	/**
 	 * Recover a secret from its parts
 	 * @param parts
@@ -65,7 +98,7 @@ public class Secrets {
 		for(int i = 0; i < pts.length; i++) {
 			int sl = parts[i].getLength();
 			BigInteger p = parts[i].getModulus();
-			
+
 			if(secretLength == null)
 				secretLength = sl;
 			else if(!secretLength.equals(sl))
@@ -88,6 +121,6 @@ public class Secrets {
 		System.arraycopy(secret, 0, ret, ret.length - secret.length, secret.length);
 		return ret;
 	}
-	
+
 	private Secrets() {}
 }
