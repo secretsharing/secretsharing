@@ -56,3 +56,7 @@ Parsing a `String` to a `Part`:
 Shamir's Secret Sharing Scheme is a fully secure way to divide a secret into shareable parts.  This Java implementation of the scheme has been reviewed by a MITRE cryptographer and found to be sound.  However, if you have any doubts, inspect the source code and compile it yourself.
 
 This implementation of Shamir's Secret Sharing Scheme is not subject to export control laws in the United States of America.  Please check local laws concerning cryptography before downloading or using this library.
+
+## Online Web Implementation
+
+This implementation of the scheme [can be used in a web browser](http://secretsharing.org).  Use it at your own risk!  If your secret is truly secret then you shouldn't trust somebody else's webapp, and should instead download, inspect, and compile the code yourself.  There is a [tor onion site](http://secretsssxmixk6f.onion/) available as well.
