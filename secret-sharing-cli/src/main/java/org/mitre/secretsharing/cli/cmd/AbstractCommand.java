@@ -34,6 +34,7 @@ import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
+import org.mitre.secretsharing.cli.SecretsCLI;
 
 public abstract class AbstractCommand implements Command {
 	protected String name;
@@ -50,7 +51,7 @@ public abstract class AbstractCommand implements Command {
 		return getDescription();
 	}
 	protected String getHelpFooter() {
-		return "";
+		return "version " + SecretsCLI.version();
 	}
 	
 	protected String checkArgument(CommandLine cmd, Option o) {

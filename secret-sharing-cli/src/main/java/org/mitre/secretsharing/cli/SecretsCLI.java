@@ -23,10 +23,26 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.cli;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.mitre.secretsharing.cli.cmd.Command;
 import org.mitre.secretsharing.cli.cmd.Commands;
 
 public class SecretsCLI {
+	public static String version() {
+		Properties props = new Properties();
+		InputStream in = SecretsCLI.class.getResourceAsStream("version.properties");
+		try {
+			props.load(in);
+			in.close();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return props.getProperty("version");
+	}
+	
 	public static void main(String[] args) throws Exception {
 		Command root = Commands.rootCommand();
 		root.perform(root.parse(args), System.in, System.out, System.err);

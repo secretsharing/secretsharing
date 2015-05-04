@@ -75,7 +75,7 @@ public class RootCommand extends AbstractCommand {
 	}
 	
 	protected String getActualHelpFooter() {
-		return "";
+		return super.getHelpFooter();
 	}
 	
 	@Override
