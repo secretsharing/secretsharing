@@ -5,6 +5,7 @@ import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.HelpFormatter;
@@ -25,7 +26,7 @@ public class RootCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception {
+	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
 		String[] args = cmd.getArgs();
 		String subcmd;
 		if(cmd.hasOption("help") || args.length == 0)
@@ -41,7 +42,7 @@ public class RootCommand extends AbstractCommand {
 			args = new String[0];
 		}
 		
-		c.perform(c.parse(args), in, out);
+		c.perform(c.parse(args), in, out, err);
 	}
 	
 	@Override
@@ -85,5 +86,11 @@ public class RootCommand extends AbstractCommand {
 				12, 
 				getActualHelpFooter());
 		out.flush();
+	}
+
+	@Override
+	protected List<Option> requiredArguments() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

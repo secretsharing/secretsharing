@@ -16,7 +16,7 @@ public interface Command {
 	
 	public CommandLine parse(String... args) throws ParseException;
 	
-	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception;
+	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception;
 	
 	public void showHelp(PrintStream out);
 

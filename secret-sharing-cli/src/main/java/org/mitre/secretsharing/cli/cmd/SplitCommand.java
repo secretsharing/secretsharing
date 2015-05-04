@@ -2,10 +2,29 @@ package org.mitre.secretsharing.cli.cmd;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Random;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
+import org.mitre.secretsharing.Part;
+import org.mitre.secretsharing.Secrets;
+import org.mitre.secretsharing.codec.PartFormats;
 
 public class SplitCommand extends AbstractCommand {
+	
+	private static final Option TOTAL = new Option("t", "total", true, "total parts to create");
+	private static final Option REQUIRED = new Option("r", "required", true, "required parts");
+	private static final Option BASE64 = new Option(null, "base-64", false, "secret already Base64 encoded");
+	static {
+		REQUIRED.setArgName("parts");
+		TOTAL.setArgName("parts");
+	}
 
 	public SplitCommand() {
 		super("split", "split a secret into secret parts");
@@ -15,32 +34,65 @@ public class SplitCommand extends AbstractCommand {
 	public Options getOptions() {
 		Options opt = new Options();
 		
-		opt.addOption("t", "total", true, "total number of parts to create (required)");
-		opt.addOption("r", "required", true, "number of required parts (required)");
-		opt.addOption("b", "base-64", false, "the secret is Base64 encoded");
+		opt.addOption(TOTAL);
+		opt.addOption(REQUIRED);
+		opt.addOption(BASE64);
 		
 		return opt;
 	}
+	
+	@Override
+	protected String checkArgument(CommandLine cmd, Option o) {
+		String invalid = super.checkArgument(cmd, o);
+		if(!invalid.isEmpty())
+			return invalid;
+		if(TOTAL == o) {
+			try {
+				int i =Integer.parseInt(cmd.getOptionValue(o.getLongOpt()));
+				if(i <= 0)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + TOTAL.getLongOpt() +" must be provided a positive integer";
+			}
+		}
+		if(REQUIRED == o) {
+			try {
+				int i =Integer.parseInt(cmd.getOptionValue(o.getLongOpt()));
+				if(i <= 0)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + REQUIRED.getLongOpt() +" must be provided a positive integer";
+			}
+		}
+		return invalid;
+	}
 
 	@Override
-	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception {
-		String invalid = "";
-		if(!cmd.hasOption("total"))
-			invalid += "--total <parts> is required\n";
-		if(!cmd.hasOption("required"))	
-			invalid += "--required <parts> is required\n";
-		if(!invalid.isEmpty()) {
-			out.println("Missing required arguments:");
-			out.println(invalid);
-			Command h = new HelpCommand();
-			h.perform(h.parse(getName()), in, out);
+	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
+		if(!checkArguments(cmd, in, out, err))
 			return;
+		byte[] secret = IOUtils.toByteArray(in);
+		if(cmd.hasOption(BASE64.getLongOpt())) {
+			try {
+				secret = Base64.decodeBase64(secret);
+			} catch(RuntimeException e) {
+				err.println("Not a Base64-encoded secret");
+				System.exit(-1);
+			}
 		}
-		
-		// TODO Auto-generated method stub
+		int totalParts = Integer.parseInt(cmd.getOptionValue(TOTAL.getLongOpt()));
+		int requiredParts = Integer.parseInt(cmd.getOptionValue(REQUIRED.getLongOpt()));
+		Random rnd = new SecureRandom();
+		Part[] parts = Secrets.split(secret, totalParts, requiredParts, rnd);
+		for(Part p : parts) {
+			String s = PartFormats.currentStringFormat().format(p);
+			out.println(s);
+		}
+	}
 
-		
-		
+	@Override
+	protected List<Option> requiredArguments() {
+		return Arrays.asList(TOTAL, REQUIRED);
 	}
 
 }

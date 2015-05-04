@@ -2,7 +2,10 @@ package org.mitre.secretsharing.cli.cmd;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 
 public class ExtendCommand extends AbstractCommand {
@@ -19,9 +22,15 @@ public class ExtendCommand extends AbstractCommand {
 	}
 
 	@Override
-	public void perform(CommandLine cmd, InputStream in, PrintStream out) throws Exception {
+	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
 		// TODO Auto-generated method stub
 
+	}
+
+	@Override
+	protected List<Option> requiredArguments() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
