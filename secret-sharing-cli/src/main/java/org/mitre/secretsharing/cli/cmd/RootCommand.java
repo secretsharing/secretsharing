@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -90,7 +91,6 @@ public class RootCommand extends AbstractCommand {
 
 	@Override
 	protected List<Option> requiredArguments() {
-		// TODO Auto-generated method stub
-		return null;
+		return Collections.emptyList();
 	}
 }

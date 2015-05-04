@@ -77,7 +77,7 @@ public class SplitCommand extends AbstractCommand {
 				secret = Base64.decodeBase64(secret);
 			} catch(RuntimeException e) {
 				err.println("Not a Base64-encoded secret");
-				System.exit(-1);
+				System.exit(1);
 			}
 		}
 		int totalParts = Integer.parseInt(cmd.getOptionValue(TOTAL.getLongOpt()));

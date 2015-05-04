@@ -7,5 +7,7 @@ public class SecretsCLI {
 	public static void main(String[] args) throws Exception {
 		Command root = Commands.rootCommand();
 		root.perform(root.parse(args), System.in, System.out, System.err);
+		System.out.flush();
+		System.err.flush();
 	}
 }
