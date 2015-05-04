@@ -9,12 +9,18 @@ import org.apache.commons.cli.PosixParser;
 
 public abstract class AbstractCommand implements Command {
 	protected String name;
+	protected String description;
 	
-	protected abstract String getHelpHeader();
-	protected abstract String getHelpFooter();
+	protected String getHelpHeader() {
+		return "";
+	}
+	protected String getHelpFooter() {
+		return "";
+	}
 	
-	public AbstractCommand(String name) {
+	public AbstractCommand(String name, String description) {
 		this.name = name;
+		this.description = description;
 	}
 	
 	@Override
@@ -27,16 +33,22 @@ public abstract class AbstractCommand implements Command {
 		HelpFormatter h = new HelpFormatter();
 		h.printHelp(out, 
 				80, 
-				"java -jar sss.jar " + getName(), 
+				"java -jar sss.jar " + getName() + " <arguments>", 
 				getHelpHeader(), 
 				getOptions(), 
 				12, 
 				12, 
 				getHelpFooter());
+		out.flush();
 	}
 	
 	@Override
 	public String getName() {
 		return name;
+	}
+	
+	@Override
+	public String getDescription() {
+		return description;
 	}
 }
