@@ -10,7 +10,6 @@ public abstract class Commands {
 		new HelpCommand(),
 		new SplitCommand(),
 		new JoinCommand(),
-		new ExtendCommand(),
 	};
 
 	public static Command rootCommand() {
