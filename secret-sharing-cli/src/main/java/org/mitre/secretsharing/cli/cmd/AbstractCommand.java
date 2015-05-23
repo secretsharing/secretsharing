@@ -30,10 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.mitre.secretsharing.cli.SecretsCLI;
 
 public abstract class AbstractCommand implements Command {
@@ -93,7 +93,7 @@ public abstract class AbstractCommand implements Command {
 
 	@Override
 	public CommandLine parse(String... args) throws ParseException {
-		return new PosixParser().parse(getOptions(), args, true);
+		return new DefaultParser().parse(getOptions(), args, true);
 	}
 
 	@Override
