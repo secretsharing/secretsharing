@@ -1,6 +1,6 @@
 /*
 
-Copyright 2014 The MITRE Corporation
+Copyright 2015 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -51,7 +51,7 @@ public abstract class AbstractCommand implements Command {
 		return getDescription();
 	}
 	protected String getHelpFooter() {
-		return "\nversion " + SecretsCLI.version();
+		return "\nversion " + SecretsCLI.version() + "\nCopyright (C) 2015 The MITRE Corporation";
 	}
 	
 	protected String checkArgument(CommandLine cmd, Option o) {
