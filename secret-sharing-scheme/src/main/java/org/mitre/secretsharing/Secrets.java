@@ -46,7 +46,7 @@ public class Secrets {
 		int secretBytes = secret.length;
 		int secretBits = secretBytes * 8;
 		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBits, requiredParts-1, rnd);
-		BigPoint[] pts = poly.p(BigIntegers.random(BigInteger.ONE, poly.getModulus(), rnd, totalParts, secretBits));
+		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
 		Part[] s = new Part[totalParts];
 		for(int i = 0; i < totalParts; i++)
 			s[i] = new Part(secretBytes, requiredParts, poly.getModulus(), pts[i]);
