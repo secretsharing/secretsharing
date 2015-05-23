@@ -70,15 +70,15 @@ public class Secrets {
 			if(secretLength == null)
 				secretLength = sl;
 			else if(!secretLength.equals(sl))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent secret length among parts");
 			if(requiredParts == null)
 				requiredParts = parts[i].getRequiredParts();
 			else if(!requiredParts.equals(parts[i].getRequiredParts()))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent required parts number among parts");
 			if(prime == null)
 				prime = p;
 			else if(!prime.equals(p))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent prime modulus among parts");
 			pts[i] = parts[i].getPoint();
 		}
 		if(requiredParts > 0 && parts.length < requiredParts)
@@ -103,15 +103,15 @@ public class Secrets {
 			if(secretLength == null)
 				secretLength = sl;
 			else if(!secretLength.equals(sl))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent secret length among parts");
 			if(requiredParts == null)
 				requiredParts = parts[i].getRequiredParts();
 			else if(!requiredParts.equals(parts[i].getRequiredParts()))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent required parts number among parts");
 			if(prime == null)
 				prime = p;
 			else if(!prime.equals(p))
-				throw new IllegalArgumentException();
+				throw new IllegalArgumentException("Inconsistent prime modulus among parts");
 			pts[i] = parts[i].getPoint();
 		}
 		if(requiredParts > 0 && parts.length < requiredParts)
