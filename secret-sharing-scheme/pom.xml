@@ -39,7 +39,7 @@
 			<organizationUrl>http://www.mitre.org/</organizationUrl>
 		</developer>
 	</developers>
-	
+
 	<scm>
 		<connection>scm:git:git@github.com:secretsharing/secretsharing.git</connection>
 		<developerConnection>scm:git:git@github.com:secretsharing/secretsharing.git</developerConnection>
@@ -105,6 +105,18 @@
 							<execution>
 								<goals>
 									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<goals>
+									<goal>sign</goal>
 								</goals>
 							</execution>
 						</executions>
