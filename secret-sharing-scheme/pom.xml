@@ -128,4 +128,5 @@
 			</build>
 		</profile>
 	</profiles>
+	<url>http://github.com/secretsharing/secretsharing</url>
 </project>
