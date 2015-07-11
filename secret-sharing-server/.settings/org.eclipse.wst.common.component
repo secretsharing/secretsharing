@@ -7,9 +7,6 @@
         <dependent-module archiveName="secret-sharing-scheme-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/secret-sharing-scheme/secret-sharing-scheme">
             <dependency-type>uses</dependency-type>
         </dependent-module>
-        <dependent-module archiveName="secret-sharing-cli-1.0.0-SNAPSHOT.jar" deploy-path="/WEB-INF/lib" handle="module:/resource/secret-sharing-cli/secret-sharing-cli">
-            <dependency-type>uses</dependency-type>
-        </dependent-module>
         <property name="context-root" value="secret-sharing-server"/>
         <property name="java-output-path" value="/secret-sharing-server/target/classes"/>
     </wb-module>
