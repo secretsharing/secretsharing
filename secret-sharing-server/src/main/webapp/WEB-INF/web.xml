@@ -14,6 +14,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	</servlet>
 
 	<servlet>
+		<servlet-name>join-lines</servlet-name>
+		<servlet-class>org.mitre.secretsharing.server.JoinLinesServlet</servlet-class>
+	</servlet>
+
+	<servlet>
 		<servlet-name>form-split</servlet-name>
 		<servlet-class>org.mitre.secretsharing.server.FormSplitServlet</servlet-class>
 	</servlet>
@@ -51,6 +56,11 @@ xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns
 	<servlet-mapping>
 		<servlet-name>join</servlet-name>
 		<url-pattern>/join</url-pattern>
+	</servlet-mapping>
+
+	<servlet-mapping>
+		<servlet-name>join-lines</servlet-name>
+		<url-pattern>/j</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
