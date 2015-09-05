@@ -26,13 +26,13 @@ package org.mitre.secretsharing.cli.cmd;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
+import org.apache.commons.codec.binary.Base64;
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
 import org.mitre.secretsharing.cli.util.IOUtils;
@@ -57,7 +57,7 @@ public class JoinCommand extends AbstractCommand {
 	@Override
 	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
 		List<String> lines = IOUtils.readLines(in);
-		List<Part> parts = new ArrayList<>();
+		List<Part> parts = new ArrayList<Part>();
 		boolean failure = false;
 		for(String line : lines) {
 			if(line.isEmpty())
@@ -80,7 +80,7 @@ public class JoinCommand extends AbstractCommand {
 			return;
 		}
 		if(cmd.hasOption(BASE64.getLongOpt()))
-			secret = Base64.getEncoder().encode(secret);
+			secret = Base64.encodeBase64(secret);
 		out.write(secret);
 	}
 

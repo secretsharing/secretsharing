@@ -42,7 +42,7 @@ public class IOUtils {
 	
 	public static List<String> readLines(InputStream in) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(in, "ASCII"));
-		List<String> lines = new ArrayList<>();
+		List<String> lines = new ArrayList<String>();
 		for(String line = br.readLine(); line != null; line = br.readLine())
 			lines.add(line);
 		return lines;

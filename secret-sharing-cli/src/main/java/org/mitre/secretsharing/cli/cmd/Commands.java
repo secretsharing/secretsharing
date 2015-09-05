@@ -44,7 +44,7 @@ public abstract class Commands {
 	}
 
 	public static List<String> names() {
-		List<String> n = new ArrayList<>();
+		List<String> n = new ArrayList<String>();
 		for(Command c : subCommands())
 			n.add(c.getName());
 		return n;
