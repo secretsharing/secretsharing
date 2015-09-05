@@ -4,6 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
 <link rel="stylesheet" type="text/css" href="splitjoin.css">
 <title>Split a Secret</title>
 </head>
@@ -13,9 +14,9 @@
 <form action="split.html" method="post">
 Enter your secret:<br />
 <% if(request.getParameter("secret") != null) { %>
-<textarea rows="5" cols="120" name="secret"><%= request.getParameter("secret") %></textarea>
+<textarea rows="3" cols="120" name="secret"><%= request.getParameter("secret") %></textarea>
 <% } else { %>
-<textarea rows="5" cols="120" name="secret">Your Secret Here</textarea>
+<textarea rows="3" cols="120" name="secret">Your Secret Here</textarea>
 <% } %>
 <br /><br/>
 Enter the number of parts to create:<br />
@@ -32,13 +33,11 @@ Check this box if your secret is already base64 encoded:<br />
 </form>
 
 <br>
-<hr/>
-<br>
 Your secret parts, 1 per line:<br/>
 <% if(request.getParameter("submit") != null) { %>
-<textarea rows="8" cols="120" readonly="readonly"><jsp:include page="/form-split"></jsp:include></textarea>
+<textarea rows="5" cols="120" readonly="readonly"><jsp:include page="/form-split"></jsp:include></textarea>
 <% } else { %>
-<textarea rows="8" cols="120" readonly="readonly">Split parts returned here</textarea>
+<textarea rows="5" cols="120" readonly="readonly">Split parts returned here</textarea>
 <% } %>
 
 </body>

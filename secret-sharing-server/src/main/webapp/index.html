@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <title>Shamir's Secret Sharing Scheme</title>
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/bootstrap.css">
 <style type="text/css">
 
 #frames {
@@ -21,6 +22,10 @@
 	height: 100%;
 }
 
+th {
+	text-align: center;
+}
+
 td {
 	margin: 10px 10px 10px 10px;
 	padding: 10px;
@@ -29,6 +34,7 @@ td {
 iframe {
 	width: 100%;
 	height: 100%;
+	border: none;
 }
 
 </style>
@@ -36,15 +42,13 @@ iframe {
 <body>
 
 <table id="frames">
-<tr><th colspan="2">Shamir's Secret Sharing Scheme</th></tr>
+<tr><td colspan="2"><h1>Shamir's Secret Sharing Scheme</h1></td></tr>
 <tr><th>Share a Secret</th><th>Recover a Secret</th></tr>
 <tr id="frames-row">
 <td><iframe src="split.html" id="split"></iframe></td>
 <td><iframe src="join.html" id="join"></iframe></td>
 </tr>
 <tr><td colspan="2">
-&#x25cf;
-<a href="sss.jar">Download CLI jar</a>
 &#x25cf;
 <a href="inspect.html">Secret Part Inspector</a>
 &#x25cf;
@@ -53,8 +57,6 @@ iframe {
 <a href="escrow.html">Secure Escrow Protocol</a>
 &#x25cf;
 <a href="http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing">Wikipedia</a>
-&#x25cf;
-<a href="https://github.com/secretsharing/secretsharing">Source Code</a>
 &#x25cf;
 </td></tr>
 </table>
