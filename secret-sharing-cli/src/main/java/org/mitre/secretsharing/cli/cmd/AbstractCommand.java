@@ -71,7 +71,7 @@ public abstract class AbstractCommand implements Command {
 
 	protected boolean checkArguments(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
 		String invalid = "";
-		List<Option> req = new ArrayList<>(requiredArguments());
+		List<Option> req = new ArrayList<Option>(requiredArguments());
 		@SuppressWarnings({ "rawtypes", "unchecked" })
 		List<Option> all = new ArrayList(getOptions().getOptions());
 		all.removeAll(req);
