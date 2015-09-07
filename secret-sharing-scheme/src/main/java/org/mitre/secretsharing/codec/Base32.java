@@ -125,41 +125,41 @@ public class Base32 {
 		int dpos = 0;
 		int next;
 		for(int i = 0; i < data.length; i += 5) {
-			next = (data[i] & 0b11111000) >>> 3;
+			next = (data[i] & 0xF8) >>> 3; // 0b11111000
 			dest[dpos++] = ENCODE_SYMBOLS[next];
-			next = (data[i] & 0b111) << 2;
+			next = (data[i] & 0x07) << 2; // 0b00000111
 			
 			if(i+1 < data.length)
-				next |= (data[i+1] & 0b11000000) >>> 6;
+				next |= (data[i+1] & 0xC0) >>> 6; // 0b11000000
 			dest[dpos++] = ENCODE_SYMBOLS[next];
 			if(i+1 == data.length)
 				break;
-			next = (data[i+1] & 0b111110) >>> 1;
+			next = (data[i+1] & 0x3E) >>> 1; // 0b00111110
 			dest[dpos++] = ENCODE_SYMBOLS[next];
-			next = (data[i+1] & 0b1) << 4;
+			next = (data[i+1] & 0x01) << 4; // 0b00000001
 			
 			if(i+2 < data.length)
-				next |= (data[i+2] & 0b11110000) >>> 4;
+				next |= (data[i+2] & 0xF0) >>> 4; // 0b11110000
 			dest[dpos++] = ENCODE_SYMBOLS[next];
 			if(i+2 == data.length)
 				break;
-			next = (data[i+2] & 0b1111) << 1;
+			next = (data[i+2] & 0x0F) << 1; // 0b00001111
 			
 			if(i+3 < data.length)
-				next |= (data[i+3] & 0b10000000) >>> 7;
+				next |= (data[i+3] & 0x80) >>> 7; // 0b10000000
 			dest[dpos++] = ENCODE_SYMBOLS[next];
 			if(i+3 == data.length)
 				break;
-			next = (data[i+3] & 0b1111100) >>> 2;
+			next = (data[i+3] & 0x7C) >>> 2; // 0b01111100
 			dest[dpos++] = ENCODE_SYMBOLS[next];
-			next = (data[i+3] & 0b11) << 3;
+			next = (data[i+3] & 0x03) << 3; // 0b00000011
 			
 			if(i+4 < data.length)
-				next |= (data[i+4] & 0b11100000) >>> 5;
+				next |= (data[i+4] & 0xE0) >>> 5; // 0b11100000
 			dest[dpos++] = ENCODE_SYMBOLS[next];
 			if(i+4 == data.length)
 				break;
-			next = (data[i+4] & 0b11111);
+			next = (data[i+4] & 0x1F); // 0b00011111
 			dest[dpos++] = ENCODE_SYMBOLS[next];
 		}
 		

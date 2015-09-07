@@ -25,7 +25,6 @@ package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -210,14 +209,16 @@ public class TermPolynomial {
 			return true;
 		if(obj instanceof TermPolynomial) {
 			TermPolynomial p = (TermPolynomial) obj;
-			return Arrays.equals(getTerms(), p.getTerms()) && Objects.equals(getModulus(), p.getModulus());
+			return 
+					Arrays.equals(getTerms(), p.getTerms()) 
+					&& (getModulus() == null ? p.getModulus() == null : getModulus().equals(p.getModulus()));
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(getTerms()) + Objects.hashCode(getModulus());
+		return Arrays.hashCode(getTerms()) + (getModulus() == null ? 0 : getModulus().hashCode());
 	}
 	
 	/**
