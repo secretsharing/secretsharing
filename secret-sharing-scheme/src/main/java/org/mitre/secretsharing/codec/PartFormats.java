@@ -129,68 +129,15 @@ public class PartFormats {
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
-				sb.append(V + ":");
-				sb.append(dash(w
-						.writeInt(part.getLength())
-						.writeInt(part.getRequiredParts())
-						.writeBigInteger(part.getModulus())
-						.reset()));
-				sb.append("//");
-				sb.append(dash(w
-						.writeBigInteger(part.getPoint().getX())
-						.writeBigInteger(part.getPoint().getY())
-						.writeBytes(part.getChecksum().getChecksumBytes())
-						.reset()));
-				
-				return sb.toString();
-			}
-
-			@Override
-			public Part parse(String data) {
-				Matcher m = VALID.matcher(data);
-				if(!m.matches())
-					throw new IllegalArgumentException("Not parseable by " + this);
-				BytesReadable r;
-				
-				r = new BytesReadable(m.group(1).replace("-", ""));
-				int length = r.readInt();
-				int requiredParts = r.readInt();
-				BigInteger modulus = r.readBigInteger();
-				
-				r = new BytesReadable(m.group(3).replace("-", ""));
-				BigInteger x = r.readBigInteger();
-				BigInteger y = r.readBigInteger();
-				BigPoint point = new BigPoint(x, y);
-				Checksum cx = new Checksum(r);
-				Part part = new Part(0, length, requiredParts, modulus, point);
-				if(!cx.equals(part.getChecksum()))
-					throw new IllegalArgumentException("Checksum mismatch");
-				return part;
-			}
-
-			@Override
-			public int getVersion() {
-				return 1;
-			}
-			
-		},
-		
-		VERSION_2 {
-			private final String V = new BytesWritable().writeInt(2).toString();
-			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
-			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
-					
-			
-			@Override
-			public String format(Part part) {
-				StringBuilder sb = new StringBuilder();
-				BytesWritable w = new BytesWritable();
+				BigInteger mod = part.getModulus();
+				if(part instanceof PerBytePart)
+					mod = BigInteger.valueOf(-1);
 				
 				sb.append(V + ":");
 				sb.append(dash(w
 						.writeInt(part.getLength())
 						.writeInt(part.getRequiredParts())
-						.writeBigInteger((part instanceof PerBytePart) ? BigInteger.valueOf(-1) : part.getModulus())
+						.writeBigInteger(mod)
 						.reset()));
 				sb.append("//");
 				sb.append(dash(w
@@ -221,9 +168,9 @@ public class PartFormats {
 				Checksum cx = new Checksum(r);
 				Part part;
 				if(BigInteger.valueOf(-1).equals(modulus))
-					part = new PerBytePart(2, length, requiredParts, point);
+					part = new PerBytePart(1, length, requiredParts, point);
 				else
-					part = new Part(2, length, requiredParts, modulus, point);
+					part = new Part(0, length, requiredParts, modulus, point);
 				if(!cx.equals(part.getChecksum()))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
@@ -233,6 +180,7 @@ public class PartFormats {
 			public int getVersion() {
 				return 1;
 			}
+			
 		}
 		
 		;

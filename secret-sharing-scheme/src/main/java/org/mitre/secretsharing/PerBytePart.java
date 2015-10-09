@@ -1,7 +1,6 @@
 package org.mitre.secretsharing;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 public class PerBytePart extends Part {
 	public static final BigInteger MODULUS = BigInteger.valueOf(65521);

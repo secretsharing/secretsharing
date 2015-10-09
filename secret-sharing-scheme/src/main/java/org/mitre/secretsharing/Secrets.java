@@ -63,7 +63,7 @@ public class Secrets {
 		for(int i = 0; i < secret.length; i++) {
 			TermPolynomial poly = TermPolynomial.ONE.multiply(BigInteger.valueOf(0xFF & secret[i]));
 			for(int j = 0; j < requiredParts-1; j++)
-				poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(16, rnd)).powX(j));
+				poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(16, rnd)).powX(j+1));
 			poly = new TermPolynomial(poly.getTerms(), PerBytePart.MODULUS);
 			for(int j = 0; j < totalParts; j++)
 				pts[j][i] = poly.p(BigInteger.valueOf(j+1));
@@ -129,8 +129,10 @@ public class Secrets {
 		for(int i = 0; i < parts.length; i++) {
 			byte[] b = parts[i].getPrivatePart().getPoint().getY().toByteArray();
 			byte[] pb = new byte[secret.length * 2];
-			for(int j = 0; j < b.length; j++)
-				pb[j + (pb.length - b.length)] = b[j];
+			if(b.length > pb.length)
+				pb = Arrays.copyOfRange(b, b.length - pb.length, b.length);
+			else
+				System.arraycopy(b, 0, pb, pb.length - b.length, b.length);
 			for(int j = 0; j < secret.length; j++)
 				pts[j][i] = new BigPoint(parts[i].getPrivatePart().getPoint().getX(), BigInteger.valueOf(((0xFF & pb[2*j]) << 8) | (0xFF & pb[2*j+1])));
 		}

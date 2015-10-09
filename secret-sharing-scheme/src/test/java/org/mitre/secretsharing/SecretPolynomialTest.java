@@ -30,11 +30,9 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.junit.runner.RunWith;
-import org.mitre.secretsharing.BigPoint;
-import org.mitre.secretsharing.TermPolynomial;
 import org.mitre.secretsharing.util.BigIntegers;
 
 @RunWith(Parameterized.class)
