@@ -29,6 +29,7 @@ import java.util.regex.Pattern;
 
 import org.mitre.secretsharing.BigPoint;
 import org.mitre.secretsharing.Part;
+import org.mitre.secretsharing.PerBytePart;
 import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
 
@@ -128,11 +129,15 @@ public class PartFormats {
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
+				BigInteger mod = part.getModulus();
+				if(part instanceof PerBytePart)
+					mod = BigInteger.valueOf(-1);
+				
 				sb.append(V + ":");
 				sb.append(dash(w
 						.writeInt(part.getLength())
 						.writeInt(part.getRequiredParts())
-						.writeBigInteger(part.getModulus())
+						.writeBigInteger(mod)
 						.reset()));
 				sb.append("//");
 				sb.append(dash(w
@@ -161,7 +166,11 @@ public class PartFormats {
 				BigInteger y = r.readBigInteger();
 				BigPoint point = new BigPoint(x, y);
 				Checksum cx = new Checksum(r);
-				Part part = new Part(0, length, requiredParts, modulus, point);
+				Part part;
+				if(BigInteger.valueOf(-1).equals(modulus))
+					part = new PerBytePart(1, length, requiredParts, point);
+				else
+					part = new Part(0, length, requiredParts, modulus, point);
 				if(!cx.equals(part.getChecksum()))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
