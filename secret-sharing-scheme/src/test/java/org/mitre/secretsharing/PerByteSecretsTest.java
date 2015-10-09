@@ -38,6 +38,5 @@ public class PerByteSecretsTest {
 		PerBytePart[] parts = Secrets.splitPerByte(b, 5, 3, new Random(0L));
 		byte[] r = Secrets.joinPerByte(Arrays.copyOf(parts, 3));
 		Assert.assertTrue(Arrays.equals(b, r));
-		System.out.println(PartFormats.currentStringFormat().format(parts[0]));
 	}
 }
