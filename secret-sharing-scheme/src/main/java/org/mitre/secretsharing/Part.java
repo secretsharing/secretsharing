@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
 import org.mitre.secretsharing.codec.Checksum;
 import org.mitre.secretsharing.codec.PartFormats;
@@ -247,5 +248,11 @@ public class Part {
 	
 	public Checksum getChecksum() {
 		return getPrivatePart().getChecksum();
+	}
+	
+	public byte[] join(Part... otherParts) {
+		Part[] parts = Arrays.copyOf(otherParts, otherParts.length + 1);
+		parts[parts.length - 1] = this;
+		return Secrets.joinMultibyte(parts);
 	}
 }
