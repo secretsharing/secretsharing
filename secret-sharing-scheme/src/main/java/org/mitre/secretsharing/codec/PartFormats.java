@@ -170,7 +170,7 @@ public class PartFormats {
 				if(BigInteger.valueOf(-1).equals(modulus))
 					part = new PerBytePart(1, length, requiredParts, point);
 				else
-					part = new Part(0, length, requiredParts, modulus, point);
+					part = new Part(1, length, requiredParts, modulus, point);
 				if(!cx.equals(part.getChecksum()))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
@@ -263,7 +263,7 @@ public class PartFormats {
 				BigInteger modulus = r.readBigInteger();
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
-				return new Part(0, length, requiredParts, modulus, new BigPoint(x, y));
+				return new Part(1, length, requiredParts, modulus, new BigPoint(x, y));
 			}
 
 			@Override
