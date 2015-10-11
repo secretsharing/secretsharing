@@ -84,7 +84,7 @@ public class SplitServlet extends HttpServlet {
 			if(jreq.secret == null || jreq.totalParts == null || jreq.requiredParts == null)
 				throw new IllegalArgumentException();
 
-			Part[] parts = Secrets.split(secret, jreq.totalParts, jreq.requiredParts, rnd);
+			Part[] parts = Secrets.splitPerByte(secret, jreq.totalParts, jreq.requiredParts, rnd);
 
 			Response jresp = new Response();
 			jresp.parts = new ArrayList<String>();

@@ -25,6 +25,7 @@ package org.mitre.secretsharing.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -34,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
+import org.mitre.secretsharing.codec.PartFormats;
 
 import com.fasterxml.jackson.core.Base64Variants;
 
@@ -61,7 +63,7 @@ public class FormJoinServlet extends HttpServlet {
 				if(s.isEmpty())
 					continue;
 				try {
-					partsBytes.add(new Part(s));
+					partsBytes.add(PartFormats.parse(s));
 				} catch(Exception e) {
 					throw new RuntimeException("Corrupt key part \"" + s + "\"" + (
 							e.getMessage() == null ? 
@@ -69,8 +71,10 @@ public class FormJoinServlet extends HttpServlet {
 									": " + e.getMessage()), e);
 				}
 			}
+			
+			Part[] p = partsBytes.toArray(new Part[0]);
 
-			byte[] secret = Secrets.join(partsBytes.toArray(new Part[0]));
+			byte[] secret = p[0].join(Arrays.copyOfRange(p, 1, p.length));
 
 			if(base64)
 				resp.getWriter().print(Base64Variants.MIME.encode(secret));

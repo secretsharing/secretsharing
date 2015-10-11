@@ -89,7 +89,7 @@ public class FormSplitServlet extends HttpServlet {
 			} else
 				secretBytes = secret.getBytes("UTF-8");
 
-			Part[] parts = Secrets.split(secretBytes, totalParts, requiredParts, rnd);
+			Part[] parts = Secrets.splitPerByte(secretBytes, totalParts, requiredParts, rnd);
 
 			for(Part part : parts) {
 				resp.getWriter().println(part);

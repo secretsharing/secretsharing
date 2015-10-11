@@ -7,6 +7,7 @@ import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -16,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
+import org.mitre.secretsharing.codec.PartFormats;
 
 import com.fasterxml.jackson.core.Base64Variants;
 
@@ -28,9 +30,10 @@ public class JoinLinesServlet extends HttpServlet {
 			for(String line = lines.readLine(); line != null; line = lines.readLine()) {
 				if(line.trim().isEmpty())
 					continue;
-				parts.add(new Part(line));
+				parts.add(PartFormats.parse(line));
 			}
-			byte[] secret = Secrets.join(parts.toArray(new Part[parts.size()]));
+			Part[] p = parts.toArray(new Part[0]);
+			byte[] secret = p[0].join(Arrays.copyOfRange(p, 1, p.length));
 			Writer writer = new OutputStreamWriter(resp.getOutputStream(), Charset.forName("UTF-8"));
 			writer.write(Base64Variants.MIME.encode(secret));
 			writer.flush();

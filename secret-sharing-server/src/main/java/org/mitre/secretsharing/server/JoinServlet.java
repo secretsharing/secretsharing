@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.server;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
+import org.mitre.secretsharing.codec.PartFormats;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -73,9 +75,9 @@ public class JoinServlet extends HttpServlet {
 
 			Part[] parts = new Part[jreq.parts.size()];
 			for(int i = 0; i < parts.length; i++)
-				parts[i] = new Part(jreq.parts.get(i));
+				parts[i] = PartFormats.parse(jreq.parts.get(i));
 			
-			byte[] secret = Secrets.join(parts);
+			byte[] secret = parts[0].join(Arrays.copyOfRange(parts, 1, parts.length));
 
 			Response jresp = new Response();
 			jresp.status = "ok";
