@@ -26,6 +26,7 @@ package org.mitre.secretsharing.cli.cmd;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -73,7 +74,8 @@ public class JoinCommand extends AbstractCommand {
 			System.exit(1);
 		byte[] secret;
 		try {
-			secret = Secrets.join(parts.toArray(new Part[0]));
+			Part[] p = parts.toArray(new Part[0]);
+			secret = p[0].join(Arrays.copyOfRange(p, 1, p.length));
 		} catch(RuntimeException e) {
 			err.println("Invalid secret part combination: " + e.getMessage());
 			System.exit(1);
