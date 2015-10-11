@@ -130,6 +130,67 @@ public class PartFormats {
 				BytesWritable w = new BytesWritable();
 				
 				BigInteger mod = part.getModulus();
+				
+				sb.append(V + ":");
+				sb.append(dash(w
+						.writeInt(part.getLength())
+						.writeInt(part.getRequiredParts())
+						.writeBigInteger(mod)
+						.reset()));
+				sb.append("//");
+				sb.append(dash(w
+						.writeBigInteger(part.getPoint().getX())
+						.writeBigInteger(part.getPoint().getY())
+						.writeBytes(part.getChecksum().getChecksumBytes())
+						.reset()));
+				
+				return sb.toString();
+			}
+
+			@Override
+			public Part parse(String data) {
+				Matcher m = VALID.matcher(data);
+				if(!m.matches())
+					throw new IllegalArgumentException("Not parseable by " + this);
+				BytesReadable r;
+				
+				r = new BytesReadable(m.group(1).replace("-", ""));
+				int length = r.readInt();
+				int requiredParts = r.readInt();
+				BigInteger modulus = r.readBigInteger();
+				
+				r = new BytesReadable(m.group(3).replace("-", ""));
+				BigInteger x = r.readBigInteger();
+				BigInteger y = r.readBigInteger();
+				BigPoint point = new BigPoint(x, y);
+				Checksum cx = new Checksum(r);
+				Part part;
+				part = new Part(1, length, requiredParts, modulus, point);
+				if(!cx.equals(part.getChecksum()))
+					throw new IllegalArgumentException("Checksum mismatch");
+				return part;
+			}
+
+			@Override
+			public int getVersion() {
+				return 1;
+			}
+			
+		},
+
+		VERSION_2 {
+
+			private final String V = new BytesWritable().writeInt(2).toString();
+			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
+			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
+					
+			
+			@Override
+			public String format(Part part) {
+				StringBuilder sb = new StringBuilder();
+				BytesWritable w = new BytesWritable();
+				
+				BigInteger mod = part.getModulus();
 				if(part instanceof PerBytePart)
 					mod = BigInteger.valueOf(-1);
 				
@@ -168,9 +229,9 @@ public class PartFormats {
 				Checksum cx = new Checksum(r);
 				Part part;
 				if(BigInteger.valueOf(-1).equals(modulus))
-					part = new PerBytePart(1, length, requiredParts, point);
+					part = new PerBytePart(2, length, requiredParts, point);
 				else
-					part = new Part(0, length, requiredParts, modulus, point);
+					part = new Part(2, length, requiredParts, modulus, point);
 				if(!cx.equals(part.getChecksum()))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
@@ -178,11 +239,11 @@ public class PartFormats {
 
 			@Override
 			public int getVersion() {
-				return 1;
+				return 2;
 			}
 			
 		}
-		
+
 		;
 		
 		private static String dash(String s) {
@@ -263,7 +324,44 @@ public class PartFormats {
 				BigInteger modulus = r.readBigInteger();
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
-				return new Part(0, length, requiredParts, modulus, new BigPoint(x, y));
+				return new Part(1, length, requiredParts, modulus, new BigPoint(x, y));
+			}
+
+			@Override
+			public int getVersion() {
+				return 1;
+			}
+			
+		},
+
+		VERSION_2 {
+
+			@Override
+			public byte[] format(Part part) {
+				BytesWritable w = new BytesWritable();
+				w.writeInt(2);
+				w.writeInt(part.getLength());
+				w.writeInt(part.getRequiredParts());
+				w.writeBigInteger((part instanceof PerBytePart) ? BigInteger.valueOf(-1) : part.getModulus());
+				w.writeBigInteger(part.getPoint().getX());
+				w.writeBigInteger(part.getPoint().getY());
+				return w.toByteArray();
+			}
+
+			@Override
+			public Part parse(byte[] data) {
+				BytesReadable r = new BytesReadable(data);
+				if(r.readInt() != 2)
+					throw new IllegalArgumentException("Not parsable by " + this);
+				int length = r.readInt();
+				int requiredParts = r.readInt();
+				BigInteger modulus = r.readBigInteger();
+				BigInteger x = r.readBigInteger();
+				BigInteger y = r.readBigInteger();
+				if(BigInteger.valueOf(-1).equals(modulus))
+					return new PerBytePart(2, length, requiredParts, new BigPoint(x, y));
+				else
+					return new Part(2, length, requiredParts, modulus, new BigPoint(x, y));
 			}
 
 			@Override
@@ -272,7 +370,7 @@ public class PartFormats {
 			}
 			
 		}
-		
+
 		;
 		
 		@Override
