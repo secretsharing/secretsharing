@@ -24,7 +24,9 @@ us know where this software is being used.
 package org.mitre.secretsharing;
 
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 import org.mitre.secretsharing.util.BigIntegers;
@@ -59,14 +61,21 @@ public class Secrets {
 	}
 	
 	public static PerBytePart[] splitPerByte(byte[] secret, int totalParts, int requiredParts, Random rnd) {
+		List<Integer> xs = new ArrayList<Integer>();
+		for(int i = 1; i < PerBytePart.MODULUS.intValue(); i++)
+			xs.add(i);
 		BigPoint[][] pts = new BigPoint[totalParts][secret.length];
+		BigInteger[] x = new BigInteger[totalParts];
+		for(int j = 0; j < x.length; j++)
+			x[j] = BigInteger.valueOf(xs.remove((int)(rnd.nextDouble() * xs.size())));
 		for(int i = 0; i < secret.length; i++) {
 			TermPolynomial poly = TermPolynomial.ONE.multiply(BigInteger.valueOf(0xFF & secret[i]));
 			for(int j = 0; j < requiredParts-1; j++)
-				poly = poly.add(TermPolynomial.ONE.multiply(new BigInteger(16, rnd)).powX(j+1));
+				poly = poly.add(TermPolynomial.ONE.multiply(BigInteger.valueOf((long)(PerBytePart.MODULUS.longValue() * rnd.nextDouble()))).powX(j+1));
 			poly = new TermPolynomial(poly.getTerms(), PerBytePart.MODULUS);
-			for(int j = 0; j < totalParts; j++)
-				pts[j][i] = poly.p(BigInteger.valueOf(j+1));
+			for(int j = 0; j < totalParts; j++) {
+				pts[j][i] = poly.p(x[j]);
+			}
 		}
 		PerBytePart[] parts = new PerBytePart[totalParts];
 		for(int j = 0; j < totalParts; j++) {
@@ -76,7 +85,7 @@ public class Secrets {
 				b[2*i+1] = (byte)(v >>> 8);
 				b[2*i+2] = (byte) v;
 			}
-			parts[j] = new PerBytePart(2, secret.length, requiredParts, new BigPoint(BigInteger.valueOf(j+1), new BigInteger(b)));
+			parts[j] = new PerBytePart(2, secret.length, requiredParts, new BigPoint(x[j], new BigInteger(b)));
 		}
 		return parts;
 	}
