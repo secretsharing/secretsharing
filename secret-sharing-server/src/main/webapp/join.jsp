@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -13,7 +14,7 @@
 <form action="join.html" method="post">
 Enter your secret parts below, 1 per line<br/>
 <% if(request.getParameter("parts") != null) { %>
-<textarea rows="5" cols="120" name="parts" style="width:100%;"><%= request.getParameter("parts") %></textarea>
+<textarea rows="5" cols="120" name="parts" style="width:100%;"><%= StringEscapeUtils.escapeHtml(request.getParameter("parts")) %></textarea>
 <% } else { %>
 <textarea rows="5" cols="120" name="parts" style="width:100%;">Enter Secret Parts</textarea>
 <% } %>
