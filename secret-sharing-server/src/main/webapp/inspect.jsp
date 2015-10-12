@@ -1,3 +1,4 @@
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -71,7 +72,7 @@ table.format td:first-child {
 <form action="inspect.html" method="post">
 Enter your secret part below<br/>
 <% if(request.getParameter("part") != null) { %>
-<textarea rows="2" cols="120" name="part" style="width:100%;"><%= request.getParameter("part") %></textarea>
+<textarea rows="2" cols="120" name="part" style="width:100%;"><%= StringEscapeUtils.escapeHtml(request.getParameter("part")) %></textarea>
 <% } else { %>
 <textarea rows="2" cols="120" name="part" style="width:100%;">Enter Secret Part</textarea>
 <% } %>
