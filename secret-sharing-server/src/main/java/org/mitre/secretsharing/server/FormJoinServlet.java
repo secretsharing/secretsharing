@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.server;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,6 +49,8 @@ public class FormJoinServlet extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
+		Writer w = new HtmlXSSWriter(resp.getWriter());
+		
 		try {
 			String parts = req.getParameter("parts");
 			if(parts == null)
@@ -77,14 +80,14 @@ public class FormJoinServlet extends HttpServlet {
 			byte[] secret = p[0].join(Arrays.copyOfRange(p, 1, p.length));
 
 			if(base64)
-				resp.getWriter().print(Base64Variants.MIME.encode(secret));
+				w.write(Base64Variants.MIME.encode(secret));
 			else
-				resp.getWriter().print(new String(secret, "UTF-8"));
+				w.write(new String(secret, "UTF-8"));
 		} catch(Throwable t) {
 			if(t.getMessage() != null)
-				resp.getWriter().print("error: " + t.getMessage());
+				w.write("error: " + t.getMessage());
 			else
-				resp.getWriter().print("error");
+				w.write("error");
 		}
 	}
 }
