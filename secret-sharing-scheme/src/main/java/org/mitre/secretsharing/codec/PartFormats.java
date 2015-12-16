@@ -69,6 +69,7 @@ public class PartFormats {
 					
 			
 			@Override
+			@SuppressWarnings("deprecation")
 			public String format(Part part) {
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
@@ -79,16 +80,18 @@ public class PartFormats {
 						.writeBigInteger(part.getModulus())
 						.reset()));
 				sb.append("//");
+				Checksum cx = new Checksum(part.getPoint());
 				sb.append(dash(w
 						.writeBigInteger(part.getPoint().getX())
 						.writeBigInteger(part.getPoint().getY())
-						.writeBytes(part.getChecksum().getChecksumBytes())
+						.writeBytes(cx.getChecksumBytes())
 						.reset()));
 				
 				return sb.toString();
 			}
 
 			@Override
+			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
@@ -105,7 +108,7 @@ public class PartFormats {
 				BigPoint point = new BigPoint(x, y);
 				Checksum cx = new Checksum(r);
 				Part part = new Part(0, length, -1, modulus, point);
-				if(!cx.equals(part.getChecksum()))
+				if(!cx.equals(new Checksum(point)))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
 			}
@@ -125,6 +128,7 @@ public class PartFormats {
 					
 			
 			@Override
+			@SuppressWarnings("deprecation")
 			public String format(Part part) {
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
@@ -138,16 +142,18 @@ public class PartFormats {
 						.writeBigInteger(mod)
 						.reset()));
 				sb.append("//");
+				Checksum cx = new Checksum(part.getPoint());
 				sb.append(dash(w
 						.writeBigInteger(part.getPoint().getX())
 						.writeBigInteger(part.getPoint().getY())
-						.writeBytes(part.getChecksum().getChecksumBytes())
+						.writeBytes(cx.getChecksumBytes())
 						.reset()));
 				
 				return sb.toString();
 			}
 
 			@Override
+			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
@@ -166,7 +172,7 @@ public class PartFormats {
 				Checksum cx = new Checksum(r);
 				Part part;
 				part = new Part(1, length, requiredParts, modulus, point);
-				if(!cx.equals(part.getChecksum()))
+				if(!cx.equals(new Checksum(point)))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
 			}
@@ -186,6 +192,7 @@ public class PartFormats {
 					
 			
 			@Override
+			@SuppressWarnings("deprecation")
 			public String format(Part part) {
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
@@ -201,16 +208,18 @@ public class PartFormats {
 						.writeBigInteger(mod)
 						.reset()));
 				sb.append("//");
+				Checksum cx = new Checksum(part.getPoint());
 				sb.append(dash(w
 						.writeBigInteger(part.getPoint().getX())
 						.writeBigInteger(part.getPoint().getY())
-						.writeBytes(part.getChecksum().getChecksumBytes())
+						.writeBytes(cx.getChecksumBytes())
 						.reset()));
 				
 				return sb.toString();
 			}
 
 			@Override
+			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
@@ -232,7 +241,7 @@ public class PartFormats {
 					part = new PerBytePart(2, length, requiredParts, point);
 				else
 					part = new Part(2, length, requiredParts, modulus, point);
-				if(!cx.equals(part.getChecksum()))
+				if(!cx.equals(new Checksum(point)))
 					throw new IllegalArgumentException("Checksum mismatch");
 				return part;
 			}
