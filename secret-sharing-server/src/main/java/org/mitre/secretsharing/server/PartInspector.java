@@ -25,13 +25,17 @@ package org.mitre.secretsharing.server;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
 import org.mitre.secretsharing.Part;
+import org.mitre.secretsharing.PerBytePart;
 
 public abstract class PartInspector {
 
@@ -42,6 +46,7 @@ public abstract class PartInspector {
 		modulus,
 		x,
 		y,
+		perbyte,
 	}
 	
 	public static String get(Part part, Field field) {
@@ -52,8 +57,22 @@ public abstract class PartInspector {
 		case length: return String.valueOf(part.getLength());
 		case required: return String.valueOf(part.getRequiredParts());
 		case modulus: return String.valueOf(part.getModulus());
-		case x: return String.valueOf(part.getPoint().getX());
-		case y: return String.valueOf(part.getPoint().getY());
+		case x: return String.format("%04X", part.getPoint().getX());
+		case y: {
+			if(part instanceof PerBytePart) {
+				byte[] b = part.getPoint().getY().toByteArray();
+				List<String> ys = new ArrayList<>();
+				for(int i = 0; i < part.getLength(); i++) {
+					byte b0 = b[b.length - 1 - 2 * i];
+					byte b1 = b[b.length - 2 - 2 * i];
+					int v = ((0xFF & b1) << 8) | (0xFF & b0);
+					ys.add(0, String.format("%04X", v));
+				}
+				return StringUtils.join(ys, ",");
+			} else
+				return String.format("%04X", part.getPoint().getY());
+		}
+		case perbyte: return String.valueOf(part instanceof PerBytePart);
 		}
 		throw new IllegalArgumentException("no such field " + field);
 	}

@@ -35,8 +35,7 @@ table.details td:first-child {
 }
 
 td {
-	padding-top: 5px;
-	padding-bottom: 5px;
+	padding: 5px;
 }
 
 span.format {
@@ -101,8 +100,9 @@ if(request.getParameter("part") != null) {
 <tr><td>Secret length (bytes)</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.length) %>"></td></tr>
 <tr><td>Required secret parts</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.required) %>"></td></tr>
 <tr><td>Polynomial prime modulus</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.modulus) %>"></td></tr>
-<tr><td>Polynomial point X coordinate</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.x) %>"></td></tr>
-<tr><td>Polynomial point Y coordinate</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.y) %>"></td></tr>
+<tr><td>Per-Byte Y coordinates</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.perbyte) %>"></td></tr>
+<tr><td>X coordinate (hex)</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.x) %>"></td></tr>
+<tr><td>Y coordinate (hex)</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.y) %>"></td></tr>
 </table>
 <br/>
 <hr/>
