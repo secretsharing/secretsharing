@@ -242,6 +242,68 @@ public class PartFormats {
 				return 2;
 			}
 			
+		},
+
+		VERSION_3 {
+
+			private final String V = new BytesWritable().writeInt(3).toString();
+			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
+			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
+					
+			
+			@Override
+			public String format(Part part) {
+				StringBuilder sb = new StringBuilder();
+				BytesWritable w = new BytesWritable();
+				
+				BigInteger mod = part.getModulus();
+				if(part instanceof PerBytePart)
+					mod = BigInteger.valueOf(-1);
+				
+				sb.append(V + ":");
+				sb.append(dash(w
+						.writeInt(part.getLength())
+						.writeInt(part.getRequiredParts())
+						.writeBigInteger(mod)
+						.reset()));
+				sb.append("//");
+				sb.append(dash(w
+						.writeBigInteger(part.getPoint().getX())
+						.writeBigInteger(part.getPoint().getY())
+						.reset()));
+				
+				return sb.toString();
+			}
+
+			@Override
+			public Part parse(String data) {
+				Matcher m = VALID.matcher(data);
+				if(!m.matches())
+					throw new IllegalArgumentException("Not parseable by " + this);
+				BytesReadable r;
+				
+				r = new BytesReadable(m.group(1).replace("-", ""));
+				int length = r.readInt();
+				int requiredParts = r.readInt();
+				BigInteger modulus = r.readBigInteger();
+				
+				r = new BytesReadable(m.group(3).replace("-", ""));
+				BigInteger x = r.readBigInteger();
+				BigInteger y = r.readBigInteger();
+				BigPoint point = new BigPoint(x, y);
+				Part part;
+				if(BigInteger.valueOf(-1).equals(modulus))
+					part = new PerBytePart(3, length, requiredParts, point);
+				else
+					part = new Part(3, length, requiredParts, modulus, point);
+				return part;
+			}
+
+			@Override
+			public int getVersion() {
+				return 3;
+			}
+			
 		}
 
 		;
