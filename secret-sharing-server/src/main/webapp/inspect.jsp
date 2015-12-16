@@ -1,3 +1,7 @@
+<%@page import="org.mitre.secretsharing.server.PartInspector.Field"%>
+<%@page import="org.mitre.secretsharing.server.PartInspector"%>
+<%@page import="org.mitre.secretsharing.codec.PartFormats"%>
+<%@page import="org.mitre.secretsharing.Part"%>
 <%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
@@ -71,8 +75,17 @@ table.format td:first-child {
 
 <form action="inspect.html" method="post">
 Enter your secret part below<br/>
-<% if(request.getParameter("part") != null) { %>
-<textarea rows="2" cols="120" name="part" style="width:100%;"><%= StringEscapeUtils.escapeHtml(request.getParameter("part")) %></textarea>
+<% 
+Part part = null;
+Throwable parseThrown = null;
+if(request.getParameter("part") != null) { 
+	try {
+		part = PartFormats.parse(request.getParameter("part")); 
+	} catch(Exception e) {
+		parseThrown = e;
+	}
+%>
+<textarea rows="2" cols="120" name="part" style="width:100%;"><%= ((part == null ? "Invalid secret part!\n" : "") + StringEscapeUtils.escapeHtml(request.getParameter("part"))) %></textarea>
 <% } else { %>
 <textarea rows="2" cols="120" name="part" style="width:100%;">Enter Secret Part</textarea>
 <% } %>
@@ -84,12 +97,12 @@ Enter your secret part below<br/>
 <hr/>
 <h2>Secret Part Details:</h2>
 <table class="details">
-<tr><td>Format version</td><td class="details"><input class="version" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="version"/></jsp:include>"></td></tr>
-<tr><td>Secret length (bytes)</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="length"/></jsp:include>"></td></tr>
-<tr><td>Required secret parts</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="required"/></jsp:include>"></td></tr>
-<tr><td>Polynomial prime modulus</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="modulus"/></jsp:include>"></td></tr>
-<tr><td>Polynomial point X coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="x"/></jsp:include>"></td></tr>
-<tr><td>Polynomial point Y coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="y"/></jsp:include>"></td></tr>
+<tr><td>Format version</td><td class="details"><input class="version" type="text" value="<%= PartInspector.get(part, Field.version) %>"></td></tr>
+<tr><td>Secret length (bytes)</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.length) %>"></td></tr>
+<tr><td>Required secret parts</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.required) %>"></td></tr>
+<tr><td>Polynomial prime modulus</td><td class="details"><input class="public" type="text" value="<%= PartInspector.get(part, Field.modulus) %>"></td></tr>
+<tr><td>Polynomial point X coordinate</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.x) %>"></td></tr>
+<tr><td>Polynomial point Y coordinate</td><td class="details"><input class="private" type="text" value="<%= PartInspector.get(part, Field.y) %>"></td></tr>
 </table>
 <br/>
 <hr/>
