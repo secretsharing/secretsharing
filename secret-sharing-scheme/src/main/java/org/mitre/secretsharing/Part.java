@@ -195,24 +195,28 @@ public class Part {
 	}
 
 	/**
-	 * Return the public part of this secret part
-	 * @return
+	 * Return the public part of this secret part.  This information should be
+	 * shared with everyone given a part of the secret.
+	 * @return The {@link PublicSecretPart}
 	 */
 	public PublicSecretPart getPublicPart() {
 		return publicPart;
 	}
 
 	/**
-	 * Return the private part of this secret part
-	 * @return
+	 * Return the private part of this secret part.  This information should not be
+	 * shared with anyone else.
+	 * @return The {@link PrivateSecretPart}
 	 */
 	public PrivateSecretPart getPrivatePart() {
 		return privatePart;
 	}
 	
 	/**
-	 * Return the format version of this secret part
-	 * @return
+	 * Return the format version of this secret part.
+	 * @see PartFormats#currentBytesFormat()
+	 * @see PartFormats#currentStringFormat()
+	 * @return The format version.
 	 */
 	public int getVersion() {
 		return version;
@@ -220,27 +224,35 @@ public class Part {
 	
 	/**
 	 * Return the length in bytes of the secret
-	 * @return
+	 * @return The length of the secret
 	 */
 	public int getLength() {
 		return getPublicPart().getLength();
 	}
 	
+	/**
+	 * Return the number of parts required to reconstruct the secret
+	 * @return The required number of parts
+	 */
 	public int getRequiredParts() {
 		return getPublicPart().getRequiredParts();
 	}
 	
 	/**
 	 * Return the prime modulus for the secret parts
-	 * @return
+	 * @return The prime modulus
 	 */
 	public BigInteger getModulus() {
 		return getPublicPart().getModulus();
 	}
 	
 	/**
-	 * Return the point on the polynomial
-	 * @return
+	 * Return the point on the polynomial.
+	 * For a {@link PerBytePart} secret part, where each point's Y value
+	 * is constrained by {@link PerBytePart#MODULUS} to two bytes,
+	 * multiple Y values will be encoded in the Y coordinate of this point.
+	 * In this case the X value is shared for all Y values.
+	 * @return The point
 	 */
 	public BigPoint getPoint() {
 		return getPrivatePart().getPoint();
