@@ -81,6 +81,19 @@
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.8.2</version>
 				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-javadoc-plugin</artifactId>
+					<version>2.10.3</version>
+					<configuration>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-source-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
@@ -116,6 +129,7 @@
 							</execution>
 						</executions>
 						<configuration>
+							<encoding>UTF-8</encoding>
 							<nodeprecated>true</nodeprecated>
 							<nodeprecatedlist>true</nodeprecatedlist>
 						</configuration>
