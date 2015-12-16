@@ -31,10 +31,13 @@ import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
 
 /**
- * Simple checksum.  Makes absolutely no attempt at error correction.
+ * Simple checksum.  Makes absolutely no attempt at error correction.<p>
+ * 
+ * Deprecated in version 1.1.0
  * @author Robin Kirkman
  *
  */
+@Deprecated
 public final class Checksum {
 
 	public static Checksum fromBytes(byte[] cxb) {
