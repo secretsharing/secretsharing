@@ -26,7 +26,6 @@ package org.mitre.secretsharing;
 import java.math.BigInteger;
 import java.util.Arrays;
 
-import org.mitre.secretsharing.codec.Checksum;
 import org.mitre.secretsharing.codec.PartFormats;
 
 /**
@@ -103,10 +102,6 @@ public class Part {
 		 * The point on the polynomial
 		 */
 		private BigPoint point;
-		/**
-		 * The checksum of that point
-		 */
-		private Checksum cx;
 		
 		/**
 		 * Create a new {@link PrivateSecretPart}
@@ -116,7 +111,6 @@ public class Part {
 			if(point == null)
 				throw new IllegalArgumentException();
 			this.point = point;
-			cx = new Checksum(point);
 		}
 
 		/**
@@ -125,10 +119,6 @@ public class Part {
 		 */
 		public BigPoint getPoint() {
 			return point;
-		}
-		
-		public Checksum getChecksum() {
-			return cx;
 		}
 	}
 	
@@ -244,10 +234,6 @@ public class Part {
 	 */
 	public BigPoint getPoint() {
 		return getPrivatePart().getPoint();
-	}
-	
-	public Checksum getChecksum() {
-		return getPrivatePart().getChecksum();
 	}
 	
 	public byte[] join(Part... otherParts) {

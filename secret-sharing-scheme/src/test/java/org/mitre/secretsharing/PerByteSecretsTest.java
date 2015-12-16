@@ -10,7 +10,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.mitre.secretsharing.codec.PartFormats;
 
 @RunWith(Parameterized.class)
 public class PerByteSecretsTest {
