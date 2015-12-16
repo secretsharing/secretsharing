@@ -124,6 +124,10 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<additionalparam>-Xdoclint:all</additionalparam>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
