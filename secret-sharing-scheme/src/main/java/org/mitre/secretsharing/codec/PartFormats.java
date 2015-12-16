@@ -33,7 +33,7 @@ import org.mitre.secretsharing.PerBytePart;
 import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
 
-public class PartFormats {
+public abstract class PartFormats {
 	public static PartFormat<String> stringFormat(int version) {
 		return StringFormats.values()[version];
 	}
@@ -60,7 +60,7 @@ public class PartFormats {
 		return fmt[fmt.length-1];
 	}
 	
-	private static enum StringFormats implements PartFormat<String> {
+	public static enum StringFormats implements PartFormat<String> {
 		VERSION_0 {
 
 			private final String V = new BytesWritable().writeInt(0).toString();
@@ -338,7 +338,7 @@ public class PartFormats {
 		}
 	}
 	
-	private static enum BytesFormats implements PartFormat<byte[]> {
+	public static enum BytesFormats implements PartFormat<byte[]> {
 		VERSION_0 {
 
 			@Override
