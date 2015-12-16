@@ -121,9 +121,9 @@ public abstract class Secrets {
 	}
 
 	/**
-	 * Recover a secret from its parts
-	 * @param parts
-	 * @return
+	 * Recover a secret from an array of {@link Part}s
+	 * @param parts The array of secret parts
+	 * @return The recovered secret
 	 */
 	public static byte[] joinMultibyte(Part[] parts) {
 		BigPoint[] pts = new BigPoint[parts.length];
@@ -157,6 +157,11 @@ public abstract class Secrets {
 		return ret;
 	}
 
+	/**
+	 * Recover a per-byte secret from an array of {@link PerBytePart}s
+	 * @param parts The secret parts
+	 * @return The recovered secret
+	 */
 	public static byte[] joinPerByte(PerBytePart[] parts) {
 		Part.PublicSecretPart pub = parts[0].getPublicPart();
 		byte[] secret = new byte[pub.getLength()];

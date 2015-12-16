@@ -149,9 +149,10 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param length
-	 * @param modulus
-	 * @param point
+	 * @param length The length, in bytes, of the shared secret
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param modulus The modulus of the polynomial representing the shared secret
+	 * @param point The polynomial point representing the secret part
 	 */
 	public Part(int length, int requiredParts, BigInteger modulus, BigPoint point) {
 		this(PartFormats.currentStringFormat().getVersion(), new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
@@ -159,21 +160,27 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param length
-	 * @param modulus
-	 * @param point
+	 * @param version The format version this Part was read from 
+	 * @param length The length in bytes of the secret
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param modulus The modulus of the secret polynomial
+	 * @param point The point on the secret polynomial
 	 */
 	public Part(int version, int length, int requiredParts, BigInteger modulus, BigPoint point) {
 		this(version, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 
+	/**
+	 * Copy constructor
+	 * @param other The {@link Part} to copy
+	 */
 	private Part(Part other) {
 		this(other.getVersion(), other.getPublicPart(), other.getPrivatePart());
 	}
 	
 	/**
 	 * Parse a string representation of a {@link Part}
-	 * @param s
+	 * @param s The string to parse
 	 */
 	public Part(String s) {
 		this(PartFormats.parse(s));
