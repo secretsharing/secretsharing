@@ -137,9 +137,9 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param version
-	 * @param publicPart
-	 * @param privatePart
+	 * @param version The format version this part was read from
+	 * @param publicPart The public secret part
+	 * @param privatePart The private secret part
 	 */
 	public Part(int version, PublicSecretPart publicPart, PrivateSecretPart privatePart) {
 		this.version = version;
@@ -248,9 +248,22 @@ public class Part {
 		return getPrivatePart().getPoint();
 	}
 	
+	/**
+	 * Join this {@link Part} with an array of other {@link Part}s of the same
+	 * type to reconstruct a secret.  {@link Part} may not be joined with {@link PerBytePart}. 
+	 * @param otherParts Array of other parts to join with this one.
+	 * @return The reconstructed secret
+	 */
+	/*
+	 * Overridden by PerBytePart
+	 */
 	public byte[] join(Part... otherParts) {
 		Part[] parts = Arrays.copyOf(otherParts, otherParts.length + 1);
 		parts[parts.length - 1] = this;
+		for(Part p : parts) {
+			if(p instanceof PerBytePart)
+				throw new IllegalArgumentException("Cannot join single-point and per-byte-point secret parts");
+		}
 		return Secrets.joinMultibyte(parts);
 	}
 }
