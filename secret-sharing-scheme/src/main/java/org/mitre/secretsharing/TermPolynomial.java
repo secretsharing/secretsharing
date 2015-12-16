@@ -184,17 +184,6 @@ public class TermPolynomial {
 		this(secretPolynomial(secret, secretBits, parts, rnd));
 	}
 	
-	/**
-	 * Apply this {@link TermPolynomial}'s modulus to the argument.
-	 * @param val
-	 * @return
-	 */
-	protected BigInteger mod(BigInteger val) {
-		if(getModulus() == null)
-			return val;
-		return val.mod(getModulus()).add(getModulus()).mod(getModulus());
-	}
-	
 	@Override
 	public String toString() {
 		Term[] terms = getTerms();
@@ -255,23 +244,9 @@ public class TermPolynomial {
 			result = result.add(terms[i].multiply(xp));
 			xp = xp.multiply(x);
 		}
+		if(modulus != null)
+			result = result.mod(modulus);
 		return result;
-	}
-	
-	/**
-	 * Compute the y-value for a given x-value
-	 * @param x
-	 * @return
-	 */
-	public BigInteger wholeY(BigInteger x) {
-		Term result = Term.ZERO;
-		Term[] terms = getTerms();
-		BigInteger xp = BigInteger.ONE;
-		for(int i = 0; i < terms.length; i++) {
-			result = result.add(terms[i].multiply(xp));
-			xp = xp.multiply(x);
-		}
-		return mod(result.whole());
 	}
 	
 	/**
@@ -294,8 +269,8 @@ public class TermPolynomial {
 	/**
 	 * Multiply this polynomial by a power of X and return
 	 * a new polynomial
-	 * @param powx
-	 * @return
+	 * @param powx The power of X to multiply by
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial powX(int powx) {
 		Term[] terms = getTerms();
@@ -355,7 +330,7 @@ public class TermPolynomial {
 	 * @return
 	 */
 	public BigPoint p(BigInteger x) {
-		return new BigPoint(x, mod(y(x).whole()));
+		return new BigPoint(x, y(x).whole());
 	}
 	
 	/**
