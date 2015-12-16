@@ -36,7 +36,7 @@ import org.mitre.secretsharing.util.BigIntegers;
  * @author Robin Kirkman
  *
  */
-public class Secrets {
+public abstract class Secrets {
 	public static Part[] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		return splitMultibyte(secret, totalParts, requiredParts, rnd);
 	}

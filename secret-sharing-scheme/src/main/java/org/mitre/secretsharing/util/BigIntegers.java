@@ -31,7 +31,7 @@ import java.util.Random;
  * @author Robin Kirkman
  *
  */
-public class BigIntegers {
+public abstract class BigIntegers {
 	/**
 	 * Create an array of {@link BigInteger} ranging in value
 	 * from {@code from} (inclusive) to {@code to} (exclusive)
