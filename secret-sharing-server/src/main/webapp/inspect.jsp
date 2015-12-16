@@ -80,7 +80,7 @@ Part part = null;
 Throwable parseThrown = null;
 if(request.getParameter("part") != null) { 
 	try {
-		part = PartFormats.parse(request.getParameter("part")); 
+		part = PartFormats.parse(request.getParameter("part").trim()); 
 	} catch(Exception e) {
 		parseThrown = e;
 	}
