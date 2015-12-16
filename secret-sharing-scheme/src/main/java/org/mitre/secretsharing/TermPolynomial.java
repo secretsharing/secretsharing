@@ -161,6 +161,10 @@ public class TermPolynomial {
 	public TermPolynomial(Term[] terms, BigInteger modulus) {
 		this.terms = Arrays.copyOf(terms, terms.length);
 		this.modulus = modulus;
+		if(this.modulus != null) {
+			for(int i = 0; i < this.terms.length; i++)
+				this.terms[i] = this.terms[i].mod(this.modulus);
+		}
 	}
 	
 	/**
@@ -281,17 +285,17 @@ public class TermPolynomial {
 	}
 	
 	/**
-	 * Multiply this polynomial by a term, and a power of X,
+	 * Multiply this polynomial by a term and a given power of X,
 	 * and return a new polynomial
 	 * @param term
 	 * @param powx
 	 * @return
 	 */
 	public TermPolynomial multiply(Term term, int powx) {
-		Term[] t = getTerms();
+		Term[] t = new Term[getTerms().length + powx];
 		for(int i = 0; i < t.length; i++)
-			t[i] = t[i].multiply(term);
-		return new TermPolynomial(t).powX(powx);
+			t[i] = (i < powx ? Term.ZERO : getTerms()[i - powx].multiply(term));
+		return new TermPolynomial(t, modulus);
 	}
 	
 	/**
@@ -318,10 +322,7 @@ public class TermPolynomial {
 	 * @return
 	 */
 	public TermPolynomial multiply(BigInteger val) {
-		Term[] terms = getTerms();
-		for(int i = 0; i < terms.length; i++)
-			terms[i] = terms[i].multiply(val);
-		return new TermPolynomial(terms);
+		return multiply(new Term(val), 0);
 	}
 
 	/**
