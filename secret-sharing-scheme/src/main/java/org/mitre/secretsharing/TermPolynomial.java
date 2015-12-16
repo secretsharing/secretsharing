@@ -44,9 +44,9 @@ public class TermPolynomial {
 	
 	/**
 	 * Compute a Lagrange polynomial from an array of points, with an (optional) specified modulus
-	 * @param pts
-	 * @param modulus
-	 * @return
+	 * @param pts Array of points found on the interpolating Lagrange polynomial
+	 * @param modulus The modulus of the polynomial
+	 * @return A new {@link TermPolynomial}
 	 */
 	public static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
 		BigInteger[] px = new BigInteger[pts.length];
@@ -66,10 +66,10 @@ public class TermPolynomial {
 	
 	/**
 	 * Compute a sub-polynomial as part of a Lagrange polynomial
-	 * @param px
-	 * @param py
-	 * @param j
-	 * @return
+	 * @param px The X values of the points
+	 * @param py The Y values of the points
+	 * @param j The index in the array of points
+	 * @return A new {@link TermPolynomial} specific to this index
 	 */
 	private static TermPolynomial lagrangeSubPolynomial(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
@@ -134,8 +134,10 @@ public class TermPolynomial {
 	private BigInteger modulus;
 	
 	/**
-	 * Create a {@link TermPolynomial} from an array of {@link Term}s
-	 * @param terms
+	 * Create a {@link TermPolynomial} from an array of {@link Term}s.
+	 * The 0th element is the 0th power in the polynomial, 1th element
+	 * is 1th power, etc
+	 * @param terms The array of terms
 	 */
 	public TermPolynomial(Term... terms) {
 		this(terms, null);
@@ -143,15 +145,18 @@ public class TermPolynomial {
 	
 	/**
 	 * Copy a {@link TermPolynomial}
-	 * @param other
+	 * @param other The {@link TermPolynomial} to copy
 	 */
 	public TermPolynomial(TermPolynomial other) {
 		this(other.getTerms(), other.getModulus());
 	}
 	
 	/**
-	 * Create a new {@link TermPolynomial} from an array of terms.
-	 * @param terms
+	 * Create a new {@link TermPolynomial} from an array of terms and a modulus.
+	 * The 0th element is the 0th power in the polynomial, 1th element
+	 * is 1th power, etc
+	 * @param terms The array of terms
+	 * @param The modulus, or {@code null} for no modulus
 	 */
 	public TermPolynomial(Term[] terms, BigInteger modulus) {
 		this.terms = Arrays.copyOf(terms, terms.length);
@@ -161,8 +166,8 @@ public class TermPolynomial {
 	/**
 	 * Create a Lagrange interpolating polynomial for the argument points
 	 * and optional modulus
-	 * @param pts
-	 * @param modulus
+	 * @param pts The points to interpolate
+	 * @param modulus The polynomial modulus
 	 */
 	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
 		this(lagrangePolynomial(pts, modulus));
@@ -170,17 +175,17 @@ public class TermPolynomial {
 	
 	/**
 	 * Create a random secret-generating polynomial for the argument secret
-	 * @param secret
-	 * @param secretBits
-	 * @param powx
-	 * @param rnd
+	 * @param secret The secret, as a {@link BigInteger}
+	 * @param secretBits The number of bits in the secret
+	 * @param parts The number of parts to create
+	 * @param rnd A source of randomness
 	 */
-	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
-		this(secretPolynomial(secret, secretBits, powx, rnd));
+	public TermPolynomial(BigInteger secret, int secretBits, int parts, Random rnd) {
+		this(secretPolynomial(secret, secretBits, parts, rnd));
 	}
 	
 	/**
-	 * Apply the modulus, if there is one.  Otherwise return the argument.
+	 * Apply this {@link TermPolynomial}'s modulus to the argument.
 	 * @param val
 	 * @return
 	 */

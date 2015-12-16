@@ -56,8 +56,9 @@ public class Part {
 		
 		/**
 		 * Create a new {@link PublicSecretPart}
-		 * @param length
-		 * @param modulus
+		 * @param length The length, in bytes, of the secret
+		 * @param requiredParts The number of parts required to reconstruct the secret
+		 * @param modulus The modulus of the secret polynomial
 		 */
 		private PublicSecretPart(int length, int requiredParts, BigInteger modulus) {
 			if(modulus == null)
@@ -69,7 +70,7 @@ public class Part {
 		
 		/**
 		 * The length (in bytes) of the secret
-		 * @return
+		 * @return The length in bytes
 		 */
 		public int getLength() {
 			return length;
@@ -77,7 +78,7 @@ public class Part {
 
 		/**
 		 * The number of parts required to reconstruct the secret
-		 * @return
+		 * @return The number of required parts
 		 */
 		public int getRequiredParts() {
 			return requiredParts;
@@ -85,7 +86,7 @@ public class Part {
 		
 		/**
 		 * The prime modulus for the key parts
-		 * @return
+		 * @return The polynomial modulus
 		 */
 		public BigInteger getModulus() {
 			return modulus;
@@ -105,7 +106,7 @@ public class Part {
 		
 		/**
 		 * Create a new {@link PrivateSecretPart}
-		 * @param point
+		 * @param point The point on the polynomial
 		 */
 		private PrivateSecretPart(BigPoint point) {
 			if(point == null)
@@ -115,7 +116,7 @@ public class Part {
 
 		/**
 		 * Return the point on the polynomial
-		 * @return
+		 * @return The point
 		 */
 		public BigPoint getPoint() {
 			return point;

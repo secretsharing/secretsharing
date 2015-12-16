@@ -115,6 +115,10 @@
 								</goals>
 							</execution>
 						</executions>
+						<configuration>
+							<nodeprecated>true</nodeprecated>
+							<nodeprecatedlist>true</nodeprecatedlist>
+						</configuration>
 					</plugin>
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
