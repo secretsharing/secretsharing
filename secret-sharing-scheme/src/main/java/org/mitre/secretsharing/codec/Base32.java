@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
  * @author Robin Kirkman
  *
  */
-public class Base32 {
+public abstract class Base32 {
 	public static final Pattern DIGIT = Pattern.compile("[0-9a-tv-zA-TV-Z]");
 	public static final Pattern ENCODED = Pattern.compile("(D{8})*(DD(DD(D(DD)?)?)?)?".replace("D", DIGIT.pattern()));
 	
@@ -226,4 +226,6 @@ public class Base32 {
 		
 		return dest;
 	}
+	
+	private Base32() {}
 }
