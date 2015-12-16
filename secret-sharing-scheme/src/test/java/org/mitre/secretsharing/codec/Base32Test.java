@@ -26,7 +26,6 @@ package org.mitre.secretsharing.codec;
 import java.nio.charset.Charset;
 
 import org.junit.Test;
-import org.mitre.secretsharing.codec.Base32;
 
 public class Base32Test {
 	private static final Charset ASCII = Charset.forName("ASCII");

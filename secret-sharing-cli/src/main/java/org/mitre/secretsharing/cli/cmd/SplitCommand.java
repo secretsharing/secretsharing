@@ -106,7 +106,7 @@ public class SplitCommand extends AbstractCommand {
 		int totalParts = Integer.parseInt(cmd.getOptionValue(TOTAL.getLongOpt()));
 		int requiredParts = Integer.parseInt(cmd.getOptionValue(REQUIRED.getLongOpt()));
 		Random rnd = new SecureRandom();
-		Part[] parts = Secrets.split(secret, totalParts, requiredParts, rnd);
+		Part[] parts = Secrets.splitPerByte(secret, totalParts, requiredParts, rnd);
 		for(Part p : parts) {
 			String s = PartFormats.currentStringFormat().format(p);
 			out.println(s);

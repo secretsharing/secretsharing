@@ -25,7 +25,6 @@ package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.Objects;
 import java.util.Random;
 
 /**
@@ -45,9 +44,9 @@ public class TermPolynomial {
 	
 	/**
 	 * Compute a Lagrange polynomial from an array of points, with an (optional) specified modulus
-	 * @param pts
-	 * @param modulus
-	 * @return
+	 * @param pts Array of points found on the interpolating Lagrange polynomial
+	 * @param modulus The modulus of the polynomial
+	 * @return A new {@link TermPolynomial}
 	 */
 	public static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
 		BigInteger[] px = new BigInteger[pts.length];
@@ -67,10 +66,10 @@ public class TermPolynomial {
 	
 	/**
 	 * Compute a sub-polynomial as part of a Lagrange polynomial
-	 * @param px
-	 * @param py
-	 * @param j
-	 * @return
+	 * @param px The X values of the points
+	 * @param py The Y values of the points
+	 * @param j The index in the array of points
+	 * @return A new {@link TermPolynomial} specific to this index
 	 */
 	private static TermPolynomial lagrangeSubPolynomial(BigInteger[] px, BigInteger[] py, int j) {
 		TermPolynomial result = TermPolynomial.ONE;
@@ -87,10 +86,10 @@ public class TermPolynomial {
 	
 	/**
 	 * Return the term as a coefficient of some power of X, adjusted to be
-	 * an integer for some modulus
-	 * @param term
-	 * @param mod
-	 * @return
+	 * an integer for some modulus, for use when computing a Lagrange polynomial.
+	 * @param term The term
+	 * @param mod The modulus
+	 * @return A new {@link Term}
 	 */
 	private static Term lagrangeTermModulo(Term term, BigInteger mod) {
 		if(mod == null)
@@ -103,11 +102,11 @@ public class TermPolynomial {
 	
 	/**
 	 * Create a random secret-generating polynomial for the argument secret
-	 * @param secret
-	 * @param secretBits
-	 * @param powx
-	 * @param rnd
-	 * @return
+	 * @param secret The secret, as a Y coordinate on a polynomial
+	 * @param secretBits Number of bits in the secret
+	 * @param powx The power of the polynomial, one less than the number of required secret parts
+	 * @param rnd A source of random
+	 * @return A new {@link TermPolynomial}
 	 */
 	public static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
@@ -135,8 +134,10 @@ public class TermPolynomial {
 	private BigInteger modulus;
 	
 	/**
-	 * Create a {@link TermPolynomial} from an array of {@link Term}s
-	 * @param terms
+	 * Create a {@link TermPolynomial} from an array of {@link Term}s.
+	 * The 0th element is the 0th power in the polynomial, 1th element
+	 * is 1th power, etc
+	 * @param terms The array of terms
 	 */
 	public TermPolynomial(Term... terms) {
 		this(terms, null);
@@ -144,26 +145,33 @@ public class TermPolynomial {
 	
 	/**
 	 * Copy a {@link TermPolynomial}
-	 * @param other
+	 * @param other The {@link TermPolynomial} to copy
 	 */
 	public TermPolynomial(TermPolynomial other) {
 		this(other.getTerms(), other.getModulus());
 	}
 	
 	/**
-	 * Create a new {@link TermPolynomial} from an array of terms.
-	 * @param terms
+	 * Create a new {@link TermPolynomial} from an array of terms and a modulus.
+	 * The 0th element is the 0th power in the polynomial, 1th element
+	 * is 1th power, etc
+	 * @param terms The array of terms
+	 * @param modulus The modulus, or {@code null} for no modulus
 	 */
 	public TermPolynomial(Term[] terms, BigInteger modulus) {
 		this.terms = Arrays.copyOf(terms, terms.length);
 		this.modulus = modulus;
+		if(this.modulus != null) {
+			for(int i = 0; i < this.terms.length; i++)
+				this.terms[i] = this.terms[i].mod(this.modulus);
+		}
 	}
 	
 	/**
 	 * Create a Lagrange interpolating polynomial for the argument points
 	 * and optional modulus
-	 * @param pts
-	 * @param modulus
+	 * @param pts The points to interpolate
+	 * @param modulus The polynomial modulus
 	 */
 	public TermPolynomial(BigPoint[] pts, BigInteger modulus) {
 		this(lagrangePolynomial(pts, modulus));
@@ -171,24 +179,13 @@ public class TermPolynomial {
 	
 	/**
 	 * Create a random secret-generating polynomial for the argument secret
-	 * @param secret
-	 * @param secretBits
-	 * @param powx
-	 * @param rnd
+	 * @param secret The secret, as a {@link BigInteger}
+	 * @param secretBits The number of bits in the secret
+	 * @param powx The power of the polynomial, one less than the number of required secret parts
+	 * @param rnd A source of randomness
 	 */
 	public TermPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
 		this(secretPolynomial(secret, secretBits, powx, rnd));
-	}
-	
-	/**
-	 * Apply the modulus, if there is one.  Otherwise return the argument.
-	 * @param val
-	 * @return
-	 */
-	protected BigInteger mod(BigInteger val) {
-		if(getModulus() == null)
-			return val;
-		return val.mod(getModulus()).add(getModulus()).mod(getModulus());
 	}
 	
 	@Override
@@ -210,19 +207,22 @@ public class TermPolynomial {
 			return true;
 		if(obj instanceof TermPolynomial) {
 			TermPolynomial p = (TermPolynomial) obj;
-			return Arrays.equals(getTerms(), p.getTerms()) && Objects.equals(getModulus(), p.getModulus());
+			return 
+					Arrays.equals(getTerms(), p.getTerms()) 
+					&& (getModulus() == null ? p.getModulus() == null : getModulus().equals(p.getModulus()));
 		}
 		return false;
 	}
 	
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(getTerms()) + Objects.hashCode(getModulus());
+		return Arrays.hashCode(getTerms()) + (getModulus() == null ? 0 : getModulus().hashCode());
 	}
 	
 	/**
-	 * Return the terms in this polynomial
-	 * @return
+	 * Return the terms in this polynomial, ordered such that the nth element
+	 * in the array is the coefficient to the nth power of X
+	 * @return The terms
 	 */
 	public Term[] getTerms() {
 		return Arrays.copyOf(terms, terms.length);
@@ -230,16 +230,16 @@ public class TermPolynomial {
 	
 	/**
 	 * Return the modulus.  May be null.
-	 * @return
+	 * @return The modulus, or {@code null} for no modulus
 	 */
 	public BigInteger getModulus() {
 		return modulus;
 	}
 	
 	/**
-	 * Compute the y-value for a given x-value
-	 * @param x
-	 * @return
+	 * Compute the Y coordinate for a given X coordinate
+	 * @param x The X coordinate
+	 * @return The Y coordinate
 	 */
 	public Term y(BigInteger x) {
 		Term result = Term.ZERO;
@@ -249,29 +249,15 @@ public class TermPolynomial {
 			result = result.add(terms[i].multiply(xp));
 			xp = xp.multiply(x);
 		}
+		if(modulus != null)
+			result = result.mod(modulus);
 		return result;
 	}
 	
 	/**
-	 * Compute the y-value for a given x-value
-	 * @param x
-	 * @return
-	 */
-	public BigInteger wholeY(BigInteger x) {
-		Term result = Term.ZERO;
-		Term[] terms = getTerms();
-		BigInteger xp = BigInteger.ONE;
-		for(int i = 0; i < terms.length; i++) {
-			result = result.add(terms[i].multiply(xp));
-			xp = xp.multiply(x);
-		}
-		return mod(result.whole());
-	}
-	
-	/**
 	 * Add this polynomial to another polynomial and return a new polynomial
-	 * @param other
-	 * @return
+	 * @param other The {@link TermPolynomial} to add
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial add(TermPolynomial other) {
 		Term[] terms = getTerms();
@@ -288,8 +274,8 @@ public class TermPolynomial {
 	/**
 	 * Multiply this polynomial by a power of X and return
 	 * a new polynomial
-	 * @param powx
-	 * @return
+	 * @param powx The power of X to multiply by
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial powX(int powx) {
 		Term[] terms = getTerms();
@@ -300,24 +286,24 @@ public class TermPolynomial {
 	}
 	
 	/**
-	 * Multiply this polynomial by a term, and a power of X,
+	 * Multiply this polynomial by a term and a given power of X,
 	 * and return a new polynomial
-	 * @param term
-	 * @param powx
-	 * @return
+	 * @param term The coeffient of the multiplicand
+	 * @param powx The X power of the multiplicand
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(Term term, int powx) {
-		Term[] t = getTerms();
+		Term[] t = new Term[getTerms().length + powx];
 		for(int i = 0; i < t.length; i++)
-			t[i] = t[i].multiply(term);
-		return new TermPolynomial(t).powX(powx);
+			t[i] = (i < powx ? Term.ZERO : getTerms()[i - powx].multiply(term));
+		return new TermPolynomial(t, modulus);
 	}
 	
 	/**
 	 * Multiply this polynomial by another polynomial
 	 * and return a new polynomial
-	 * @param other
-	 * @return
+	 * @param other The {@link TermPolynomial} to multiply by
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(TermPolynomial other) {
 		TermPolynomial result = TermPolynomial.ZERO;
@@ -333,30 +319,27 @@ public class TermPolynomial {
 	/**
 	 * Multiply this polynomial by a constant and return
 	 * a new polynomial
-	 * @param val
-	 * @return
+	 * @param val The number to multiply by
+	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(BigInteger val) {
-		Term[] terms = getTerms();
-		for(int i = 0; i < terms.length; i++)
-			terms[i] = terms[i].multiply(val);
-		return new TermPolynomial(terms);
+		return multiply(new Term(val), 0);
 	}
 
 	/**
-	 * Return a single point on this polynomial
-	 * @param x
-	 * @return
+	 * Return a single point on this polynomial, as a {@link BigPoint}
+	 * @param x The X coordinate of the point
+	 * @return The point
 	 */
 	public BigPoint p(BigInteger x) {
-		return new BigPoint(x, mod(y(x).whole()));
+		return new BigPoint(x, y(x).whole());
 	}
 	
 	/**
 	 * Return an array of points on this polynomial for
-	 * the argument array of X values
-	 * @param x
-	 * @return
+	 * the argument array of X values, as {@link BigPoint}s
+	 * @param x The X coordinates of the points
+	 * @return An array of points
 	 */
 	public BigPoint[] p(BigInteger[] x) {
 		BigPoint[] pts = new BigPoint[x.length];

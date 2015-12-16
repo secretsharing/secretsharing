@@ -18,8 +18,8 @@ public class BigIntegersTest {
 				new Random(),
 				1000,
 				4);
-		Set<BigInteger> numerals = new HashSet<>(Arrays.asList(bigs));
-		Set<BigInteger> expected = new HashSet<>(Arrays.asList(
+		Set<BigInteger> numerals = new HashSet<BigInteger>(Arrays.asList(bigs));
+		Set<BigInteger> expected = new HashSet<BigInteger>(Arrays.asList(
 				BigInteger.valueOf(0),
 				BigInteger.valueOf(1),
 				BigInteger.valueOf(2),

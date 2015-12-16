@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.server;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.security.SecureRandom;
 import java.util.Random;
 
@@ -54,6 +55,8 @@ public class FormSplitServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
 
+		Writer w = new HtmlXSSWriter(resp.getWriter());
+		
 		try {
 			String secret = req.getParameter("secret");
 			if(secret == null)
@@ -89,16 +92,16 @@ public class FormSplitServlet extends HttpServlet {
 			} else
 				secretBytes = secret.getBytes("UTF-8");
 
-			Part[] parts = Secrets.split(secretBytes, totalParts, requiredParts, rnd);
+			Part[] parts = Secrets.splitPerByte(secretBytes, totalParts, requiredParts, rnd);
 
 			for(Part part : parts) {
-				resp.getWriter().println(part);
+				w.write(part + "\n");
 			}
 		} catch(Throwable t) {
 			if(t.getMessage() != null)
-				resp.getWriter().print(t.getMessage());
+				w.write(t.getMessage());
 			else
-				resp.getWriter().print("error");
+				w.write("error");
 		}
 	}
 }

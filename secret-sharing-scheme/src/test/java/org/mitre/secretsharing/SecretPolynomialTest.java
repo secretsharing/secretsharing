@@ -30,11 +30,9 @@ import java.util.Random;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import org.junit.runner.RunWith;
-import org.mitre.secretsharing.BigPoint;
-import org.mitre.secretsharing.TermPolynomial;
 import org.mitre.secretsharing.util.BigIntegers;
 
 @RunWith(Parameterized.class)
@@ -65,7 +63,7 @@ public class SecretPolynomialTest {
 		TermPolynomial sp = new TermPolynomial(secret, secret.bitLength(), powx, rnd);
 		BigPoint[] pts = sp.p(BigIntegers.range(1, powx+2));
 		TermPolynomial lp = new TermPolynomial(pts, sp.getModulus());
-		BigInteger s = lp.wholeY(BigInteger.ZERO);
+		BigInteger s = lp.y(BigInteger.ZERO).whole();
 		Assert.assertEquals(secret, s);
 	}
 }

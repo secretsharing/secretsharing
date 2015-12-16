@@ -24,6 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.server;
 
 import java.io.IOException;
+import java.io.Writer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -53,6 +54,9 @@ public class FormInspectorServlet extends HttpServlet {
 			throws ServletException, IOException {
 		if(req.getParameter("part") == null)
 			return;
+		
+		Writer w = new HtmlXSSWriter(resp.getWriter());
+		
 		try {
 			Field f = Field.valueOf(req.getParameter("field"));
 			
@@ -66,33 +70,33 @@ public class FormInspectorServlet extends HttpServlet {
 			
 			switch(f) {
 			case version:
-				resp.getWriter().println(part.getVersion());
+				w.write(part.getVersion());
 				break;
 			case length:
-				resp.getWriter().println(part.getLength());
+				w.write(part.getLength());
 				break;
 			case required:
-				resp.getWriter().println(part.getRequiredParts());
+				w.write(part.getRequiredParts());
 				break;
 			case modulus:
-				resp.getWriter().println(part.getModulus());
+				w.write(part.getModulus().toString());
 				break;
 			case x:
-				resp.getWriter().println(part.getPoint().getX());
+				w.write(part.getPoint().getX().toString());
 				break;
 			case y:
-				resp.getWriter().println(part.getPoint().getY());
+				w.write(part.getPoint().getY().toString());
 				break;
 			case checksum:
-				resp.getWriter().println(String.format("0x%04x", part.getChecksum().getChecksum()));
+				w.write(String.format("0x%04x", part.getChecksum().getChecksum()));
 				break;
 			}
 			
 		} catch(Throwable t) {
 			if(t.getMessage() != null)
-				resp.getWriter().print(t.getMessage());
+				w.write(t.getMessage());
 			else
-				resp.getWriter().print("error");
+				w.write("error");
 		}
 	}
 }

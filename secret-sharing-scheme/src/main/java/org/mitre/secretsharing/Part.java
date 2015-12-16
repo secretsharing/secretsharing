@@ -24,8 +24,8 @@ us know where this software is being used.
 package org.mitre.secretsharing;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 
-import org.mitre.secretsharing.codec.Checksum;
 import org.mitre.secretsharing.codec.PartFormats;
 
 /**
@@ -56,8 +56,9 @@ public class Part {
 		
 		/**
 		 * Create a new {@link PublicSecretPart}
-		 * @param length
-		 * @param modulus
+		 * @param length The length, in bytes, of the secret
+		 * @param requiredParts The number of parts required to reconstruct the secret
+		 * @param modulus The modulus of the secret polynomial
 		 */
 		private PublicSecretPart(int length, int requiredParts, BigInteger modulus) {
 			if(modulus == null)
@@ -69,7 +70,7 @@ public class Part {
 		
 		/**
 		 * The length (in bytes) of the secret
-		 * @return
+		 * @return The length in bytes
 		 */
 		public int getLength() {
 			return length;
@@ -77,7 +78,7 @@ public class Part {
 
 		/**
 		 * The number of parts required to reconstruct the secret
-		 * @return
+		 * @return The number of required parts
 		 */
 		public int getRequiredParts() {
 			return requiredParts;
@@ -85,7 +86,7 @@ public class Part {
 		
 		/**
 		 * The prime modulus for the key parts
-		 * @return
+		 * @return The polynomial modulus
 		 */
 		public BigInteger getModulus() {
 			return modulus;
@@ -102,32 +103,23 @@ public class Part {
 		 * The point on the polynomial
 		 */
 		private BigPoint point;
-		/**
-		 * The checksum of that point
-		 */
-		private Checksum cx;
 		
 		/**
 		 * Create a new {@link PrivateSecretPart}
-		 * @param point
+		 * @param point The point on the polynomial
 		 */
 		private PrivateSecretPart(BigPoint point) {
 			if(point == null)
 				throw new IllegalArgumentException();
 			this.point = point;
-			cx = new Checksum(point);
 		}
 
 		/**
 		 * Return the point on the polynomial
-		 * @return
+		 * @return The point
 		 */
 		public BigPoint getPoint() {
 			return point;
-		}
-		
-		public Checksum getChecksum() {
-			return cx;
 		}
 	}
 	
@@ -146,9 +138,9 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param version
-	 * @param publicPart
-	 * @param privatePart
+	 * @param version The format version this part was read from
+	 * @param publicPart The public secret part
+	 * @param privatePart The private secret part
 	 */
 	public Part(int version, PublicSecretPart publicPart, PrivateSecretPart privatePart) {
 		this.version = version;
@@ -158,9 +150,10 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param length
-	 * @param modulus
-	 * @param point
+	 * @param length The length, in bytes, of the shared secret
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param modulus The modulus of the polynomial representing the shared secret
+	 * @param point The polynomial point representing the secret part
 	 */
 	public Part(int length, int requiredParts, BigInteger modulus, BigPoint point) {
 		this(PartFormats.currentStringFormat().getVersion(), new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
@@ -168,21 +161,27 @@ public class Part {
 	
 	/**
 	 * Create a new {@link Part}
-	 * @param length
-	 * @param modulus
-	 * @param point
+	 * @param version The format version this Part was read from 
+	 * @param length The length in bytes of the secret
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param modulus The modulus of the secret polynomial
+	 * @param point The point on the secret polynomial
 	 */
 	public Part(int version, int length, int requiredParts, BigInteger modulus, BigPoint point) {
 		this(version, new PublicSecretPart(length, requiredParts, modulus), new PrivateSecretPart(point));
 	}
 
+	/**
+	 * Copy constructor
+	 * @param other The {@link Part} to copy
+	 */
 	private Part(Part other) {
 		this(other.getVersion(), other.getPublicPart(), other.getPrivatePart());
 	}
 	
 	/**
 	 * Parse a string representation of a {@link Part}
-	 * @param s
+	 * @param s The string to parse
 	 */
 	public Part(String s) {
 		this(PartFormats.parse(s));
@@ -194,24 +193,28 @@ public class Part {
 	}
 
 	/**
-	 * Return the public part of this secret part
-	 * @return
+	 * Return the public part of this secret part.  This information should be
+	 * shared with everyone given a part of the secret.
+	 * @return The {@link PublicSecretPart}
 	 */
 	public PublicSecretPart getPublicPart() {
 		return publicPart;
 	}
 
 	/**
-	 * Return the private part of this secret part
-	 * @return
+	 * Return the private part of this secret part.  This information should not be
+	 * shared with anyone else.
+	 * @return The {@link PrivateSecretPart}
 	 */
 	public PrivateSecretPart getPrivatePart() {
 		return privatePart;
 	}
 	
 	/**
-	 * Return the format version of this secret part
-	 * @return
+	 * Return the format version of this secret part.
+	 * @see PartFormats#currentBytesFormat()
+	 * @see PartFormats#currentStringFormat()
+	 * @return The format version.
 	 */
 	public int getVersion() {
 		return version;
@@ -219,33 +222,56 @@ public class Part {
 	
 	/**
 	 * Return the length in bytes of the secret
-	 * @return
+	 * @return The length of the secret
 	 */
 	public int getLength() {
 		return getPublicPart().getLength();
 	}
 	
+	/**
+	 * Return the number of parts required to reconstruct the secret
+	 * @return The required number of parts
+	 */
 	public int getRequiredParts() {
 		return getPublicPart().getRequiredParts();
 	}
 	
 	/**
 	 * Return the prime modulus for the secret parts
-	 * @return
+	 * @return The prime modulus
 	 */
 	public BigInteger getModulus() {
 		return getPublicPart().getModulus();
 	}
 	
 	/**
-	 * Return the point on the polynomial
-	 * @return
+	 * Return the point on the polynomial.
+	 * For a {@link PerBytePart} secret part, where each point's Y value
+	 * is constrained by {@link PerBytePart#MODULUS} to two bytes,
+	 * multiple Y values will be encoded in the Y coordinate of this point.
+	 * In this case the X value is shared for all Y values.
+	 * @return The point
 	 */
 	public BigPoint getPoint() {
 		return getPrivatePart().getPoint();
 	}
 	
-	public Checksum getChecksum() {
-		return getPrivatePart().getChecksum();
+	/**
+	 * Join this {@link Part} with an array of other {@link Part}s of the same
+	 * type to reconstruct a secret.  {@link Part} may not be joined with {@link PerBytePart}. 
+	 * @param otherParts Array of other parts to join with this one.
+	 * @return The reconstructed secret
+	 */
+	/*
+	 * Overridden by PerBytePart
+	 */
+	public byte[] join(Part... otherParts) {
+		Part[] parts = Arrays.copyOf(otherParts, otherParts.length + 1);
+		parts[parts.length - 1] = this;
+		for(Part p : parts) {
+			if(p instanceof PerBytePart)
+				throw new IllegalArgumentException("Cannot join single-point and per-byte-point secret parts");
+		}
+		return Secrets.joinMultibyte(parts);
 	}
 }

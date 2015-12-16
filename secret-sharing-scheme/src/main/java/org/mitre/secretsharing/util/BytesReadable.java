@@ -52,7 +52,7 @@ public class BytesReadable {
 	
 	/**
 	 * Base 32 decode the argument then create a {@link BytesReadable}
-	 * @param b
+	 * @param b Base 32 encoded data to read
 	 */
 	public BytesReadable(String b) {
 		this(Base32.decode(b));
@@ -60,7 +60,7 @@ public class BytesReadable {
 	
 	/**
 	 * Create a {@link BytesReadable} that reads the argument
-	 * @param b
+	 * @param b Data to read
 	 */
 	public BytesReadable(byte[] b) {
 		this.b = b;
@@ -75,7 +75,7 @@ public class BytesReadable {
 	
 	/**
 	 * Read a {@link BigInteger}
-	 * @return
+	 * @return The next {@link BigInteger}
 	 */
 	public BigInteger readBigInteger() {
 		try {
@@ -89,8 +89,8 @@ public class BytesReadable {
 	}
 	
 	/**
-	 * Read an int, optimized for space for non-negative values
-	 * @return
+	 * Read an {@code int}, optimized for space for non-negative values
+	 * @return The next {@code int}
 	 */
 	public int readInt() {
 		try {
@@ -111,8 +111,8 @@ public class BytesReadable {
 	
 	/**
 	 * Read some raw bytes
-	 * @param len
-	 * @return
+	 * @param len The number of bytes to read
+	 * @return A new {@code byte[]}
 	 */
 	public byte[] readBytes(int len) {
 		try {
