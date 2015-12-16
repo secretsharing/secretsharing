@@ -169,6 +169,16 @@ public final class Term implements Comparable<Term> {
 	}
 	
 	/**
+	 * Return the modulus of this {@link Term} by a {@link BigInteger} as a new {@link Term}
+	 * @param m The modulus
+	 * @return A new {@link Term}
+	 */
+	public Term mod(BigInteger m) {
+		m = m.multiply(denominator);
+		return new Term(numerator.mod(m), denominator);
+	}
+	
+	/**
 	 * Returns whether this term is a whole number (denominator == 1)
 	 * @return
 	 */
