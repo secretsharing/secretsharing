@@ -428,7 +428,7 @@ public class PartFormats {
 
 			@Override
 			public int getVersion() {
-				return 1;
+				return 2;
 			}
 			
 		}
