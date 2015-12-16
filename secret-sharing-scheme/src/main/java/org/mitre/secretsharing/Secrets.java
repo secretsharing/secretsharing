@@ -37,17 +37,26 @@ import org.mitre.secretsharing.util.BigIntegers;
  *
  */
 public abstract class Secrets {
+	/**
+	 * Split a secret into a number of parts, using {@link #splitMultibyte(byte[], int, int, Random)}.
+	 * @param secret The secret to split
+	 * @param totalParts The number of parts to create
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param rnd A source of random
+	 * @return An array of secret {@link Part}s
+	 * @see #splitMultibyte(byte[], int, int, Random)
+	 */
 	public static Part[] split(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		return splitMultibyte(secret, totalParts, requiredParts, rnd);
 	}
 	
 	/**
-	 * Split a secret into a number of parts
+	 * Split a secret into a number of parts by treating the secret byte array as a single Y coordinate
 	 * @param secret The secret to split
 	 * @param totalParts The number of parts to create
 	 * @param requiredParts The number of parts required to reconstruct the secret
 	 * @param rnd A source of random
-	 * @return
+	 * @return An array of secret {@link Part}s
 	 */
 	public static Part[] splitMultibyte(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		int secretBytes = secret.length;
@@ -60,6 +69,14 @@ public abstract class Secrets {
 		return s;
 	}
 	
+	/**
+	 * Split a secret into a number of parts by treating the secret byte array as individual secrets of 1 byte each
+	 * @param secret The secret to split
+	 * @param totalParts The number of parts to create
+	 * @param requiredParts The number of parts required to reconstruct the secret
+	 * @param rnd A source of random
+	 * @return An array of secret {@link Part}s
+	 */
 	public static PerBytePart[] splitPerByte(byte[] secret, int totalParts, int requiredParts, Random rnd) {
 		List<Integer> xs = new ArrayList<Integer>();
 		for(int i = 1; i < PerBytePart.MODULUS.intValue(); i++)
@@ -90,7 +107,16 @@ public abstract class Secrets {
 		return parts;
 	}
 	
+	/**
+	 * Join {@link Part}s of a secret back into a byte array.
+	 * Calls {@link Part#join(Part...)} on the first element in
+	 * the array, which is overridden by {@link PerBytePart#join(Part...)}
+	 * @param parts The array of parts to join, of length at least one
+	 * @return The reconstructed secret byte array
+	 */
 	public static byte[] join(Part[] parts) {
+		if(parts.length == 0)
+			throw new IllegalArgumentException("Cannot reconstruct a secret from an empty part array");
 		return parts[0].join(Arrays.copyOfRange(parts, 1, parts.length));
 	}
 
@@ -135,7 +161,20 @@ public abstract class Secrets {
 		Part.PublicSecretPart pub = parts[0].getPublicPart();
 		byte[] secret = new byte[pub.getLength()];
 		BigPoint[][] pts = new BigPoint[secret.length][parts.length];
+		Integer secretLength = null;
+		Integer requiredParts = null;
 		for(int i = 0; i < parts.length; i++) {
+			if(secretLength == null)
+				secretLength = parts[i].getLength();
+			else if(!secretLength.equals(parts[i].getLength()))
+				throw new IllegalArgumentException("Inconsistent secret length among parts");
+			if(requiredParts == null)
+				requiredParts = parts[i].getRequiredParts();
+			else if(!requiredParts.equals(parts[i].getRequiredParts()))
+				throw new IllegalArgumentException("Inconsistent required parts number among parts");
+			if(!parts[i].getModulus().equals(PerBytePart.MODULUS))
+				throw new IllegalArgumentException("Inconsistent prime modulus among parts");
+			
 			byte[] b = parts[i].getPrivatePart().getPoint().getY().toByteArray();
 			byte[] pb = new byte[secret.length * 2];
 			if(b.length > pb.length)
