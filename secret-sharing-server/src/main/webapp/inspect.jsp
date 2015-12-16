@@ -90,7 +90,6 @@ Enter your secret part below<br/>
 <tr><td>Polynomial prime modulus</td><td class="details"><input class="public" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="modulus"/></jsp:include>"></td></tr>
 <tr><td>Polynomial point X coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="x"/></jsp:include>"></td></tr>
 <tr><td>Polynomial point Y coordinate</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="y"/></jsp:include>"></td></tr>
-<tr><td>Polynomial point checksum</td><td class="details"><input class="private" type="text" value="<jsp:include page="/form-inspect"><jsp:param name="field" value="checksum"/></jsp:include>"></td></tr>
 </table>
 <br/>
 <hr/>

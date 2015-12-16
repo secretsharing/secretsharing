@@ -46,7 +46,6 @@ public class FormInspectorServlet extends HttpServlet {
 		modulus,
 		x,
 		y,
-		checksum,
 	}
 	
 	@Override
@@ -86,9 +85,6 @@ public class FormInspectorServlet extends HttpServlet {
 				break;
 			case y:
 				w.write(part.getPoint().getY().toString());
-				break;
-			case checksum:
-				w.write(String.format("0x%04x", part.getChecksum().getChecksum()));
 				break;
 			}
 			
