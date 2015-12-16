@@ -30,11 +30,6 @@
 	</servlet>
 
 	<servlet>
-		<servlet-name>form-inspect</servlet-name>
-		<servlet-class>org.mitre.secretsharing.server.FormInspectorServlet</servlet-class>
-	</servlet>
-
-	<servlet>
 		<servlet-name>jsp-split</servlet-name>
 		<jsp-file>/split.jsp</jsp-file>
 	</servlet>
@@ -72,11 +67,6 @@
 	<servlet-mapping>
 		<servlet-name>form-join</servlet-name>
 		<url-pattern>/form-join</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>form-inspect</servlet-name>
-		<url-pattern>/form-inspect</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
