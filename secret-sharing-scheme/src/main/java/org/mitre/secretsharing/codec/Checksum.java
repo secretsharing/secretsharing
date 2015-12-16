@@ -40,6 +40,11 @@ import org.mitre.secretsharing.util.BytesWritable;
 @Deprecated
 public final class Checksum {
 
+	/**
+	 * Return a {@link Checksum} represented by the two-byte array argument.
+	 * @param cxb The two bytes to process as a {@link Checksum}
+	 * @return A new {@link Checksum}
+	 */
 	public static Checksum fromBytes(byte[] cxb) {
 		return new Checksum((0xff & cxb[0]) | ((0xff & cxb[1]) << 8));
 	}

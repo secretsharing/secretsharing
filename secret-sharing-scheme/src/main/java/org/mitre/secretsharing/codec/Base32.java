@@ -28,7 +28,10 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
- * Encoder/decoder for Base-32 binary representation.
+ * Encoder/decoder for Base-32 binary representation.<p>
+ * 
+ * See http://www.crockford.com/wrmg/base32.html for a description
+ * of the encoding/decoding symbols
  * @author Robin Kirkman
  *
  */
