@@ -57,7 +57,7 @@ public class BigPoint {
 
 	/**
 	 * Return the X coordinate
-	 * @return
+	 * @return The X coordinate of this {@link BigPoint}
 	 */
 	public BigInteger getX() {
 		return x;
@@ -65,7 +65,7 @@ public class BigPoint {
 
 	/**
 	 * Return the Y coordinate
-	 * @return
+	 * @return The Y coordinate of this {@link BigPoint}
 	 */
 	public BigInteger getY() {
 		return y;

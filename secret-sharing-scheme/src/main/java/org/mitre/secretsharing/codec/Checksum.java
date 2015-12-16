@@ -38,9 +38,14 @@ import org.mitre.secretsharing.util.BytesWritable;
  *
  */
 @Deprecated
-public final class Checksum {
+final class Checksum {
 
-	public static Checksum fromBytes(byte[] cxb) {
+	/**
+	 * Return a {@link Checksum} represented by the two-byte array argument.
+	 * @param cxb The two bytes to process as a {@link Checksum}
+	 * @return A new {@link Checksum}
+	 */
+	static Checksum fromBytes(byte[] cxb) {
 		return new Checksum((0xff & cxb[0]) | ((0xff & cxb[1]) << 8));
 	}
 	
@@ -50,7 +55,7 @@ public final class Checksum {
 	 * @param buf
 	 * @return
 	 */
-	public static int checksum(byte[] buf) {
+	static int checksum(byte[] buf) {
 		MessageDigest digest;
 		try {
 			digest = MessageDigest.getInstance("SHA-1");
@@ -79,7 +84,7 @@ public final class Checksum {
 	 * Compute the checksum of a byte array
 	 * @param buf
 	 */
-	public Checksum(byte[] buf) {
+	Checksum(byte[] buf) {
 		this.cx = checksum(buf);
 		cxb = new byte[] {(byte) cx, (byte)(cx >>> 8)};
 	}
@@ -88,7 +93,7 @@ public final class Checksum {
 	 * Parse a checksum from a string
 	 * @param s
 	 */
-	public Checksum(String s) {
+	Checksum(String s) {
 		cxb = Base32.decode(s);
 		cx = (0xff & cxb[0]) | ((0xff & cxb[1]) << 8);
 	}
@@ -97,7 +102,7 @@ public final class Checksum {
 	 * Create a new {@link Checksum} from a literal checksum int
 	 * @param cx
 	 */
-	public Checksum(int cx) {
+	Checksum(int cx) {
 		this.cx = cx;
 		cxb = new byte[] {(byte) cx, (byte)(cx >>> 8)};
 	}
@@ -106,12 +111,12 @@ public final class Checksum {
 	 * Read a {@link Checksum} from bytes
 	 * @param r
 	 */
-	public Checksum(BytesReadable r) {
+	Checksum(BytesReadable r) {
 		cxb = r.readBytes(2);
 		cx = (0xff & cxb[0]) | ((0xff & cxb[1]) << 8);
 	}
 	
-	public Checksum(BigPoint point) {
+	Checksum(BigPoint point) {
 		this(new BytesWritable().writeBigInteger(point.getX()).writeBigInteger(point.getY()).toByteArray());
 	}
 	
@@ -124,7 +129,7 @@ public final class Checksum {
 	 * Return the 16-bit checksum
 	 * @return
 	 */
-	public int getChecksum() {
+	int getChecksum() {
 		return cx;
 	}
 	
@@ -132,7 +137,7 @@ public final class Checksum {
 	 * Return the 16-bit checksum as a byte array
 	 * @return
 	 */
-	public byte[] getChecksumBytes() {
+	byte[] getChecksumBytes() {
 		return cxb;
 	}
 	

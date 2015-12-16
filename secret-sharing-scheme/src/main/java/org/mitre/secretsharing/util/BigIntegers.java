@@ -35,9 +35,9 @@ public abstract class BigIntegers {
 	/**
 	 * Create an array of {@link BigInteger} ranging in value
 	 * from {@code from} (inclusive) to {@code to} (exclusive)
-	 * @param from
-	 * @param to
-	 * @return
+	 * @param from The lower bound of the range, inclusive
+	 * @param to The upper bound of the range, exclusive
+	 * @return An array of {@link BigInteger}s contained by the range
 	 */
 	public static BigInteger[] range(int from, int to) {
 		if(from > to)
@@ -57,7 +57,7 @@ public abstract class BigIntegers {
 	 * @param rnd The source of randomness
 	 * @param size The size of the returned array
 	 * @param bits The number of bits of randomness
-	 * @return
+	 * @return An array of {@link BigInteger}s
 	 */
 	public static BigInteger[] random(BigInteger from, BigInteger to, Random rnd, int size, int bits) {
 		BigInteger range = to.subtract(from);

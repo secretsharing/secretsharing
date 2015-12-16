@@ -130,6 +130,8 @@
 						</executions>
 						<configuration>
 							<encoding>UTF-8</encoding>
+							<nodeprecated>true</nodeprecated>
+							<nodeprecatedlist>true</nodeprecatedlist>
 						</configuration>
 					</plugin>
 					<plugin>
