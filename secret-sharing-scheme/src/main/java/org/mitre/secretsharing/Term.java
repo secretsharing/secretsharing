@@ -51,16 +51,16 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Create a whole-number term
-	 * @param val
+	 * @param val The value of the term
 	 */
 	public Term(BigInteger val) {
 		this(val, BigInteger.ONE);
 	}
 	
 	/**
-	 * Create a new term with the argument numerator and denominator
-	 * @param numerator
-	 * @param denominator
+	 * Create a new fractional term with the argument numerator and denominator
+	 * @param numerator The numerator
+	 * @param denominator The denominator
 	 */
 	public Term(BigInteger numerator, BigInteger denominator) {
 		if(denominator.equals(BigInteger.ZERO))
@@ -105,7 +105,7 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Return the numerator
-	 * @return
+	 * @return The numerator
 	 */
 	public BigInteger getNumerator() {
 		return numerator;
@@ -113,7 +113,7 @@ public final class Term implements Comparable<Term> {
 
 	/**
 	 * Return the denominator
-	 * @return
+	 * @return The denominator
 	 */
 	public BigInteger getDenominator() {
 		return denominator;
@@ -128,8 +128,8 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Add another term to this term and return a new term
-	 * @param other
-	 * @return
+	 * @param other The term to add
+	 * @return A new Term
 	 */
 	public Term add(Term other) {
 		BigInteger n = numerator.multiply(other.denominator).add(other.numerator.multiply(denominator));
@@ -139,8 +139,8 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Subtract another term from this term and return a new term
-	 * @param other
-	 * @return
+	 * @param other The term to subtract
+	 * @return A new Term
 	 */
 	public Term subtract(Term other) {
 		return add(new Term(other.numerator.negate(), other.denominator));
@@ -148,8 +148,8 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Multiply this term by another term and return a new term
-	 * @param other
-	 * @return
+	 * @param other The term to multiply by
+	 * @return A new Term
 	 */
 	public Term multiply(Term other) {
 		BigInteger n = numerator.multiply(other.numerator);
@@ -159,8 +159,8 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Multiply this term by a {@link BigInteger} and return a new term
-	 * @param val
-	 * @return
+	 * @param val The number to multiply by
+	 * @return A new Term
 	 */
 	public Term multiply(BigInteger val) {
 		BigInteger n = numerator.multiply(val);
@@ -180,7 +180,7 @@ public final class Term implements Comparable<Term> {
 	
 	/**
 	 * Returns whether this term is a whole number (denominator == 1)
-	 * @return
+	 * @return {@code true} for a whole number, {@code false} for a fraction
 	 */
 	public boolean isWhole() {
 		return denominator.equals(BigInteger.ONE);
@@ -189,7 +189,7 @@ public final class Term implements Comparable<Term> {
 	/**
 	 * Returns the whole-number value of this term.  Throws an exception
 	 * if this term is not a whole number.
-	 * @return
+	 * @return The value of this term, if a whole number
 	 * @throws ArithmeticException If this term is not a whole number.
 	 */
 	public BigInteger whole() throws ArithmeticException {

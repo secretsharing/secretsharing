@@ -48,8 +48,8 @@ public class BytesWritable {
 	
 	/**
 	 * Write a {@link BigInteger}
-	 * @param val
-	 * @return
+	 * @param val The value to write
+	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeBigInteger(BigInteger val) {
 		try {
@@ -64,8 +64,8 @@ public class BytesWritable {
 	
 	/**
 	 * Write an int, optimized for space for non-negative values
-	 * @param val
-	 * @return
+	 * @param val The value to write
+	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeInt(int val) {
 		try {
@@ -82,8 +82,8 @@ public class BytesWritable {
 	
 	/**
 	 * Write a raw byte array
-	 * @param b
-	 * @return
+	 * @param b The bytes to write
+	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeBytes(byte[] b) {
 		try {
@@ -96,7 +96,7 @@ public class BytesWritable {
 	
 	/**
 	 * Return the bytes written
-	 * @return
+	 * @return The bytes written so far
 	 */
 	public byte[] toByteArray() {
 		return buf.toByteArray();
@@ -104,7 +104,7 @@ public class BytesWritable {
 	
 	/**
 	 * Convert to a string, reset the buffer, then return the string
-	 * @return
+	 * @return The string for this {@link BytesWritable} prior to resetting it
 	 */
 	public String reset() {
 		String s = toString();
@@ -114,7 +114,7 @@ public class BytesWritable {
 	
 	/**
 	 * Return the number of bytes written
-	 * @return
+	 * @return The number of bytes written
 	 */
 	public int size() {
 		return buf.size();

@@ -28,7 +28,10 @@ import java.util.Arrays;
 import java.util.regex.Pattern;
 
 /**
- * Encoder/decoder for Base-32 binary representation.
+ * Encoder/decoder for Base-32 binary representation.<p>
+ * 
+ * See http://www.crockford.com/wrmg/base32.html for a description
+ * of the encoding/decoding symbols
  * @author Robin Kirkman
  *
  */
@@ -57,8 +60,8 @@ public abstract class Base32 {
 	/**
 	 * Return the length of the base32-encoded result for data
 	 * of the argument length
-	 * @param dataLength
-	 * @return
+	 * @param dataLength The length, in bytes, of the data to encode
+	 * @return The number of bytes required in base32 to encode the data
 	 */
 	public static int encodedLength(int dataLength) {
 		int len = (dataLength / 5) * 8;
@@ -77,8 +80,8 @@ public abstract class Base32 {
 	/**
 	 * Return the length of the base32-decoded result
 	 * for encoded data of the argument length
-	 * @param dataLength
-	 * @return
+	 * @param dataLength The number of bytes in the encoded data
+	 * @return The number of bytes after decoding base32
 	 */
 	public static int decodedLength(int dataLength) {
 		int len = (dataLength / 8) * 5;
@@ -114,7 +117,7 @@ public abstract class Base32 {
 	 * a new array is created and returned.
 	 * @param dest The destination array.  May be {@code null}.
 	 * @param data The data to encode
-	 * @return
+	 * @return The byte[] containing the encoded data
 	 */
 	public static byte[] encode(byte[] dest, byte[] data) {
 		int dlen = encodedLength(data.length);
@@ -181,7 +184,7 @@ public abstract class Base32 {
 	 * created and returned.
 	 * @param dest The destination array.  May be {@code null}
 	 * @param data The data to decode
-	 * @return
+	 * @return The byte[] containing the decoded data
 	 */
 	public static byte[] decode(byte[] dest, byte[] data) {
 		int dlen = decodedLength(data.length);
