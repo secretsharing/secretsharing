@@ -29,27 +29,40 @@ us know where this software is being used.
 
 Java implementation of Shamir's Secret Sharing Scheme.  See the [wikipedia article](http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing) for details on the algorithm.  This implementation uses a BigInteger mod-prime polynomial.
 
+## Maven
+```xml
+<dependency>
+    <groupId>org.mitre.secretsharing</groupId>
+    <artifactId>secret-sharing-scheme</artifactId>
+    <version>1.1.0</version>
+</dependency>
+```
+
 ## Usage
 
 Splitting a secret `byte[]` into parts:
-
-    byte[] secret = ...;
-    Part[] parts = Secrets.split(secret);
+```java
+byte[] secret = ...;
+Part[] parts = Secrets.split(secret);
+```
 
 Reconstructing a secret `byte[]` from parts:
-
-    Parts[] parts = ...;
-    byte[] secret = Secrets.join(parts);
+```java
+Parts[] parts = ...;
+byte[] secret = Secrets.join(parts);
+```
 
 Converting a `Part` to a formatted `String`:
-
-    Part part = ...;
-    String formatted = PartFormats.currentStringFormat().format(part);
+```java
+Part part = ...;
+String formatted = PartFormats.currentStringFormat().format(part);
+```
 
 Parsing a `String` to a `Part`:
-
-    String formatted = ...;
-    Part part = PartFormats.parse(formatted);
+```java
+String formatted = ...;
+Part part = PartFormats.parse(formatted);
+```
 
 ## Security
 
