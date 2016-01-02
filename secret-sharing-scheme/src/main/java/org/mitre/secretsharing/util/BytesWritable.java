@@ -52,6 +52,7 @@ public class BytesWritable {
 	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeBigInteger(BigInteger val) {
+		InputValidation.begin().when(val == null, "argument is null").validate();
 		try {
 			byte[] b = val.toByteArray();
 			writeInt(b.length);
@@ -86,6 +87,7 @@ public class BytesWritable {
 	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeBytes(byte[] b) {
+		InputValidation.begin().when(b == null, "argument is null").validate();
 		try {
 			data.write(b);
 		} catch(IOException e) {
