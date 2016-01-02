@@ -25,6 +25,8 @@ package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 
+import org.mitre.secretsharing.util.InputValidation;
+
 /**
  * A part of a shared secret that was first split into individual bytes.<p>
  * 
@@ -37,6 +39,7 @@ import java.math.BigInteger;
  */
 public class PerBytePart extends Part {
 	public static final BigInteger MODULUS = BigInteger.valueOf(65521);
+	public static final int MAX_PARTS = MODULUS.intValue() - 1;
 
 	/**
 	 * Create a {@link PerBytePart} to hold a per-byte secret part
@@ -51,11 +54,15 @@ public class PerBytePart extends Part {
 
 	@Override
 	public byte[] join(Part... otherParts) {
+		InputValidation iv = InputValidation.begin()
+			.when(otherParts == null, "otherParts is null")
+			.validate();
 		PerBytePart[] parts = new PerBytePart[otherParts.length + 1];
 		parts[0] = this;
 		for(int i = 0; i < otherParts.length; i++) {
-			if(!(otherParts[i] instanceof PerBytePart))
-				throw new IllegalArgumentException("Cannot join single-point and per-byte-point secret parts");
+			iv
+				.when(!(otherParts[i] instanceof PerBytePart), "cannot apply perbyte join to multibyte parts")
+				.validate();
 			parts[i+1] = (PerBytePart) otherParts[i];
 		}
 		return Secrets.joinPerByte(parts);

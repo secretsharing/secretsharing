@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.mitre.secretsharing.util.BigIntegers;
+import org.mitre.secretsharing.util.InputValidation;
 
 /**
  * Utility class for splitting and joining secret and secret parts
@@ -59,6 +60,12 @@ public abstract class Secrets {
 	 * @return An array of secret {@link Part}s
 	 */
 	public static Part[] splitMultibyte(byte[] secret, int totalParts, int requiredParts, Random rnd) {
+		InputValidation.begin()
+			.when(secret == null, "secret is null")
+			.when(totalParts < 1, "totalParts is less than 1")
+			.when(requiredParts > totalParts, "requiredParts is greater than totalParts")
+			.when(rnd == null, "rnd is null")
+			.validate();
 		int secretBytes = secret.length;
 		int secretBits = secretBytes * 8;
 		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBits, requiredParts-1, rnd);
@@ -78,6 +85,13 @@ public abstract class Secrets {
 	 * @return An array of secret {@link Part}s
 	 */
 	public static PerBytePart[] splitPerByte(byte[] secret, int totalParts, int requiredParts, Random rnd) {
+		InputValidation.begin()
+			.when(secret == null, "secret is null")
+			.when(totalParts < 1, "totalParts is less than 1")
+			.when(totalParts > PerBytePart.MAX_PARTS, "totalParts is greater than " + PerBytePart.MAX_PARTS)
+			.when(requiredParts > totalParts, "requiredParts is greater than totalParts")
+			.when(rnd == null, "rnd is null")
+			.validate();
 		List<Integer> xs = new ArrayList<Integer>();
 		for(int i = 1; i < PerBytePart.MODULUS.intValue(); i++)
 			xs.add(i);
@@ -115,8 +129,10 @@ public abstract class Secrets {
 	 * @return The reconstructed secret byte array
 	 */
 	public static byte[] join(Part[] parts) {
-		if(parts.length == 0)
-			throw new IllegalArgumentException("Cannot reconstruct a secret from an empty part array");
+		InputValidation.begin()
+			.when(parts == null, "parts array is null")
+			.when(parts != null && parts.length == 0, "parts array is empty")
+			.validate();
 		return parts[0].join(Arrays.copyOfRange(parts, 1, parts.length));
 	}
 
@@ -126,30 +142,33 @@ public abstract class Secrets {
 	 * @return The recovered secret
 	 */
 	public static byte[] joinMultibyte(Part[] parts) {
-		BigPoint[] pts = new BigPoint[parts.length];
+		InputValidation iv = InputValidation.begin()
+			.when(parts == null, "parts array is null")
+			.when(parts != null && parts.length == 0, "parts array is empty")
+			.validate();
+		
 		Integer secretLength = null;
 		Integer requiredParts = null;
 		BigInteger prime = null;
-		for(int i = 0; i < pts.length; i++) {
-			int sl = parts[i].getLength();
-			BigInteger p = parts[i].getModulus();
+		for(Part part : parts) {
+			secretLength = (secretLength == null ? part.getLength() : secretLength);
+			requiredParts = (requiredParts == null ? part.getRequiredParts() : requiredParts);
+			prime = (prime == null ? part.getModulus() : prime);
 
-			if(secretLength == null)
-				secretLength = sl;
-			else if(!secretLength.equals(sl))
-				throw new IllegalArgumentException("Inconsistent secret length among parts");
-			if(requiredParts == null)
-				requiredParts = parts[i].getRequiredParts();
-			else if(!requiredParts.equals(parts[i].getRequiredParts()))
-				throw new IllegalArgumentException("Inconsistent required parts number among parts");
-			if(prime == null)
-				prime = p;
-			else if(!prime.equals(p))
-				throw new IllegalArgumentException("Inconsistent prime modulus among parts");
+			iv.when(part instanceof PerBytePart, "perbyte parts cannot be used for multibyte join");
+			iv.when(part.getLength() != secretLength, "inconsistent secret lengths");
+			iv.when(part.getRequiredParts() != requiredParts, "inconsistent number of required parts");
+			iv.when(!part.getModulus().equals(prime), "inconsistent moduli");
+		}
+		iv.validate()
+			.when(parts.length < requiredParts, requiredParts + " parts required but " + parts.length + " parts provided")
+			.validate();
+		
+		BigPoint[] pts = new BigPoint[parts.length];
+		for(int i = 0; i < pts.length; i++) {
 			pts[i] = parts[i].getPoint();
 		}
-		if(requiredParts > 0 && parts.length < requiredParts)
-			throw new IllegalArgumentException(requiredParts + " parts are required but only " + parts.length + " supplied");
+		
 		TermPolynomial poly = new TermPolynomial(pts, prime);
 		byte[] secret = poly.y(BigInteger.ZERO).getNumerator().mod(prime).add(prime).mod(prime).toByteArray();
 		byte[] ret = new byte[secretLength];
@@ -163,23 +182,30 @@ public abstract class Secrets {
 	 * @return The recovered secret
 	 */
 	public static byte[] joinPerByte(PerBytePart[] parts) {
+		InputValidation iv = InputValidation.begin()
+				.when(parts == null, "parts array is null")
+				.when(parts != null && parts.length == 0, "parts array is empty")
+				.validate();
+			
 		Part.PublicSecretPart pub = parts[0].getPublicPart();
 		byte[] secret = new byte[pub.getLength()];
 		BigPoint[][] pts = new BigPoint[secret.length][parts.length];
 		Integer secretLength = null;
 		Integer requiredParts = null;
+		for(Part part : parts) {
+			secretLength = (secretLength == null ? part.getLength() : secretLength);
+			requiredParts = (requiredParts == null ? part.getRequiredParts() : requiredParts);
+
+			iv.when(!(part instanceof PerBytePart), "multibyte parts cannot be used for perbyte join");
+			iv.when(part.getLength() != secretLength, "inconsistent secret lengths");
+			iv.when(part.getRequiredParts() != requiredParts, "inconsistent number of required parts");
+			iv.when(!part.getModulus().equals(PerBytePart.MODULUS), "inconsistent moduli");
+		}
+		iv.validate()
+			.when(parts.length < requiredParts, requiredParts + " parts required but " + parts.length + " parts provided")
+			.validate();
+		
 		for(int i = 0; i < parts.length; i++) {
-			if(secretLength == null)
-				secretLength = parts[i].getLength();
-			else if(!secretLength.equals(parts[i].getLength()))
-				throw new IllegalArgumentException("Inconsistent secret length among parts");
-			if(requiredParts == null)
-				requiredParts = parts[i].getRequiredParts();
-			else if(!requiredParts.equals(parts[i].getRequiredParts()))
-				throw new IllegalArgumentException("Inconsistent required parts number among parts");
-			if(!parts[i].getModulus().equals(PerBytePart.MODULUS))
-				throw new IllegalArgumentException("Inconsistent prime modulus among parts");
-			
 			byte[] b = parts[i].getPrivatePart().getPoint().getY().toByteArray();
 			byte[] pb = new byte[secret.length * 2];
 			if(b.length > pb.length)
