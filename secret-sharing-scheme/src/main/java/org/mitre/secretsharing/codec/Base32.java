@@ -27,6 +27,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 
+import org.mitre.secretsharing.util.InputValidation;
+
 /**
  * Encoder/decoder for Base-32 binary representation.<p>
  * 
@@ -108,6 +110,7 @@ public abstract class Base32 {
 	 * @return A string of Base 32 representation
 	 */
 	public static String encode(byte[] data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		return new String(encode(null, data), ASCII);
 	}
 	
@@ -120,6 +123,7 @@ public abstract class Base32 {
 	 * @return The byte[] containing the encoded data
 	 */
 	public static byte[] encode(byte[] dest, byte[] data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		int dlen = encodedLength(data.length);
 		
 		if(dest == null || dest.length < dlen)
@@ -175,6 +179,7 @@ public abstract class Base32 {
 	 * @return The original bytes as a new array
 	 */
 	public static byte[] decode(String data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		return decode(null, data.getBytes(ASCII));
 	}
 	
@@ -187,6 +192,7 @@ public abstract class Base32 {
 	 * @return The byte[] containing the decoded data
 	 */
 	public static byte[] decode(byte[] dest, byte[] data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		int dlen = decodedLength(data.length);
 		
 		if(dest == null || dest.length < dlen)

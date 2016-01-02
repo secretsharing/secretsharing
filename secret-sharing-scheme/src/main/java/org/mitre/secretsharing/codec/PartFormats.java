@@ -32,6 +32,7 @@ import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.PerBytePart;
 import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
+import org.mitre.secretsharing.util.InputValidation;
 
 public abstract class PartFormats {
 	public static PartFormat<String> stringFormat(int version) {
@@ -43,10 +44,12 @@ public abstract class PartFormats {
 	}
 	
 	public static Part parse(String data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		return stringFormat(StringFormats.detectVersion(data)).parse(data);
 	}
 	
 	public static Part parse(byte[] data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
 		return bytesFormat(BytesFormats.detectVersion(data)).parse(data);
 	}
 	
@@ -71,6 +74,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public String format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
@@ -93,6 +97,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
 					throw new IllegalArgumentException("Not parseable by " + this);
@@ -130,6 +135,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public String format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
@@ -155,6 +161,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
 					throw new IllegalArgumentException("Not parseable by " + this);
@@ -194,6 +201,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public String format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
@@ -221,6 +229,7 @@ public abstract class PartFormats {
 			@Override
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
 					throw new IllegalArgumentException("Not parseable by " + this);
@@ -262,6 +271,7 @@ public abstract class PartFormats {
 			
 			@Override
 			public String format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				StringBuilder sb = new StringBuilder();
 				BytesWritable w = new BytesWritable();
 				
@@ -286,6 +296,7 @@ public abstract class PartFormats {
 
 			@Override
 			public Part parse(String data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				Matcher m = VALID.matcher(data);
 				if(!m.matches())
 					throw new IllegalArgumentException("Not parseable by " + this);
@@ -334,6 +345,7 @@ public abstract class PartFormats {
 		public abstract int getVersion();
 		
 		public static int detectVersion(String data) {
+			InputValidation.begin().when(data == null, "data is null").validate();
 			return new BytesReadable(data.replaceAll(":.*", "")).readInt();
 		}
 	}
@@ -343,6 +355,7 @@ public abstract class PartFormats {
 
 			@Override
 			public byte[] format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				BytesWritable w = new BytesWritable();
 				w.writeInt(0);
 				w.writeInt(part.getLength());
@@ -354,6 +367,7 @@ public abstract class PartFormats {
 
 			@Override
 			public Part parse(byte[] data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				BytesReadable r = new BytesReadable(data);
 				if(r.readInt() != 0)
 					throw new IllegalArgumentException("Not parsable by " + this);
@@ -375,6 +389,7 @@ public abstract class PartFormats {
 
 			@Override
 			public byte[] format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				BytesWritable w = new BytesWritable();
 				w.writeInt(1);
 				w.writeInt(part.getLength());
@@ -387,6 +402,7 @@ public abstract class PartFormats {
 
 			@Override
 			public Part parse(byte[] data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				BytesReadable r = new BytesReadable(data);
 				if(r.readInt() != 1)
 					throw new IllegalArgumentException("Not parsable by " + this);
@@ -409,6 +425,7 @@ public abstract class PartFormats {
 
 			@Override
 			public byte[] format(Part part) {
+				InputValidation.begin().when(part == null, "part is null").validate();
 				BytesWritable w = new BytesWritable();
 				w.writeInt(2);
 				w.writeInt(part.getLength());
@@ -421,6 +438,7 @@ public abstract class PartFormats {
 
 			@Override
 			public Part parse(byte[] data) {
+				InputValidation.begin().when(data == null, "data is null").validate();
 				BytesReadable r = new BytesReadable(data);
 				if(r.readInt() != 2)
 					throw new IllegalArgumentException("Not parsable by " + this);
@@ -454,6 +472,7 @@ public abstract class PartFormats {
 		public abstract int getVersion();
 
 		public static int detectVersion(byte[] data) {
+			InputValidation.begin().when(data == null, "data is null").validate();
 			return new BytesReadable(data).readInt();
 		}
 	}

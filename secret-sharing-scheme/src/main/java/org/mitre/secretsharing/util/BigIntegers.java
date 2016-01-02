@@ -40,8 +40,7 @@ public abstract class BigIntegers {
 	 * @return An array of {@link BigInteger}s contained by the range
 	 */
 	public static BigInteger[] range(int from, int to) {
-		if(from > to)
-			throw new IllegalArgumentException();
+		InputValidation.begin().when(from > to, "from is greater than to").validate();
 		BigInteger[] bigs = new BigInteger[to - from];
 		for(int i = 0; i < bigs.length; i++)
 			bigs[i] = BigInteger.valueOf(from + i);
@@ -60,6 +59,13 @@ public abstract class BigIntegers {
 	 * @return An array of {@link BigInteger}s
 	 */
 	public static BigInteger[] random(BigInteger from, BigInteger to, Random rnd, int size, int bits) {
+		InputValidation.begin()
+			.when(from == null, "from is null")
+			.when(to == null, "to is null")
+			.when(from != null && to != null && from.compareTo(to) >= 0, "from not less than to")
+			.when(size < 0, "size less than zero")
+			.when(bits < 1, "bits less than one")
+			.validate();
 		BigInteger range = to.subtract(from);
 		BigInteger bitmax = BigInteger.ONE.shiftLeft(bits);
 		BigInteger[] bigs = new BigInteger[size];
