@@ -44,10 +44,11 @@ public class InputValidationException extends IllegalArgumentException {
 	
 	/**
 	 * Create a new {@link InputValidationException}
-	 * @param s
+	 * @param causes (possibly empty) collection of {@link IllegalArgumentException} that
+	 * caused this {@link InputValidationException}
 	 */
 	public InputValidationException(Collection<? extends IllegalArgumentException> causes) {
-		super(messages(causes), causes.size() > 0 ? causes.iterator().next() : null);
+		super(messages(causes), causes.size() == 1 ? causes.iterator().next() : null);
 	}
 
 }
