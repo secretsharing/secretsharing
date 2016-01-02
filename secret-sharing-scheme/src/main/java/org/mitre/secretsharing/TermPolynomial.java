@@ -27,6 +27,8 @@ import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.mitre.secretsharing.util.InputValidation;
+
 /**
  * A polynomial composed of terms
  * @author Robin Kirkman
@@ -49,6 +51,10 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public static TermPolynomial lagrangePolynomial(BigPoint[] pts, BigInteger modulus) {
+		InputValidation.begin()
+			.when(pts == null, "pts is null")
+			.when(modulus != null && modulus.compareTo(BigInteger.ONE) <= 0, "modulus not greater than one")
+			.validate();
 		BigInteger[] px = new BigInteger[pts.length];
 		BigInteger[] py = new BigInteger[pts.length];
 		for(int i = 0; i < pts.length; i++) {
@@ -109,6 +115,11 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public static TermPolynomial secretPolynomial(BigInteger secret, int secretBits, int powx, Random rnd) {
+		InputValidation.begin()
+			.when(secret == null, "secret is null")
+			.when(secretBits < 0, "secretBits is less than zero")
+			.when(rnd == null, "rnd is null")
+			.validate();
 		BigInteger prime = BigInteger.probablePrime(secretBits+1, rnd);
 		while(prime.compareTo(secret) < 0)
 			prime = BigInteger.probablePrime(secretBits+1, rnd);
@@ -159,6 +170,10 @@ public class TermPolynomial {
 	 * @param modulus The modulus, or {@code null} for no modulus
 	 */
 	public TermPolynomial(Term[] terms, BigInteger modulus) {
+		InputValidation.begin()
+			.when(terms == null, "terms is null")
+			.when(modulus != null && modulus.compareTo(BigInteger.ONE) <= 0, "modulus not greater than one")
+			.validate();
 		this.terms = Arrays.copyOf(terms, terms.length);
 		this.modulus = modulus;
 		if(this.modulus != null) {
@@ -242,6 +257,7 @@ public class TermPolynomial {
 	 * @return The Y coordinate
 	 */
 	public Term y(BigInteger x) {
+		InputValidation.begin().when(x == null, "argument is null").validate();
 		Term result = Term.ZERO;
 		Term[] terms = getTerms();
 		BigInteger xp = BigInteger.ONE;
@@ -260,6 +276,7 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial add(TermPolynomial other) {
+		InputValidation.begin().when(other == null, "argument is null").validate();
 		Term[] terms = getTerms();
 		Term[] otherTerms = other.getTerms();
 		Term[] t = new Term[Math.max(terms.length, otherTerms.length)];
@@ -278,6 +295,7 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial powX(int powx) {
+		InputValidation.begin().when(powx < 0, "powx is less than 0").validate();
 		Term[] terms = getTerms();
 		Term[] t = new Term[terms.length + powx];
 		Arrays.fill(t, Term.ZERO);
@@ -293,6 +311,10 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(Term term, int powx) {
+		InputValidation.begin()
+			.when(term == null, "term is null")
+			.when(powx < 0, "powx is less than 0")
+			.validate();
 		Term[] t = new Term[getTerms().length + powx];
 		for(int i = 0; i < t.length; i++)
 			t[i] = (i < powx ? Term.ZERO : getTerms()[i - powx].multiply(term));
@@ -306,6 +328,7 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(TermPolynomial other) {
+		InputValidation.begin().when(other == null, "argument is null").validate();
 		TermPolynomial result = TermPolynomial.ZERO;
 		Term[] terms = getTerms();
 		
@@ -323,6 +346,7 @@ public class TermPolynomial {
 	 * @return A new {@link TermPolynomial}
 	 */
 	public TermPolynomial multiply(BigInteger val) {
+		InputValidation.begin().when(val == null, "argument is null").validate();
 		return multiply(new Term(val), 0);
 	}
 
@@ -332,6 +356,7 @@ public class TermPolynomial {
 	 * @return The point
 	 */
 	public BigPoint p(BigInteger x) {
+		InputValidation.begin().when(x == null, "argument is null").validate();
 		return new BigPoint(x, y(x).whole());
 	}
 	
@@ -342,6 +367,7 @@ public class TermPolynomial {
 	 * @return An array of points
 	 */
 	public BigPoint[] p(BigInteger[] x) {
+		InputValidation.begin().when(x == null, "argument is null").validate();
 		BigPoint[] pts = new BigPoint[x.length];
 		for(int i = 0; i < x.length; i++)
 			pts[i] = p(x[i]);

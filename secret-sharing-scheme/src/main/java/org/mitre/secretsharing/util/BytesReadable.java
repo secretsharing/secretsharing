@@ -63,6 +63,7 @@ public class BytesReadable {
 	 * @param b Data to read
 	 */
 	public BytesReadable(byte[] b) {
+		InputValidation.begin().when(b == null, "argument is null").validate();
 		this.b = b;
 		buf = new ByteArrayInputStream(b);
 		data = new DataInputStream(buf);

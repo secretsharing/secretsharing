@@ -25,6 +25,8 @@ package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 
+import org.mitre.secretsharing.util.InputValidation;
+
 /**
  * A fractional term used in {@link TermPolynomial}
  * @author Robin Kirkman
@@ -63,8 +65,11 @@ public final class Term implements Comparable<Term> {
 	 * @param denominator The denominator
 	 */
 	public Term(BigInteger numerator, BigInteger denominator) {
-		if(denominator.equals(BigInteger.ZERO))
-			throw new ArithmeticException("Divide by zero in term");
+		InputValidation.begin()
+			.when(numerator == null, "numerator is null")
+			.when(denominator == null, "denominator is null")
+			.when(BigInteger.ZERO.equals(denominator), "denominator is 0")
+			.validate();
 		BigInteger n = numerator;
 		BigInteger d = denominator;
 		if(n.equals(BigInteger.ZERO)) {
@@ -100,6 +105,7 @@ public final class Term implements Comparable<Term> {
 	
 	@Override
 	public int compareTo(Term o) {
+		InputValidation.begin().when(o == null, "argument is null").validate();
 		return subtract(o).numerator.compareTo(BigInteger.ZERO);
 	}
 	
@@ -132,6 +138,7 @@ public final class Term implements Comparable<Term> {
 	 * @return A new Term
 	 */
 	public Term add(Term other) {
+		InputValidation.begin().when(other == null, "argument is null").validate();
 		BigInteger n = numerator.multiply(other.denominator).add(other.numerator.multiply(denominator));
 		BigInteger d = denominator.multiply(other.denominator);
 		return new Term(n, d);
@@ -143,6 +150,7 @@ public final class Term implements Comparable<Term> {
 	 * @return A new Term
 	 */
 	public Term subtract(Term other) {
+		InputValidation.begin().when(other == null, "argument is null").validate();
 		return add(new Term(other.numerator.negate(), other.denominator));
 	}
 	
@@ -152,6 +160,7 @@ public final class Term implements Comparable<Term> {
 	 * @return A new Term
 	 */
 	public Term multiply(Term other) {
+		InputValidation.begin().when(other == null, "argument is null").validate();
 		BigInteger n = numerator.multiply(other.numerator);
 		BigInteger d = denominator.multiply(other.denominator);
 		return new Term(n, d);
@@ -163,6 +172,7 @@ public final class Term implements Comparable<Term> {
 	 * @return A new Term
 	 */
 	public Term multiply(BigInteger val) {
+		InputValidation.begin().when(val == null, "argument is null").validate();
 		BigInteger n = numerator.multiply(val);
 		BigInteger d = denominator;
 		return new Term(n, d);
@@ -174,6 +184,7 @@ public final class Term implements Comparable<Term> {
 	 * @return A new {@link Term}
 	 */
 	public Term mod(BigInteger m) {
+		InputValidation.begin().when(m == null, "argument is null").validate();
 		m = m.multiply(denominator);
 		return new Term(numerator.mod(m), denominator);
 	}

@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.util.Arrays;
 
 import org.mitre.secretsharing.codec.PartFormats;
+import org.mitre.secretsharing.util.InputValidation;
 
 /**
  * Utility class for holding split parts of a secret
@@ -61,8 +62,11 @@ public class Part {
 		 * @param modulus The modulus of the secret polynomial
 		 */
 		private PublicSecretPart(int length, int requiredParts, BigInteger modulus) {
-			if(modulus == null)
-				throw new IllegalArgumentException();
+			InputValidation.begin()
+				.when(length < 0, "length is less than 0")
+				.when(requiredParts < 1, "requiredParts is less than 1")
+				.when(modulus == null, "modulus is null")
+				.validate();
 			this.length = length;
 			this.requiredParts = requiredParts;
 			this.modulus = modulus;
@@ -109,8 +113,7 @@ public class Part {
 		 * @param point The point on the polynomial
 		 */
 		private PrivateSecretPart(BigPoint point) {
-			if(point == null)
-				throw new IllegalArgumentException();
+			InputValidation.begin().when(point == null, "point is null").validate();
 			this.point = point;
 		}
 
@@ -143,6 +146,10 @@ public class Part {
 	 * @param privatePart The private secret part
 	 */
 	public Part(int version, PublicSecretPart publicPart, PrivateSecretPart privatePart) {
+		InputValidation.begin()
+			.when(publicPart == null, "publicPart is null")
+			.when(privatePart == null, "privatePart is null")
+			.validate();
 		this.version = version;
 		this.publicPart = publicPart;
 		this.privatePart = privatePart;
@@ -266,11 +273,15 @@ public class Part {
 	 * Overridden by PerBytePart
 	 */
 	public byte[] join(Part... otherParts) {
+		InputValidation iv = InputValidation.begin()
+				.when(otherParts == null, "otherParts is null")
+				.validate();
 		Part[] parts = Arrays.copyOf(otherParts, otherParts.length + 1);
 		parts[parts.length - 1] = this;
 		for(Part p : parts) {
-			if(p instanceof PerBytePart)
-				throw new IllegalArgumentException("Cannot join single-point and per-byte-point secret parts");
+			iv
+				.when(p instanceof PerBytePart, "cannot apply multibyte join to perbyte parts")
+				.validate();
 		}
 		return Secrets.joinMultibyte(parts);
 	}

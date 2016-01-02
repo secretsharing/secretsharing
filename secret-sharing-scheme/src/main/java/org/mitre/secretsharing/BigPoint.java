@@ -25,6 +25,8 @@ package org.mitre.secretsharing;
 
 import java.math.BigInteger;
 
+import org.mitre.secretsharing.util.InputValidation;
+
 /**
  * An x/y point using {@link BigInteger} for its coordinates
  * @author Robin Kirkman
@@ -46,6 +48,7 @@ public class BigPoint {
 	 * @param y The Y coordinate
 	 */
 	public BigPoint(BigInteger x, BigInteger y) {
+		InputValidation.begin().when(x == null, "x is null").when(y == null, "y is null").validate();
 		this.x = x;
 		this.y = y;
 	}
