@@ -14,6 +14,22 @@ public abstract class AbstractCompositeData extends AbstractData implements Comp
 	public List<Data> getComposition() {
 		return composition;
 	}
+	
+	@Override
+	public long getLength() {
+		long length = 0;
+		for(Data data : getComposition())
+			length += data.getLength();
+		return length;
+	}
+
+	@Override
+	public CompositeData seal() {
+		CompositeData sealed = (CompositeData) super.seal();
+		for(int idx = 0; idx < sealed.getComposition().size(); idx++)
+			sealed.getComposition().set(idx, sealed.getComposition().get(idx).seal());
+		return sealed;
+	}
 
 	protected void writeData(DataOutput output, int idx) throws StorageException, IOException {
 		if(this instanceof PreparedCompositeData)

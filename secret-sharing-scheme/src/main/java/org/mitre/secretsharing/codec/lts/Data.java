@@ -8,6 +8,8 @@ public interface Data {
 	public Data seal();
 	public boolean isSealed();
 	
+	public long getLength();
+	
 	public void write(DataOutput output) throws StorageException, IOException;
 	public void read(DataInput input) throws StorageException, IOException;
 }

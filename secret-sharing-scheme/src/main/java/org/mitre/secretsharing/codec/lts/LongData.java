@@ -24,6 +24,11 @@ public class LongData extends AbstractData {
 	}
 
 	@Override
+	public long getLength() {
+		return 8;
+	}
+
+	@Override
 	protected void writeData(DataOutput output) throws StorageException, IOException {
 		output.writeLong(getValue());
 	}

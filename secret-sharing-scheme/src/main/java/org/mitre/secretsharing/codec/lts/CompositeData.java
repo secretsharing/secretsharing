@@ -4,4 +4,6 @@ import java.util.List;
 
 public interface CompositeData extends Data {
 	public List<Data> getComposition();
+	@Override
+	public CompositeData seal();
 }

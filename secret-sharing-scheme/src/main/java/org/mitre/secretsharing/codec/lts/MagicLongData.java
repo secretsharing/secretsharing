@@ -13,6 +13,10 @@ public class MagicLongData extends LongData implements PreparedData {
 		this.magic = magic;
 	}
 	
+	public long getMagic() {
+		return magic;
+	}
+	
 	@Override
 	public DataOutput prepareData(DataOutput output) throws StorageException, IOException {
 		if(value != magic)
