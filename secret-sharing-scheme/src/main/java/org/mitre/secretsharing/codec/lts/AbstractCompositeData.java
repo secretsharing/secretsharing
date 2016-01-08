@@ -15,7 +15,7 @@ public abstract class AbstractCompositeData extends AbstractData implements Comp
 		return composition;
 	}
 
-	protected void writeData(DataOutput output, int idx) throws PartfileException, IOException {
+	protected void writeData(DataOutput output, int idx) throws StorageException, IOException {
 		if(this instanceof PreparedCompositeData)
 			prepareData(output, idx);
 		try {
@@ -26,7 +26,7 @@ public abstract class AbstractCompositeData extends AbstractData implements Comp
 		}
 	}
 	
-	protected void readData(DataInput input, int idx) throws PartfileException, IOException {
+	protected void readData(DataInput input, int idx) throws StorageException, IOException {
 		if(this instanceof PreparedCompositeData) 
 			prepareData(input, idx);
 		try {
@@ -38,29 +38,29 @@ public abstract class AbstractCompositeData extends AbstractData implements Comp
 	}
 
 	@Override
-	protected void writeData(DataOutput output) throws PartfileException, IOException {
+	protected void writeData(DataOutput output) throws StorageException, IOException {
 		for(int idx = 0; idx < getComposition().size(); idx++)
 			writeData(output, idx);
 	}
 	
 	@Override
-	protected void readData(DataInput input) throws PartfileException, IOException {
+	protected void readData(DataInput input) throws StorageException, IOException {
 		for(int idx = 0; idx < getComposition().size(); idx++)
 			readData(input, idx);
 	}
 
-	public DataOutput prepareData(DataOutput output, int idx) throws PartfileException, IOException {
+	public DataOutput prepareData(DataOutput output, int idx) throws StorageException, IOException {
 		return output;
 	}
 
-	public DataInput prepareData(DataInput input, int idx) throws PartfileException, IOException {
+	public DataInput prepareData(DataInput input, int idx) throws StorageException, IOException {
 		return input;
 	}
 
-	public void finishData(DataOutput output, int idx) throws PartfileException, IOException {
+	public void finishData(DataOutput output, int idx) throws StorageException, IOException {
 	}
 
-	public void finishData(DataInput input, int idx) throws PartfileException, IOException {
+	public void finishData(DataInput input, int idx) throws StorageException, IOException {
 	}
 
 }

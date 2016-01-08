@@ -6,8 +6,8 @@ import java.io.IOException;
 
 public abstract class AbstractData implements Data {
 	
-	protected abstract void writeData(DataOutput output) throws PartfileException, IOException;
-	protected abstract void readData(DataInput input) throws PartfileException, IOException;
+	protected abstract void writeData(DataOutput output) throws StorageException, IOException;
+	protected abstract void readData(DataInput input) throws StorageException, IOException;
 	
 	protected boolean sealed;
 	
@@ -22,18 +22,18 @@ public abstract class AbstractData implements Data {
 		return this;
 	}
 	
-	protected void assertSealed() throws PartfileException {
+	protected void assertSealed() throws StorageException {
 		if(!sealed)
-			throw new PartfileException();
+			throw new StorageException();
 	}
 	
-	protected void assertUnsealed() throws PartfileException {
+	protected void assertUnsealed() throws StorageException {
 		if(sealed)
-			throw new PartfileException();
+			throw new StorageException();
 	}
 	
 	@Override
-	public void write(DataOutput output) throws PartfileException, IOException {
+	public void write(DataOutput output) throws StorageException, IOException {
 		if(this instanceof PreparedData)
 			output = prepareData(output);
 		try {
@@ -46,7 +46,7 @@ public abstract class AbstractData implements Data {
 	}
 	
 	@Override
-	public void read(DataInput input) throws PartfileException, IOException {
+	public void read(DataInput input) throws StorageException, IOException {
 		if(this instanceof PreparedData)
 			input = prepareData(input);
 		try {
@@ -58,18 +58,18 @@ public abstract class AbstractData implements Data {
 		}
 	}
 	
-	public DataOutput prepareData(DataOutput output) throws PartfileException, IOException {
+	public DataOutput prepareData(DataOutput output) throws StorageException, IOException {
 		return output;
 	}
 
-	public DataInput prepareData(DataInput input) throws PartfileException, IOException {
+	public DataInput prepareData(DataInput input) throws StorageException, IOException {
 		return input;
 	}
 
-	public void finishData(DataOutput output) throws PartfileException, IOException {
+	public void finishData(DataOutput output) throws StorageException, IOException {
 	}
 
-	public void finishData(DataInput input) throws PartfileException, IOException {
+	public void finishData(DataInput input) throws StorageException, IOException {
 	}
 
 }
