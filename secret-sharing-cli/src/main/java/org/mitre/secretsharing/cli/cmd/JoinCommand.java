@@ -23,24 +23,36 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.cli.cmd;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.codec.binary.Base64;
 import org.mitre.secretsharing.Part;
-import org.mitre.secretsharing.Secrets;
 import org.mitre.secretsharing.cli.util.IOUtils;
 import org.mitre.secretsharing.codec.PartFormats;
 
 public class JoinCommand extends AbstractCommand {
 	private static final Option BASE64 = new Option(null, "base-64", false, "outupt secret Base64 encoded");
+	private static final Option FILE_PREFIX = new Option("p", "output-prefix", true, "prefix for storing secret parts as files");
+	private static final Option FILE_SUFFIX = new Option("s", "output-suffix", true, "suffix for storing secret parts as files (requires prefix)");
+
+	static {
+		FILE_PREFIX.setArgName("prefix");
+		FILE_SUFFIX.setArgName("suffix");
+
+		FILE_PREFIX.setArgs(1);
+		FILE_SUFFIX.setArgs(1);;
+	}
 
 	public JoinCommand() {
 		super("join", "joins secret parts to reconstruct a secret");
@@ -49,25 +61,80 @@ public class JoinCommand extends AbstractCommand {
 	@Override
 	public Options getOptions() {
 		Options opt = new Options();
-		
+
 		opt.addOption(BASE64);
-		
+		opt.addOption(FILE_PREFIX);
+		opt.addOption(FILE_SUFFIX);
+
 		return opt;
 	}
 
 	@Override
 	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
-		List<String> lines = IOUtils.readLines(in);
 		List<Part> parts = new ArrayList<Part>();
 		boolean failure = false;
-		for(String line : lines) {
-			if(line.isEmpty())
-				continue;
-			try {
-				parts.add(PartFormats.parse(line));
-			} catch(RuntimeException e) {
-				err.println("Not a secret part: " + line);
-				failure = true;
+		if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null) {
+			List<String> lines = IOUtils.readLines(in);
+			for(String line : lines) {
+				if(line.isEmpty())
+					continue;
+				try {
+					parts.add(PartFormats.parse(line));
+				} catch(RuntimeException e) {
+					err.println("Not a secret part: " + line);
+					failure = true;
+				}
+			}
+		} else {
+			File prefix = new File(cmd.getOptionValue(FILE_PREFIX.getLongOpt()));
+			String suffix = cmd.getOptionValue(FILE_SUFFIX.getLongOpt());
+			if(suffix == null)
+				suffix = "";
+			if(prefix.isDirectory()) {
+				Pattern p = Pattern.compile("\\d+" + Pattern.quote(suffix));
+				for(File f : prefix.listFiles()) {
+					if(p.matcher(f.getName()).matches()) {
+						InputStream fin = new FileInputStream(f);
+						try {
+							try {
+								for(String line : IOUtils.readLines(fin)) {
+									if(line.isEmpty())
+										continue;
+									parts.add(PartFormats.parse(line));
+								}
+							} catch(RuntimeException e) {
+								err.println("Not a secret part: " + f);
+								failure = true;
+							}
+						} finally {
+							fin.close();
+						}
+					}
+				}
+			} else {
+				Pattern p = Pattern.compile(Pattern.quote(prefix.getName()) + "\\d+" + Pattern.quote(suffix));
+				File parent = prefix.getParentFile();
+				if(parent == null)
+					parent = new File(".");
+				for(File f : parent.listFiles()) {
+					if(p.matcher(f.getName()).matches()) {
+						InputStream fin = new FileInputStream(f);
+						try {
+							try {
+								for(String line : IOUtils.readLines(fin)) {
+									if(line.isEmpty())
+										continue;
+									parts.add(PartFormats.parse(line));
+								}
+							} catch(RuntimeException e) {
+								err.println("Not a secret part: " + f);
+								failure = true;
+							}
+						} finally {
+							fin.close();
+						}
+					}
+				}
 			}
 		}
 		if(failure)
