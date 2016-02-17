@@ -105,6 +105,8 @@ public class SplitCommand extends AbstractCommand {
 		}
 		if(FILE_PREFIX == o)  {
 			try {
+				if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null)
+					return invalid;
 				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
 					throw new RuntimeException();
 			} catch(RuntimeException e) {
@@ -113,12 +115,12 @@ public class SplitCommand extends AbstractCommand {
 		}
 		if(FILE_SUFFIX == o)  {
 			try {
+				if(cmd.getOptionValue(FILE_SUFFIX.getLongOpt()) == null)
+					return invalid;
 				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
 					throw new RuntimeException();
-				if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null)
-					throw new RuntimeException();
 			} catch(RuntimeException e) {
-				invalid += "--" + TOTAL.getLongOpt() +" must be used with --" + FILE_PREFIX + " and must be provided a single path prefix";
+				invalid += "--" + FILE_SUFFIX.getLongOpt() + " must be provided a single path suffix";
 			}
 		}
 		return invalid;
@@ -142,13 +144,15 @@ public class SplitCommand extends AbstractCommand {
 		Random rnd = new SecureRandom();
 		Part[] parts = Secrets.splitPerByte(secret, totalParts, requiredParts, rnd);
 		String prefix = cmd.getOptionValue(FILE_PREFIX.getLongOpt());
-		if(prefix == null) {
+		String suffix = cmd.getOptionValue(FILE_SUFFIX.getLongOpt());
+		if(prefix == null && suffix == null) {
 			for(Part p : parts) {
 				String s = PartFormats.currentStringFormat().format(p);
 				out.println(s);
 			}
 		} else {
-			String suffix = cmd.getOptionValue(FILE_SUFFIX.getLongOpt());
+			if(prefix == null)
+				prefix = "./";
 			if(suffix == null)
 				suffix = "";
 			for(int i = 0; i < parts.length; i++) {

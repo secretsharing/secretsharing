@@ -70,10 +70,38 @@ public class JoinCommand extends AbstractCommand {
 	}
 
 	@Override
+	protected String checkArgument(CommandLine cmd, Option o) {
+		String invalid = super.checkArgument(cmd, o);
+		if(!invalid.isEmpty())
+			return invalid;
+		if(FILE_PREFIX == o)  {
+			try {
+				if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null)
+					return invalid;
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + FILE_PREFIX.getLongOpt() +" must be provided a single path prefix";
+			}
+		}
+		if(FILE_SUFFIX == o)  {
+			try {
+				if(cmd.getOptionValue(FILE_SUFFIX.getLongOpt()) == null)
+					return invalid;
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + FILE_SUFFIX.getLongOpt() + " must be provided a single path suffix";
+			}
+		}
+		return invalid;
+	}
+
+	@Override
 	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception {
 		List<Part> parts = new ArrayList<Part>();
 		boolean failure = false;
-		if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null) {
+		if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null && cmd.getOptionValue(FILE_SUFFIX.getLongOpt()) == null) {
 			List<String> lines = IOUtils.readLines(in);
 			for(String line : lines) {
 				if(line.isEmpty())
@@ -86,13 +114,16 @@ public class JoinCommand extends AbstractCommand {
 				}
 			}
 		} else {
-			File prefix = new File(cmd.getOptionValue(FILE_PREFIX.getLongOpt()));
+			String prefix = cmd.getOptionValue(FILE_PREFIX.getLongOpt());
 			String suffix = cmd.getOptionValue(FILE_SUFFIX.getLongOpt());
+			if(prefix == null)
+				prefix = "./";
 			if(suffix == null)
 				suffix = "";
-			if(prefix.isDirectory()) {
+			File pfile = new File(prefix);
+			if(pfile.isDirectory()) {
 				Pattern p = Pattern.compile("\\d+" + Pattern.quote(suffix));
-				for(File f : prefix.listFiles()) {
+				for(File f : pfile.listFiles()) {
 					if(p.matcher(f.getName()).matches()) {
 						InputStream fin = new FileInputStream(f);
 						try {
@@ -112,8 +143,8 @@ public class JoinCommand extends AbstractCommand {
 					}
 				}
 			} else {
-				Pattern p = Pattern.compile(Pattern.quote(prefix.getName()) + "\\d+" + Pattern.quote(suffix));
-				File parent = prefix.getParentFile();
+				Pattern p = Pattern.compile(Pattern.quote(prefix) + "\\d+" + Pattern.quote(suffix));
+				File parent = pfile.getParentFile();
 				if(parent == null)
 					parent = new File(".");
 				for(File f : parent.listFiles()) {
