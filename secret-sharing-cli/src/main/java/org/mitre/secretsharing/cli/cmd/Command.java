@@ -25,6 +25,7 @@ package org.mitre.secretsharing.cli.cmd;
 
 import java.io.InputStream;
 import java.io.PrintStream;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
