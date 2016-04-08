@@ -24,9 +24,7 @@ us know where this software is being used.
 package org.mitre.secretsharing.util;
 
 import java.io.ByteArrayInputStream;
-import java.io.DataInput;
-import java.io.DataInputStream;
-import java.io.IOException;
+import java.io.EOFException;
 import java.math.BigInteger;
 
 import org.mitre.secretsharing.codec.Base32;
@@ -38,24 +36,23 @@ import org.mitre.secretsharing.codec.Base32;
  */
 public class BytesReadable {
 	/**
-	 * The raw backing array
-	 */
-	private byte[] b;
-	/**
 	 * The stream buffer
 	 */
 	private ByteArrayInputStream buf;
+
 	/**
-	 * Handles data input
+	 * The string value
 	 */
-	private DataInput data;
+	private String string;
 	
 	/**
 	 * Base 32 decode the argument then create a {@link BytesReadable}
-	 * @param b Base 32 encoded data to read
+	 * @param s Base 32 encoded data to read
 	 */
-	public BytesReadable(String b) {
-		this(Base32.decode(b));
+	public BytesReadable(String s) {
+		InputValidation.begin().when(s == null, "string is null").validate();
+		buf = new ByteArrayInputStream(Base32.decode(s));
+		string = s;
 	}
 	
 	/**
@@ -63,15 +60,14 @@ public class BytesReadable {
 	 * @param b Data to read
 	 */
 	public BytesReadable(byte[] b) {
-		InputValidation.begin().when(b == null, "argument is null").validate();
-		this.b = b;
+		InputValidation.begin().when(b == null, "array is null").validate();
 		buf = new ByteArrayInputStream(b);
-		data = new DataInputStream(buf);
+		string = Base32.encode(b);
 	}
 	
 	@Override
 	public String toString() {
-		return Base32.encode(b);
+		return string;
 	}
 	
 	/**
@@ -79,14 +75,11 @@ public class BytesReadable {
 	 * @return The next {@link BigInteger}
 	 */
 	public BigInteger readBigInteger() {
-		try {
-			int len = readInt();
-			byte[] b = new byte[len];
-			data.readFully(b);
-			return new BigInteger(b);
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		int len = readInt();
+		byte[] b = new byte[len];
+		if(buf.read(b, 0, b.length) < b.length)
+			throw new RuntimeException(new EOFException());
+		return new BigInteger(b);
 	}
 	
 	/**
@@ -94,20 +87,18 @@ public class BytesReadable {
 	 * @return The next {@code int}
 	 */
 	public int readInt() {
-		try {
-			int i = 0;
-			int off = 0;
-			boolean term;
-			do {
-				int l = data.readUnsignedByte();
-				term = (l & 0x80) != 0;
-				i |= (l & 0x7f) << off;
-				off += 7;
-			} while(!term);
-			return i;
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		int i = 0;
+		int off = 0;
+		boolean term;
+		do {
+			int l = buf.read();
+			if(l < 0)
+				throw new RuntimeException(new EOFException());
+			term = (l & 0x80) != 0;
+			i |= (l & 0x7f) << off;
+			off += 7;
+		} while(!term);
+		return i;
 	}
 	
 	/**
@@ -116,12 +107,9 @@ public class BytesReadable {
 	 * @return A new {@code byte[]}
 	 */
 	public byte[] readBytes(int len) {
-		try {
-			byte[] b = new byte[len];
-			data.readFully(b);
-			return b;
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		byte[] b = new byte[len];
+		if(buf.read(b, 0, b.length) < b.length)
+			throw new RuntimeException(new EOFException());
+		return b;
 	}
 }
