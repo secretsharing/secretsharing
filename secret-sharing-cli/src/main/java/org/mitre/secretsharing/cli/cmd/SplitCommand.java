@@ -33,11 +33,11 @@ import java.util.Random;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.codec.binary.Base64;
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
 import org.mitre.secretsharing.cli.util.IOUtils;
 import org.mitre.secretsharing.codec.PartFormats;
+import org.ow2.util.base64.Base64;
 
 public class SplitCommand extends AbstractCommand {
 	
@@ -97,7 +97,10 @@ public class SplitCommand extends AbstractCommand {
 		byte[] secret = IOUtils.toByteArray(in);
 		if(cmd.hasOption(BASE64.getLongOpt())) {
 			try {
-				secret = Base64.decodeBase64(secret);
+				char[] c = new char[secret.length];
+				for(int i = 0; i < c.length; i++)
+					c[i] = (char)(secret[i] & 0xFF);
+				secret = Base64.decode(c);
 			} catch(RuntimeException e) {
 				err.println("Not a Base64-encoded secret");
 				System.exit(1);

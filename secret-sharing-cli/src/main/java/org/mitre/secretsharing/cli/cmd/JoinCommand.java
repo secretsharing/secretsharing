@@ -33,11 +33,11 @@ import java.util.List;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.codec.binary.Base64;
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
 import org.mitre.secretsharing.cli.util.IOUtils;
 import org.mitre.secretsharing.codec.PartFormats;
+import org.ow2.util.base64.Base64;
 
 public class JoinCommand extends AbstractCommand {
 	private static final Option BASE64 = new Option(null, "base-64", false, "outupt secret Base64 encoded");
@@ -81,8 +81,12 @@ public class JoinCommand extends AbstractCommand {
 			System.exit(1);
 			return;
 		}
-		if(cmd.hasOption(BASE64.getLongOpt()))
-			secret = Base64.encodeBase64(secret);
+		if(cmd.hasOption(BASE64.getLongOpt())) {
+			char[] c = Base64.encode(secret);
+			secret = new byte[c.length];
+			for(int i = 0; i < c.length; i++)
+				secret[i] = (byte) c[i];
+		}
 		out.write(secret);
 	}
 
