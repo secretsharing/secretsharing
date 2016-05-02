@@ -66,7 +66,9 @@ Part part = PartFormats.parse(formatted);
 
 ## Security
 
-Shamir's Secret Sharing Scheme is a fully secure way to divide a secret into shareable parts.  This Java implementation of the scheme has been reviewed by a MITRE cryptographer and found to be sound.  However, if you have any doubts, inspect the source code and compile it yourself.
+Shamir's Secret Sharing Scheme is an [information-theoretically secure](https://en.wikipedia.org/wiki/Information-theoretic_security) way to divide a secret into shareable parts.  For comparison, key-based cryptographic techniques are [computationally secure](https://en.wikipedia.org/wiki/Computational_hardness_assumption).
+
+This Java implementation of the scheme has been reviewed by a MITRE cryptographer and found to be sound.  However, if you have any doubts, inspect the source code and compile it yourself.
 
 This implementation of Shamir's Secret Sharing Scheme is not subject to export control laws in the United States of America.  Please check local laws concerning cryptography before downloading or using this library.
 
