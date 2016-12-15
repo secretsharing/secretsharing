@@ -106,7 +106,7 @@ us know where this software is being used.
 						<version>1.6</version>
 						<executions>
 							<execution>
-								<phase>package</phase>
+								<phase>post-integration-test</phase>
 								<goals>
 									<goal>sign</goal>
 								</goals>
