@@ -25,6 +25,7 @@ package org.mitre.secretsharing.codec;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 import org.mitre.secretsharing.util.InputValidation;
@@ -173,6 +174,10 @@ public abstract class Base32 {
 		return dest;
 	}
 	
+	public static ByteIterator encode(ByteIterator data) {
+		return new EncodingByteIterator(data);
+	}
+
 	/**
 	 * Decode a string of Base 32 representation to the original bytes
 	 * @param data The string to decode
@@ -236,5 +241,76 @@ public abstract class Base32 {
 		return dest;
 	}
 	
+	public static ByteIterator decode(ByteIterator data) {
+		return new DecodingByteIterator(data);
+	}
+	
 	private Base32() {}
+
+	private static abstract class AbstractBase32ByteIterator implements ByteIterator {
+		protected ByteIterator data;
+		protected byte[] ibuf;
+		protected byte[] obuf;
+		protected int opos;
+		
+		protected abstract void apply();
+		
+		public AbstractBase32ByteIterator(ByteIterator data, int isize, int osize) {
+			this.data = data;
+			ibuf = new byte[isize];
+			obuf = new byte[osize];
+			opos = obuf.length;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			if(opos < obuf.length)
+				return true;
+			if(!data.hasNext())
+				return false;
+			int isize = 0;
+			for(; isize < ibuf.length && data.hasNext(); isize++)
+				ibuf[isize] = data.next();
+			if(isize < ibuf.length)
+				ibuf = Arrays.copyOf(ibuf, isize);
+			apply();
+			opos = 0;
+			return true;
+		}
+		
+		@Override
+		public byte next() {
+			if(!hasNext())
+				throw new NoSuchElementException();
+			return obuf[opos++];
+		}
+	}
+
+	public static class EncodingByteIterator extends AbstractBase32ByteIterator {
+		public EncodingByteIterator(ByteIterator data) {
+			super(data, 5, 8);
+		}
+	
+		@Override
+		protected void apply() {
+			int osize = encodedLength(ibuf.length);
+			if(osize < obuf.length)
+				obuf = new byte[osize];
+			encode(obuf, ibuf);
+		}
+	}
+
+	public static class DecodingByteIterator extends AbstractBase32ByteIterator {
+		public DecodingByteIterator(ByteIterator data) {
+			super(data, 8, 5);
+		}
+		
+		@Override
+		protected void apply() {
+			int osize = decodedLength(ibuf.length);
+			if(osize < obuf.length)
+				obuf = new byte[osize];
+			decode(obuf, ibuf);
+		}
+	}
 }
