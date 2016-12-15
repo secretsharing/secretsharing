@@ -27,7 +27,9 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.math.BigInteger;
 
+import org.mitre.secretsharing.codec.ArrayByteIterator;
 import org.mitre.secretsharing.codec.Base32;
+import org.mitre.secretsharing.codec.ByteIterator;
 
 /**
  * Utility class for reading byte arrays
@@ -38,7 +40,7 @@ public class BytesReadable {
 	/**
 	 * The stream buffer
 	 */
-	private ByteArrayInputStream buf;
+	private ByteIterator data;
 
 	/**
 	 * The string value
@@ -51,7 +53,8 @@ public class BytesReadable {
 	 */
 	public BytesReadable(String s) {
 		InputValidation.begin().when(s == null, "string is null").validate();
-		buf = new ByteArrayInputStream(Base32.decode(s));
+		byte[] buf = Base32.decode(s);
+		data = new ArrayByteIterator(buf, 0, buf.length);
 		string = s;
 	}
 	
@@ -61,13 +64,28 @@ public class BytesReadable {
 	 */
 	public BytesReadable(byte[] b) {
 		InputValidation.begin().when(b == null, "array is null").validate();
-		buf = new ByteArrayInputStream(b);
+		data = new ArrayByteIterator(b, 0, b.length);
 		string = Base32.encode(b);
+	}
+	
+	public BytesReadable(ByteIterator data) {
+		InputValidation.begin().when(data == null, "data is null").validate();
+		this.data = data;
 	}
 	
 	@Override
 	public String toString() {
 		return string;
+	}
+	
+	protected int read(byte[] buf, int from, int len) {
+		int rlen = 0;
+		for(; rlen < len; data.hasNext()) {
+			buf[from + (rlen++)] = data.next();
+		}
+		if(rlen == 0)
+			return -1;
+		return rlen;
 	}
 	
 	/**
@@ -77,7 +95,7 @@ public class BytesReadable {
 	public BigInteger readBigInteger() {
 		int len = readInt();
 		byte[] b = new byte[len];
-		if(buf.read(b, 0, b.length) < b.length)
+		if(read(b, 0, b.length) < b.length)
 			throw new RuntimeException(new EOFException());
 		return new BigInteger(b);
 	}
@@ -91,7 +109,7 @@ public class BytesReadable {
 		int off = 0;
 		boolean term;
 		do {
-			int l = buf.read();
+			int l = data.next();
 			if(l < 0)
 				throw new RuntimeException(new EOFException());
 			term = (l & 0x80) != 0;
@@ -108,7 +126,7 @@ public class BytesReadable {
 	 */
 	public byte[] readBytes(int len) {
 		byte[] b = new byte[len];
-		if(buf.read(b, 0, b.length) < b.length)
+		if(read(b, 0, b.length) < b.length)
 			throw new RuntimeException(new EOFException());
 		return b;
 	}

@@ -67,9 +67,6 @@ public abstract class PartFormats {
 		VERSION_0 {
 
 			private final String V = new BytesWritable().writeInt(0).toString();
-			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
-			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
-					
 			
 			@Override
 			@SuppressWarnings("deprecation")
@@ -98,16 +95,20 @@ public abstract class PartFormats {
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				InputValidation.begin().when(data == null, "data is null").validate();
-				Matcher m = VALID.matcher(data);
-				if(!m.matches())
+				ByteIterator[] bia = split(data);
+				if(bia == null)
 					throw new IllegalArgumentException("Not parseable by " + this);
 				BytesReadable r;
 				
-				r = new BytesReadable(m.group(1).replace("-", ""));
+				r = new BytesReadable(bia[0]);
+				if(r.readInt() != getVersion())
+					throw new IllegalArgumentException("Not parseable by " + this);
+				
+				r = new BytesReadable(bia[1]);
 				int length = r.readInt();
 				BigInteger modulus = r.readBigInteger();
 				
-				r = new BytesReadable(m.group(3).replace("-", ""));
+				r = new BytesReadable(bia[2]);
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
 				BigPoint point = new BigPoint(x, y);
@@ -128,8 +129,6 @@ public abstract class PartFormats {
 		VERSION_1 {
 
 			private final String V = new BytesWritable().writeInt(1).toString();
-			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
-			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
 					
 			
 			@Override
@@ -162,17 +161,21 @@ public abstract class PartFormats {
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				InputValidation.begin().when(data == null, "data is null").validate();
-				Matcher m = VALID.matcher(data);
-				if(!m.matches())
+				ByteIterator[] bia = split(data);
+				if(bia == null)
 					throw new IllegalArgumentException("Not parseable by " + this);
 				BytesReadable r;
 				
-				r = new BytesReadable(m.group(1).replace("-", ""));
+				r = new BytesReadable(bia[0]);
+				if(r.readInt() != getVersion())
+					throw new IllegalArgumentException("Not parseable by " + this);
+
+				r = new BytesReadable(bia[1]);
 				int length = r.readInt();
 				int requiredParts = r.readInt();
 				BigInteger modulus = r.readBigInteger();
 				
-				r = new BytesReadable(m.group(3).replace("-", ""));
+				r = new BytesReadable(bia[2]);
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
 				BigPoint point = new BigPoint(x, y);
@@ -194,8 +197,6 @@ public abstract class PartFormats {
 		VERSION_2 {
 
 			private final String V = new BytesWritable().writeInt(2).toString();
-			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
-			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
 					
 			
 			@Override
@@ -230,17 +231,21 @@ public abstract class PartFormats {
 			@SuppressWarnings("deprecation")
 			public Part parse(String data) {
 				InputValidation.begin().when(data == null, "data is null").validate();
-				Matcher m = VALID.matcher(data);
-				if(!m.matches())
+				ByteIterator[] bia = split(data);
+				if(bia == null)
 					throw new IllegalArgumentException("Not parseable by " + this);
 				BytesReadable r;
 				
-				r = new BytesReadable(m.group(1).replace("-", ""));
+				r = new BytesReadable(bia[0]);
+				if(r.readInt() != getVersion())
+					throw new IllegalArgumentException("Not parseable by " + this);
+				
+				r = new BytesReadable(bia[1]);
 				int length = r.readInt();
 				int requiredParts = r.readInt();
 				BigInteger modulus = r.readBigInteger();
 				
-				r = new BytesReadable(m.group(3).replace("-", ""));
+				r = new BytesReadable(bia[2]);
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
 				BigPoint point = new BigPoint(x, y);
@@ -265,9 +270,6 @@ public abstract class PartFormats {
 		VERSION_3 {
 
 			private final String V = new BytesWritable().writeInt(3).toString();
-			private final String DASHED32 = "((" + Base32.DIGIT.pattern() + "|-)+)";
-			private final Pattern VALID = Pattern.compile(V + ":" + DASHED32 + "//" + DASHED32); 
-					
 			
 			@Override
 			public String format(Part part) {
@@ -297,17 +299,21 @@ public abstract class PartFormats {
 			@Override
 			public Part parse(String data) {
 				InputValidation.begin().when(data == null, "data is null").validate();
-				Matcher m = VALID.matcher(data);
-				if(!m.matches())
+				ByteIterator[] bia = split(data);
+				if(bia == null)
 					throw new IllegalArgumentException("Not parseable by " + this);
 				BytesReadable r;
 				
-				r = new BytesReadable(m.group(1).replace("-", ""));
+				r = new BytesReadable(bia[0]);
+				if(r.readInt() != getVersion())
+					throw new IllegalArgumentException("Not parseable by " + this);
+				
+				r = new BytesReadable(bia[1]);
 				int length = r.readInt();
 				int requiredParts = r.readInt();
 				BigInteger modulus = r.readBigInteger();
 				
-				r = new BytesReadable(m.group(3).replace("-", ""));
+				r = new BytesReadable(bia[2]);
 				BigInteger x = r.readBigInteger();
 				BigInteger y = r.readBigInteger();
 				BigPoint point = new BigPoint(x, y);
@@ -328,11 +334,28 @@ public abstract class PartFormats {
 
 		;
 		
+		private static ByteIterator[] split(String s) {
+			int vidx = s.indexOf(':');
+			if(vidx < 0)
+				return null;
+			int pidx = s.indexOf("//", vidx);
+			if(pidx < 0)
+				return null;
+			return new ByteIterator[] {
+				new UndashByteIterator(s, 0, vidx),
+				new UndashByteIterator(s, vidx + 1, pidx),
+				new UndashByteIterator(s, pidx + 2, s.length()),
+			};
+		}
+		
 		private static String dash(String s) {
-			s = s.replaceAll("(......)", "$1-");
-			if(s.endsWith("-"))
-				s = s.substring(0, s.length()-1);
-			return s;
+			StringBuilder sb = new StringBuilder(s.length() * 6 / 5 + 1);
+			for(int i = 0; i < s.length(); i += 5) {
+				if(i > 0)
+					sb.append('-');
+				sb.append(s.substring(i, Math.min(i+5, s.length())));
+			}
+			return sb.toString();
 		}
 		
 		@Override
@@ -347,6 +370,18 @@ public abstract class PartFormats {
 		public static int detectVersion(String data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
 			return new BytesReadable(data.replaceAll(":.*", "")).readInt();
+		}
+		
+		private static class UndashByteIterator extends StringByteIterator {
+			public UndashByteIterator(String data, int start, int stop) {
+				super(data, start, stop);
+			}
+
+			@Override
+			protected boolean skip(char c) {
+				return c == '-';
+			}
+			
 		}
 	}
 	
