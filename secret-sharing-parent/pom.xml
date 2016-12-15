@@ -51,10 +51,15 @@ us know where this software is being used.
 	<modules>
 		<module>../secret-sharing-cli</module>
 		<module>../secret-sharing-scheme</module>
-		<module>../secret-sharing-server</module>
 	</modules>
 
 	<profiles>
+		<profile>
+			<id>server</id>
+			<modules>
+				<module>../secret-sharing-server</module>
+			</modules>
+		</profile>
 		<profile>
 			<id>release</id>
 			<build>
