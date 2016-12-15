@@ -13,8 +13,6 @@
 		this software is being used. -->
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>secret-sharing-scheme</artifactId>
-	<groupId>org.mitre.secretsharing</groupId>
-	<version>1.1.1</version>
 
 	<name>org.mitre.secretsharing:secret-sharing-scheme</name>
 	<description>Java implementation of the Shamir Secret Sharing Scheme</description>
@@ -152,4 +150,10 @@
 		</profile>
 	</profiles>
 	<url>http://github.com/secretsharing/secretsharing</url>
+	<parent>
+		<groupId>org.mitre.secretsharing</groupId>
+		<artifactId>secret-sharing-parent</artifactId>
+		<version>1.1.2-SNAPSHOT</version>
+		<relativePath>../secret-sharing-parent</relativePath>
+	</parent>
 </project>

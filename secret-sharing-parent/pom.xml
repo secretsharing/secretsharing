@@ -25,14 +25,9 @@ us know where this software is being used.
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.mitre.secretsharing</groupId>
 	<artifactId>secret-sharing-parent</artifactId>
-	<version>1.1.1</version>
+	<version>1.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<modules>
-		<module>../secret-sharing-scheme</module>
-		<module>../secret-sharing-cli</module>
-		<module>../secret-sharing-server</module>
-	</modules>
 
 	<organization>
 		<name>The MITRE Corporation</name>
@@ -61,4 +56,9 @@ us know where this software is being used.
 			</plugins>
 		</pluginManagement>
 	</build>
+	<modules>
+		<module>../secret-sharing-cli</module>
+		<module>../secret-sharing-scheme</module>
+		<module>../secret-sharing-server</module>
+	</modules>
 </project>
