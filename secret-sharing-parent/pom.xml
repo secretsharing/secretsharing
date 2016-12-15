@@ -28,11 +28,6 @@ us know where this software is being used.
 	<version>1.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<modules>
-		<module>../secret-sharing-scheme</module>
-		<module>../secret-sharing-cli</module>
-		<module>../secret-sharing-server</module>
-	</modules>
 
 	<organization>
 		<name>The MITRE Corporation</name>
@@ -50,15 +45,83 @@ us know where this software is being used.
 						<skip>true</skip>
 					</configuration>
 				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-deploy-plugin</artifactId>
-					<version>2.8.2</version>
-					<configuration>
-						<skip>true</skip>
-					</configuration>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+	<modules>
+		<module>../secret-sharing-cli</module>
+		<module>../secret-sharing-scheme</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>server</id>
+			<modules>
+				<module>../secret-sharing-server</module>
+			</modules>
+		</profile>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-deploy-plugin</artifactId>
+						<version>2.8.2</version>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.4</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.10.3</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<nodeprecated>true</nodeprecated>
+							<nodeprecatedlist>true</nodeprecatedlist>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.6</version>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
+
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>9</version>
+	</parent>
 </project>
