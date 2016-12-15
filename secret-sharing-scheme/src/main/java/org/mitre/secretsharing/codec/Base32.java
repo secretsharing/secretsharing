@@ -174,6 +174,7 @@ public abstract class Base32 {
 		return dest;
 	}
 	
+	//TODO javadoc
 	public static ByteIterator encode(ByteIterator data) {
 		return new EncodingByteIterator(data);
 	}
@@ -241,12 +242,14 @@ public abstract class Base32 {
 		return dest;
 	}
 	
+	//TODO javadoc
 	public static ByteIterator decode(ByteIterator data) {
 		return new DecodingByteIterator(data);
 	}
 	
 	private Base32() {}
 
+	//TODO javadoc
 	private static abstract class AbstractBase32ByteIterator implements ByteIterator {
 		protected ByteIterator data;
 		protected byte[] ibuf;
@@ -286,6 +289,7 @@ public abstract class Base32 {
 		}
 	}
 
+	//TODO javadoc
 	public static class EncodingByteIterator extends AbstractBase32ByteIterator {
 		public EncodingByteIterator(ByteIterator data) {
 			super(data, 5, 8);
@@ -300,6 +304,7 @@ public abstract class Base32 {
 		}
 	}
 
+	//TODO javadoc
 	public static class DecodingByteIterator extends AbstractBase32ByteIterator {
 		public DecodingByteIterator(ByteIterator data) {
 			super(data, 8, 5);

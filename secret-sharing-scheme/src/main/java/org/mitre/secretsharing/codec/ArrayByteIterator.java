@@ -2,6 +2,7 @@ package org.mitre.secretsharing.codec;
 
 import java.util.NoSuchElementException;
 
+//TODO javadoc
 public class ArrayByteIterator implements ByteIterator {
 
 	protected byte[] data;

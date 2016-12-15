@@ -334,6 +334,7 @@ public abstract class PartFormats {
 
 		;
 		
+		//TODO javadoc
 		private static ByteIterator[] split(String s) {
 			int vidx = s.indexOf(':');
 			if(vidx < 0)
@@ -348,6 +349,7 @@ public abstract class PartFormats {
 			};
 		}
 		
+		//TODO javadoc
 		private static String dash(String s) {
 			StringBuilder sb = new StringBuilder(s.length() * 6 / 5 + 1);
 			for(int i = 0; i < s.length(); i += 5) {
@@ -367,6 +369,7 @@ public abstract class PartFormats {
 		@Override
 		public abstract int getVersion();
 		
+		//TODO javadoc
 		public static int detectVersion(String data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
 			int vidx = data.indexOf(':');
@@ -375,6 +378,7 @@ public abstract class PartFormats {
 			return new BytesReadable(bi).readInt();
 		}
 		
+		//TODO javadoc
 		private static class UndashByteIterator extends StringByteIterator {
 			public UndashByteIterator(String data, int start, int stop) {
 				super(data, start, stop);
