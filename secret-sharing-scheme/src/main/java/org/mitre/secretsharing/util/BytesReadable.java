@@ -109,7 +109,7 @@ public class BytesReadable {
 		int off = 0;
 		boolean term;
 		do {
-			int l = data.next();
+			int l = 0xFF & data.next();
 			if(l < 0)
 				throw new RuntimeException(new EOFException());
 			term = (l & 0x80) != 0;

@@ -342,9 +342,9 @@ public abstract class PartFormats {
 			if(pidx < 0)
 				return null;
 			return new ByteIterator[] {
-				new UndashByteIterator(s, 0, vidx),
-				new UndashByteIterator(s, vidx + 1, pidx),
-				new UndashByteIterator(s, pidx + 2, s.length()),
+				Base32.decode(new UndashByteIterator(s, 0, vidx)),
+				Base32.decode(new UndashByteIterator(s, vidx + 1, pidx)),
+				Base32.decode(new UndashByteIterator(s, pidx + 2, s.length())),
 			};
 		}
 		
@@ -369,7 +369,10 @@ public abstract class PartFormats {
 		
 		public static int detectVersion(String data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
-			return new BytesReadable(data.replaceAll(":.*", "")).readInt();
+			int vidx = data.indexOf(':');
+			ByteIterator bi = new UndashByteIterator(data, 0, vidx);
+			bi = Base32.decode(bi);
+			return new BytesReadable(bi).readInt();
 		}
 		
 		private static class UndashByteIterator extends StringByteIterator {
