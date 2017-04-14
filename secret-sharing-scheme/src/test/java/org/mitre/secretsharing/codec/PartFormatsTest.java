@@ -27,9 +27,12 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Random;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
+import org.mitre.secretsharing.codec.PartFormats.BytesFormats;
+import org.mitre.secretsharing.codec.PartFormats.StringFormats;
 
 public class PartFormatsTest {
 	@Test
@@ -43,5 +46,31 @@ public class PartFormatsTest {
 		System.out.println("- length=" + formatted.length());
 		System.out.println("parsing");
 		PartFormats.parse(formatted);
+	}
+	
+	@Test
+	public void testStringVersions() {
+		for(PartFormat<String> pf : StringFormats.values()) {
+			Assert.assertEquals(pf, PartFormats.stringFormat(pf.getVersion()));
+		}
+		try {
+			PartFormats.stringFormat(-1);
+			Assert.fail("invalid part format, no exception");
+		} catch(IllegalArgumentException e) {
+			// expected
+		}
+	}
+	
+	@Test
+	public void testByteArrayVersions() {
+		for(PartFormat<byte[]> pf : BytesFormats.values()) {
+			Assert.assertEquals(pf, PartFormats.bytesFormat(pf.getVersion()));
+		}
+		try {
+			PartFormats.bytesFormat(-1);
+			Assert.fail("invalid part format, no exception");
+		} catch(IllegalArgumentException e) {
+			// expected
+		}
 	}
 }

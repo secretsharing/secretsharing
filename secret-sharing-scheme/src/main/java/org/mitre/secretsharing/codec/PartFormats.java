@@ -46,7 +46,13 @@ public abstract class PartFormats {
 	 * @return The format with that version
 	 */
 	public static PartFormat<String> stringFormat(int version) {
-		return StringFormats.values()[version];
+		PartFormat<String> f = null;
+		for(PartFormat<String> pf : StringFormats.values()) {
+			if(version == pf.getVersion())
+				f = pf;
+		}
+		InputValidation.begin().when(f == null, "no such string format version " + version).validate();
+		return f;
 	}
 	
 	/**
@@ -55,7 +61,13 @@ public abstract class PartFormats {
 	 * @return
 	 */
 	public static PartFormat<byte[]> bytesFormat(int version) {
-		return BytesFormats.values()[version];
+		PartFormat<byte[]> f = null;
+		for(PartFormat<byte[]> pf : BytesFormats.values()) {
+			if(version == pf.getVersion())
+				f = pf;
+		}
+		InputValidation.begin().when(f == null, "no such byte[] format version " + version).validate();
+		return f;
 	}
 	
 	/**
