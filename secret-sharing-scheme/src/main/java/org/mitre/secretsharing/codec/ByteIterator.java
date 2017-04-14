@@ -1,6 +1,6 @@
 /*
 
-Copyright 2015 The MITRE Corporation
+Copyright 2016 The MITRE Corporation
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -21,27 +21,26 @@ us know where this software is being used.
 
  */
 
-package org.mitre.secretsharing.cli.cmd;
+package org.mitre.secretsharing.codec;
 
-import java.io.InputStream;
-import java.io.PrintStream;
+import java.util.Iterator;
 
-import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.Options;
-import org.apache.commons.cli.ParseException;
-
-public interface Command {
-
-	public String getName();
-	
-	public String getDescription();
-	
-	public Options getOptions();
-	
-	public CommandLine parse(String... args) throws ParseException;
-	
-	public void perform(CommandLine cmd, InputStream in, PrintStream out, PrintStream err) throws Exception;
-	
-	public void showHelp(PrintStream out);
-
+/**
+ * Iterator for bytes rather than objects
+ * @author Robin Kirkman
+ *
+ */
+public interface ByteIterator {
+	/**
+	 * Is another byte available?
+	 * @return {@code true} if another byte is available
+	 * @see Iterator#hasNext()
+	 */
+	public boolean hasNext();
+	/**
+	 * Return the next byte available
+	 * @return The next byte available
+	 * @see Iterator#next()
+	 */
+	public byte next();
 }

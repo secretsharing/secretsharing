@@ -24,9 +24,6 @@ us know where this software is being used.
 package org.mitre.secretsharing.util;
 
 import java.io.ByteArrayOutputStream;
-import java.io.DataOutput;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.math.BigInteger;
 
 import org.mitre.secretsharing.codec.Base32;
@@ -41,10 +38,6 @@ public class BytesWritable {
 	 * Backing buffer
 	 */
 	private ByteArrayOutputStream buf = new ByteArrayOutputStream();
-	/**
-	 * Handles the writing of data
-	 */
-	private DataOutput data = new DataOutputStream(buf);
 	
 	/**
 	 * Write a {@link BigInteger}
@@ -53,13 +46,9 @@ public class BytesWritable {
 	 */
 	public BytesWritable writeBigInteger(BigInteger val) {
 		InputValidation.begin().when(val == null, "argument is null").validate();
-		try {
-			byte[] b = val.toByteArray();
-			writeInt(b.length);
-			data.write(b);
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		byte[] b = val.toByteArray();
+		writeInt(b.length);
+		buf.write(b, 0, b.length);
 		return this;
 	}
 	
@@ -69,15 +58,11 @@ public class BytesWritable {
 	 * @return This {@link BytesWritable} for chaining
 	 */
 	public BytesWritable writeInt(int val) {
-		try {
-			do {
-				boolean term = (val & ~0x7f) == 0;
-				data.write((val & 0x7f) | (term ? 0x80 : 0));
-				val = val >>> 7;
-			} while(val != 0);
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		do {
+			boolean term = (val & ~0x7f) == 0;
+			buf.write((val & 0x7f) | (term ? 0x80 : 0));
+			val = val >>> 7;
+		} while(val != 0);
 		return this;
 	}
 	
@@ -88,11 +73,7 @@ public class BytesWritable {
 	 */
 	public BytesWritable writeBytes(byte[] b) {
 		InputValidation.begin().when(b == null, "argument is null").validate();
-		try {
-			data.write(b);
-		} catch(IOException e) {
-			throw new RuntimeException(e);
-		}
+		buf.write(b, 0, b.length);
 		return this;
 	}
 	

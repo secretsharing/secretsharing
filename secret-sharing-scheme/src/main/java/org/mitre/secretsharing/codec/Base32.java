@@ -25,6 +25,7 @@ package org.mitre.secretsharing.codec;
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 import java.util.regex.Pattern;
 
 import org.mitre.secretsharing.util.InputValidation;
@@ -174,6 +175,15 @@ public abstract class Base32 {
 	}
 	
 	/**
+	 * Return a {@link ByteIterator} that returns the encoded form of the argument {@link ByteIterator}
+	 * @param data The data to encode
+	 * @return An encoded {@link ByteIterator}
+	 */
+	public static ByteIterator encode(ByteIterator data) {
+		return new EncodingByteIterator(data);
+	}
+
+	/**
 	 * Decode a string of Base 32 representation to the original bytes
 	 * @param data The string to decode
 	 * @return The original bytes as a new array
@@ -236,5 +246,132 @@ public abstract class Base32 {
 		return dest;
 	}
 	
+	/**
+	 * Return a {@link ByteIterator} that returns the decoded form of the argument {@link ByteIterator}
+	 * @param data The data to decode
+	 * @return A decoded {@link ByteIterator}
+	 */
+	public static ByteIterator decode(ByteIterator data) {
+		return new DecodingByteIterator(data);
+	}
+	
 	private Base32() {}
+
+	/**
+	 * Buffering {@link ByteIterator} used as a base class for {@link EncodingByteIterator}
+	 * and {@link DecodingByteIterator}
+	 * @author Robin
+	 *
+	 */
+	private static abstract class AbstractBase32ByteIterator implements ByteIterator {
+		/**
+		 * The input data
+		 */
+		protected ByteIterator data;
+		/**
+		 * Buffered input
+		 */
+		protected byte[] ibuf;
+		/**
+		 * Buffered output
+		 */
+		protected byte[] obuf;
+		/**
+		 * Position in the buffered output
+		 */
+		protected int opos;
+		
+		/**
+		 * Convert some input to output
+		 */
+		protected abstract void apply();
+		
+		/**
+		 * Create a new buffering byte iterator
+		 * @param data The input data to read
+		 * @param isize The size of the input buffer
+		 * @param osize The size of the output buffer
+		 */
+		public AbstractBase32ByteIterator(ByteIterator data, int isize, int osize) {
+			this.data = data;
+			ibuf = new byte[isize];
+			obuf = new byte[osize];
+			opos = obuf.length;
+		}
+		
+		@Override
+		public boolean hasNext() {
+			if(opos < obuf.length) // output data waiting to be returned
+				return true;
+			if(!data.hasNext()) // input is empty
+				return false;
+			int isize = 0;
+			// copy some input data
+			for(; isize < ibuf.length && data.hasNext(); isize++)
+				ibuf[isize] = data.next();
+			if(isize < ibuf.length)
+				ibuf = Arrays.copyOf(ibuf, isize);
+			// apply the transformation
+			apply();
+			opos = 0;
+			return true;
+		}
+		
+		@Override
+		public byte next() {
+			if(!hasNext())
+				throw new NoSuchElementException();
+			return obuf[opos++];
+		}
+	}
+
+	/**
+	 * {@link ByteIterator} that wraps another {@link ByteIterator}, returning the wrapped
+	 * data encoded in Base 32.
+	 * @author Robin Kirkman
+	 *
+	 */
+	public static final class EncodingByteIterator extends AbstractBase32ByteIterator {
+		/**
+		 * Create a new {@link EncodingByteIterator}, wrapping another {@link ByteIterator}
+		 * and returning it encoded in Base 32
+		 * @param data The data to encode
+		 */
+		public EncodingByteIterator(ByteIterator data) {
+			super(data, 5, 8);
+		}
+	
+		@Override
+		protected void apply() {
+			int osize = encodedLength(ibuf.length);
+			if(osize < obuf.length)
+				obuf = new byte[osize];
+			encode(obuf, ibuf);
+		}
+	}
+
+	/**
+	 * {@link ByteIterator} that wraps another {@link ByteIterator}, returning the wrapped
+	 * data decoded from Base 32.
+	 * @author Robin Kirkman
+	 *
+	 */
+	public static final class DecodingByteIterator extends AbstractBase32ByteIterator {
+		/**
+		 * Create a new {@link DecodingByteIterator}, wrapping another {@link ByteIterator}
+		 * and returning it decoded from Base 32
+		 * @param data The data to decode
+		 */
+		public DecodingByteIterator(ByteIterator data) {
+			super(data, 8, 5);
+		}
+		
+		@Override
+		protected void apply() {
+			int osize = decodedLength(ibuf.length);
+			if(osize < obuf.length)
+				obuf = new byte[osize];
+			decode(obuf, ibuf);
+		}
+	}
 }

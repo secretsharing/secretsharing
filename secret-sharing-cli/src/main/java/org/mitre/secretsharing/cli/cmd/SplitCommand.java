@@ -23,6 +23,7 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.cli.cmd;
 
+import java.io.File;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.security.SecureRandom;
@@ -33,20 +34,29 @@ import java.util.Random;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.codec.binary.Base64;
 import org.mitre.secretsharing.Part;
 import org.mitre.secretsharing.Secrets;
 import org.mitre.secretsharing.cli.util.IOUtils;
 import org.mitre.secretsharing.codec.PartFormats;
+import org.ow2.util.base64.Base64;
 
 public class SplitCommand extends AbstractCommand {
 	
 	private static final Option TOTAL = new Option("t", "total", true, "total parts to create");
 	private static final Option REQUIRED = new Option("r", "required", true, "required parts");
 	private static final Option BASE64 = new Option(null, "base-64", false, "secret already Base64 encoded");
+	private static final Option FILE_PREFIX = new Option("p", "output-prefix", true, "prefix for storing secret parts as files");
+	private static final Option FILE_SUFFIX = new Option("s", "output-suffix", true, "suffix for storing secret parts as files (requires prefix)");
 	static {
-		REQUIRED.setArgName("parts");
 		TOTAL.setArgName("parts");
+		REQUIRED.setArgName("parts");
+		FILE_PREFIX.setArgName("prefix");
+		FILE_SUFFIX.setArgName("suffix");
+
+		TOTAL.setArgs(1);
+		REQUIRED.setArgs(1);
+		FILE_PREFIX.setArgs(1);
+		FILE_SUFFIX.setArgs(1);;
 	}
 
 	public SplitCommand() {
@@ -60,6 +70,8 @@ public class SplitCommand extends AbstractCommand {
 		opt.addOption(TOTAL);
 		opt.addOption(REQUIRED);
 		opt.addOption(BASE64);
+		opt.addOption(FILE_PREFIX);
+		opt.addOption(FILE_SUFFIX);
 		
 		return opt;
 	}
@@ -71,20 +83,44 @@ public class SplitCommand extends AbstractCommand {
 			return invalid;
 		if(TOTAL == o) {
 			try {
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
 				int i =Integer.parseInt(cmd.getOptionValue(o.getLongOpt()));
 				if(i <= 0)
 					throw new RuntimeException();
 			} catch(RuntimeException e) {
-				invalid += "--" + TOTAL.getLongOpt() +" must be provided a positive integer";
+				invalid += "--" + TOTAL.getLongOpt() +" must be provided a single positive integer";
 			}
 		}
 		if(REQUIRED == o) {
 			try {
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
 				int i =Integer.parseInt(cmd.getOptionValue(o.getLongOpt()));
 				if(i <= 0)
 					throw new RuntimeException();
 			} catch(RuntimeException e) {
-				invalid += "--" + REQUIRED.getLongOpt() +" must be provided a positive integer";
+				invalid += "--" + REQUIRED.getLongOpt() +" must be provided a single positive integer";
+			}
+		}
+		if(FILE_PREFIX == o)  {
+			try {
+				if(cmd.getOptionValue(FILE_PREFIX.getLongOpt()) == null)
+					return invalid;
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + FILE_PREFIX.getLongOpt() +" must be provided a single path prefix";
+			}
+		}
+		if(FILE_SUFFIX == o)  {
+			try {
+				if(cmd.getOptionValue(FILE_SUFFIX.getLongOpt()) == null)
+					return invalid;
+				if(cmd.getOptionValues(o.getLongOpt()).length > 1)
+					throw new RuntimeException();
+			} catch(RuntimeException e) {
+				invalid += "--" + FILE_SUFFIX.getLongOpt() + " must be provided a single path suffix";
 			}
 		}
 		return invalid;
@@ -97,7 +133,10 @@ public class SplitCommand extends AbstractCommand {
 		byte[] secret = IOUtils.toByteArray(in);
 		if(cmd.hasOption(BASE64.getLongOpt())) {
 			try {
-				secret = Base64.decodeBase64(secret);
+				char[] c = new char[secret.length];
+				for(int i = 0; i < c.length; i++)
+					c[i] = (char)(secret[i] & 0xFF);
+				secret = Base64.decode(c);
 			} catch(RuntimeException e) {
 				err.println("Not a Base64-encoded secret");
 				System.exit(1);
@@ -107,9 +146,27 @@ public class SplitCommand extends AbstractCommand {
 		int requiredParts = Integer.parseInt(cmd.getOptionValue(REQUIRED.getLongOpt()));
 		Random rnd = new SecureRandom();
 		Part[] parts = Secrets.splitPerByte(secret, totalParts, requiredParts, rnd);
-		for(Part p : parts) {
-			String s = PartFormats.currentStringFormat().format(p);
-			out.println(s);
+		String prefix = cmd.getOptionValue(FILE_PREFIX.getLongOpt());
+		String suffix = cmd.getOptionValue(FILE_SUFFIX.getLongOpt());
+		if(prefix == null && suffix == null) {
+			for(Part p : parts) {
+				String s = PartFormats.currentStringFormat().format(p);
+				out.println(s);
+			}
+		} else {
+			if(prefix == null)
+				prefix = "./";
+			if(suffix == null)
+				suffix = "";
+			for(int i = 0; i < parts.length; i++) {
+				File file = new File(prefix + i + suffix);
+				PrintStream fout = new PrintStream(file, "UTF-8");
+				try {
+					fout.println(PartFormats.currentStringFormat().format(parts[i]));
+				} finally {
+					fout.close();
+				}
+			}
 		}
 	}
 

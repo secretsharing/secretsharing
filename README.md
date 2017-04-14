@@ -38,6 +38,15 @@ Java implementation of Shamir's Secret Sharing Scheme.  See the [wikipedia artic
 </dependency>
 ```
 
+Snapshot builds are available on Sonatype's OSS snapshot repository:
+```xml
+<dependency>
+    <groupId>org.mitre.secretsharing</groupId>
+    <artifactId>secret-sharing-scheme</artifactId>
+    <version>1.2.0-SNAPSHOT</version>
+</dependency>
+```
+
 ## Usage
 
 Splitting a secret `byte[]` into parts:

@@ -25,10 +25,32 @@ package org.mitre.secretsharing.codec;
 
 import org.mitre.secretsharing.Part;
 
+/**
+ * Interface for objects which can format or parse a {@link Part}
+ * @author Robin Kirkman
+ *
+ * @param <T> The representation type of the formatted {@link Part}
+ */
 public interface PartFormat<T> {
 	
+	/**
+	 * Format a {@link Part} as some representational type
+	 * @param part The {@link Part} to format
+	 * @return The formatted version
+	 */
 	public T format(Part part);
+	
+	/**
+	 * Parse a representation to a {@link Part}
+	 * @param data The representation
+	 * @return A parsed {@link Part}
+	 */
 	public Part parse(T data);
+	
+	/**
+	 * Return the version of this format
+	 * @return The format version
+	 */
 	public int getVersion();
 	
 }
