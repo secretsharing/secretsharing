@@ -24,8 +24,6 @@ us know where this software is being used.
 package org.mitre.secretsharing.codec;
 
 import java.math.BigInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.mitre.secretsharing.BigPoint;
 import org.mitre.secretsharing.Part;
@@ -33,37 +31,91 @@ import org.mitre.secretsharing.PerBytePart;
 import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
 import org.mitre.secretsharing.util.InputValidation;
-
+/**
+ * Static class for use when converting secret parts to and from their string or
+ * byte representations.
+ * @author Robin Kirkman
+ *
+ */
 public abstract class PartFormats {
+	/**
+	 * Return a specific version of the {@link String} format
+	 * @param version The version
+	 * @return The format with that version
+	 */
 	public static PartFormat<String> stringFormat(int version) {
-		return StringFormats.values()[version];
+		PartFormat<String> f = null;
+		for(PartFormat<String> pf : StringFormats.values()) {
+			if(version == pf.getVersion())
+				f = pf;
+		}
+		InputValidation.begin().when(f == null, "no such string format version " + version).validate();
+		return f;
 	}
 	
+	/**
+	 * Return a specific version of the {@code byte[]} format
+	 * @param version
+	 * @return
+	 */
 	public static PartFormat<byte[]> bytesFormat(int version) {
-		return BytesFormats.values()[version];
+		PartFormat<byte[]> f = null;
+		for(PartFormat<byte[]> pf : BytesFormats.values()) {
+			if(version == pf.getVersion())
+				f = pf;
+		}
+		InputValidation.begin().when(f == null, "no such byte[] format version " + version).validate();
+		return f;
 	}
 	
+	/**
+	 * Parse a string-formatted {@link Part}, detecting the version from the string
+	 * @param data The string version of the {@link Part}
+	 * @return The parsed {@link Part}
+	 */
 	public static Part parse(String data) {
 		InputValidation.begin().when(data == null, "data is null").validate();
 		return stringFormat(StringFormats.detectVersion(data)).parse(data);
 	}
 	
+	/**
+	 * Parse a {@code byte[]}-formatted {@link Part}, detecting the version
+	 * from the argument
+	 * @param data The {@code byte[]} version of the {@link Part}
+	 * @return The parsed {@link Part}
+	 */
 	public static Part parse(byte[] data) {
 		InputValidation.begin().when(data == null, "data is null").validate();
 		return bytesFormat(BytesFormats.detectVersion(data)).parse(data);
 	}
 	
+	/**
+	 * Return the most recent {@link String} format
+	 * @return
+	 */
 	public static PartFormat<String> currentStringFormat() {
 		StringFormats[] fmt = StringFormats.values();
 		return fmt[fmt.length-1];
 	}
 	
+	/**
+	 * Return the most recent {@code byte[]} format
+	 * @return
+	 */
 	public static PartFormat<byte[]> currentBytesFormat() {
 		BytesFormats[] fmt = BytesFormats.values();
 		return fmt[fmt.length-1];
 	}
 	
+	/**
+	 * Versions of the {@link String} format
+	 * @author Robin Kirkman
+	 * @see PartFormat
+	 */
 	public static enum StringFormats implements PartFormat<String> {
+		/**
+		 * Format version {@code 0}
+		 */
 		VERSION_0 {
 
 			private final String V = new BytesWritable().writeInt(0).toString();
@@ -126,6 +178,9 @@ public abstract class PartFormats {
 			
 		},
 		
+		/**
+		 * Format version {@code 1}
+		 */
 		VERSION_1 {
 
 			private final String V = new BytesWritable().writeInt(1).toString();
@@ -194,6 +249,9 @@ public abstract class PartFormats {
 			
 		},
 
+		/**
+		 * Format version {@code 2}
+		 */
 		VERSION_2 {
 
 			private final String V = new BytesWritable().writeInt(2).toString();
@@ -267,6 +325,9 @@ public abstract class PartFormats {
 			
 		},
 
+		/**
+		 * Format version {@code 3}
+		 */
 		VERSION_3 {
 
 			private final String V = new BytesWritable().writeInt(3).toString();
@@ -417,7 +478,15 @@ public abstract class PartFormats {
 		}
 	}
 	
+	/**
+	 * Versions of the {@code byte[]} format
+	 * @author Robin Kirkman
+	 * @see PartFormat
+	 */
 	public static enum BytesFormats implements PartFormat<byte[]> {
+		/**
+		 * Format version {@code 0}
+		 */
 		VERSION_0 {
 
 			@Override
@@ -452,6 +521,9 @@ public abstract class PartFormats {
 			
 		},
 		
+		/**
+		 * Format version {@code 1}
+		 */
 		VERSION_1 {
 
 			@Override
@@ -488,6 +560,9 @@ public abstract class PartFormats {
 			
 		},
 
+		/**
+		 * Format version {@code 2}
+		 */
 		VERSION_2 {
 
 			@Override
@@ -538,6 +613,11 @@ public abstract class PartFormats {
 		@Override
 		public abstract int getVersion();
 
+		/**
+		 * Detect the version of a {@code byte[]} formatted {@link Part}
+		 * @param data The data to detect
+		 * @return The version
+		 */
 		public static int detectVersion(byte[] data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
 			return new BytesReadable(data).readInt();
