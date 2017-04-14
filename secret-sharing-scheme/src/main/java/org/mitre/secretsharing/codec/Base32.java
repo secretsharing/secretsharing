@@ -290,7 +290,7 @@ public abstract class Base32 {
 	}
 
 	//TODO javadoc
-	public static class EncodingByteIterator extends AbstractBase32ByteIterator {
+	public static final class EncodingByteIterator extends AbstractBase32ByteIterator {
 		public EncodingByteIterator(ByteIterator data) {
 			super(data, 5, 8);
 		}
@@ -305,7 +305,7 @@ public abstract class Base32 {
 	}
 
 	//TODO javadoc
-	public static class DecodingByteIterator extends AbstractBase32ByteIterator {
+	public static final class DecodingByteIterator extends AbstractBase32ByteIterator {
 		public DecodingByteIterator(ByteIterator data) {
 			super(data, 8, 5);
 		}
