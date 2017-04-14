@@ -34,7 +34,7 @@ Java implementation of Shamir's Secret Sharing Scheme.  See the [wikipedia artic
 <dependency>
     <groupId>org.mitre.secretsharing</groupId>
     <artifactId>secret-sharing-scheme</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
@@ -43,7 +43,7 @@ Snapshot builds are available on Sonatype's OSS snapshot repository:
 <dependency>
     <groupId>org.mitre.secretsharing</groupId>
     <artifactId>secret-sharing-scheme</artifactId>
-    <version>1.2.0-SNAPSHOT</version>
+    <version>1.3.0-SNAPSHOT</version>
 </dependency>
 ```
 
