@@ -68,7 +68,7 @@ public abstract class Secrets {
 			.validate();
 		int secretBytes = secret.length;
 		int secretBits = secretBytes * 8;
-		TermPolynomial poly = new TermPolynomial(new BigInteger(secret), secretBits, requiredParts-1, rnd);
+		TermPolynomial poly = new TermPolynomial(new BigInteger(1, secret), secretBits, requiredParts-1, rnd);
 		BigPoint[] pts = poly.p(BigIntegers.range(1, totalParts + 1));
 		Part[] s = new Part[totalParts];
 		for(int i = 0; i < totalParts; i++)
@@ -171,8 +171,7 @@ public abstract class Secrets {
 		
 		TermPolynomial poly = new TermPolynomial(pts, prime);
 		byte[] secret = poly.y(BigInteger.ZERO).getNumerator().mod(prime).add(prime).mod(prime).toByteArray();
-		byte[] ret = new byte[secretLength];
-		System.arraycopy(secret, 0, ret, ret.length - secret.length, secret.length);
+		byte[] ret = Arrays.copyOfRange(secret, secret.length - secretLength, secret.length);
 		return ret;
 	}
 
