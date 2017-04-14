@@ -25,18 +25,46 @@ package org.mitre.secretsharing.codec;
 
 import java.util.NoSuchElementException;
 
-//TODO javadoc
+/**
+ * {@link ByteIterator} that iterates over the bytes in a string.  Returns
+ * only the least-significant byte of each two-byte {@code char} in the
+ * string, and does not attempt to use any sort of character encoding.
+ * @author Robin Kirkman
+ *
+ */
 public class StringByteIterator implements ByteIterator {
+	/**
+	 * The string to be iterated over
+	 */
 	protected String data;
+	/**
+	 * The current position within the string
+	 */
 	protected int pos;
+	/**
+	 * The stopping position within the string
+	 */
 	protected int stop;
 
+	/**
+	 * Create a new {@link StringByteIterator}, with an iterated {@link String},
+	 * a starting position, and a stopping position
+	 * @param data The string to iterate over
+	 * @param start The starting position
+	 * @param stop The stopping position
+	 */
 	public StringByteIterator(String data, int start, int stop) {
 		this.data = data;
 		this.pos = start;
 		this.stop = stop;
 	}
 	
+	/**
+	 * Should a character be skipped when iterating? Subclasses can override
+	 * this to enable subsets of strings to be returned.
+	 * @param c The candidate character
+	 * @return {@code true} to skip the character
+	 */
 	protected boolean skip(char c) {
 		return false;
 	}

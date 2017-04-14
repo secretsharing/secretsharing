@@ -23,8 +23,24 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.codec;
 
-//TODO javadoc
+import java.util.Iterator;
+
+/**
+ * Iterator for bytes rather than objects
+ * @author Robin Kirkman
+ *
+ */
 public interface ByteIterator {
+	/**
+	 * Is another byte available?
+	 * @return {@code true} if another byte is available
+	 * @see Iterator#hasNext()
+	 */
 	public boolean hasNext();
+	/**
+	 * Return the next byte available
+	 * @return The next byte available
+	 * @see Iterator#next()
+	 */
 	public byte next();
 }

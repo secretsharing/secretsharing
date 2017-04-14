@@ -25,13 +25,33 @@ package org.mitre.secretsharing.codec;
 
 import java.util.NoSuchElementException;
 
-//TODO javadoc
+/**
+ * {@link ByteIterator} that iterates over the bytes in an array
+ * @author Robin Kirkman
+ *
+ */
 public class ArrayByteIterator implements ByteIterator {
 
+	/**
+	 * The array of bytes over which to iterate
+	 */
 	protected byte[] data;
+	/**
+	 * The current position in the array
+	 */
 	protected int pos;
+	/**
+	 * The end position in the array
+	 */
 	protected int stop;
 	
+	/**
+	 * Create a new {@link ArrayByteIterator} using an argument {@code byte[]}, a starting
+	 * position within that array, and a stopping position within that array.
+	 * @param data The {@code byte} data to iterate over
+	 * @param start The starting position
+	 * @param stop The stopping position
+	 */
 	public ArrayByteIterator(byte[] data, int start, int stop) {
 		this.data = data;
 		this.pos = start;
