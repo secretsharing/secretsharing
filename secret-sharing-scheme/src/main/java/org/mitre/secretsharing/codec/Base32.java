@@ -174,7 +174,11 @@ public abstract class Base32 {
 		return dest;
 	}
 	
-	//TODO javadoc
+	/**
+	 * Return a {@link ByteIterator} that returns the encoded form of the argument {@link ByteIterator}
+	 * @param data The data to encode
+	 * @return An encoded {@link ByteIterator}
+	 */
 	public static ByteIterator encode(ByteIterator data) {
 		return new EncodingByteIterator(data);
 	}
@@ -242,22 +246,52 @@ public abstract class Base32 {
 		return dest;
 	}
 	
-	//TODO javadoc
+	/**
+	 * Return a {@link ByteIterator} that returns the decoded form of the argument {@link ByteIterator}
+	 * @param data The data to decode
+	 * @return A decoded {@link ByteIterator}
+	 */
 	public static ByteIterator decode(ByteIterator data) {
 		return new DecodingByteIterator(data);
 	}
 	
 	private Base32() {}
 
-	//TODO javadoc
+	/**
+	 * Buffering {@link ByteIterator} used as a base class for {@link EncodingByteIterator}
+	 * and {@link DecodingByteIterator}
+	 * @author Robin
+	 *
+	 */
 	private static abstract class AbstractBase32ByteIterator implements ByteIterator {
+		/**
+		 * The input data
+		 */
 		protected ByteIterator data;
+		/**
+		 * Buffered input
+		 */
 		protected byte[] ibuf;
+		/**
+		 * Buffered output
+		 */
 		protected byte[] obuf;
+		/**
+		 * Position in the buffered output
+		 */
 		protected int opos;
 		
+		/**
+		 * Convert some input to output
+		 */
 		protected abstract void apply();
 		
+		/**
+		 * Create a new buffering byte iterator
+		 * @param data The input data to read
+		 * @param isize The size of the input buffer
+		 * @param osize The size of the output buffer
+		 */
 		public AbstractBase32ByteIterator(ByteIterator data, int isize, int osize) {
 			this.data = data;
 			ibuf = new byte[isize];
@@ -267,15 +301,17 @@ public abstract class Base32 {
 		
 		@Override
 		public boolean hasNext() {
-			if(opos < obuf.length)
+			if(opos < obuf.length) // output data waiting to be returned
 				return true;
-			if(!data.hasNext())
+			if(!data.hasNext()) // input is empty
 				return false;
 			int isize = 0;
+			// copy some input data
 			for(; isize < ibuf.length && data.hasNext(); isize++)
 				ibuf[isize] = data.next();
 			if(isize < ibuf.length)
 				ibuf = Arrays.copyOf(ibuf, isize);
+			// apply the transformation
 			apply();
 			opos = 0;
 			return true;
@@ -289,8 +325,18 @@ public abstract class Base32 {
 		}
 	}
 
-	//TODO javadoc
+	/**
+	 * {@link ByteIterator} that wraps another {@link ByteIterator}, returning the wrapped
+	 * data encoded in Base 32.
+	 * @author Robin Kirkman
+	 *
+	 */
 	public static final class EncodingByteIterator extends AbstractBase32ByteIterator {
+		/**
+		 * Create a new {@link EncodingByteIterator}, wrapping another {@link ByteIterator}
+		 * and returning it encoded in Base 32
+		 * @param data The data to encode
+		 */
 		public EncodingByteIterator(ByteIterator data) {
 			super(data, 5, 8);
 		}
@@ -304,8 +350,18 @@ public abstract class Base32 {
 		}
 	}
 
-	//TODO javadoc
+	/**
+	 * {@link ByteIterator} that wraps another {@link ByteIterator}, returning the wrapped
+	 * data decoded from Base 32.
+	 * @author Robin Kirkman
+	 *
+	 */
 	public static final class DecodingByteIterator extends AbstractBase32ByteIterator {
+		/**
+		 * Create a new {@link DecodingByteIterator}, wrapping another {@link ByteIterator}
+		 * and returning it decoded from Base 32
+		 * @param data The data to decode
+		 */
 		public DecodingByteIterator(ByteIterator data) {
 			super(data, 8, 5);
 		}

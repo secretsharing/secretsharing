@@ -37,7 +37,9 @@ import org.mitre.secretsharing.codec.ByteIterator;
  *
  */
 public class BytesReadable {
-	//TODO javadoc
+	/**
+	 * Data being read
+	 */
 	private ByteIterator data;
 
 	/**
@@ -66,7 +68,10 @@ public class BytesReadable {
 		string = Base32.encode(b);
 	}
 	
-	//TODO javadoc
+	/**
+	 * Create a {@link BytesReadable} that reads the argument
+	 * @param data Data to read
+	 */
 	public BytesReadable(ByteIterator data) {
 		InputValidation.begin().when(data == null, "data is null").validate();
 		this.data = data;

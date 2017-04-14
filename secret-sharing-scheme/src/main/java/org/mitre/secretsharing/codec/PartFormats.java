@@ -334,7 +334,12 @@ public abstract class PartFormats {
 
 		;
 		
-		//TODO javadoc
+		/**
+		 * Return an array of {@link ByteIterator}, without dashes, of the three
+		 * components of a secret part.
+		 * @param s The string form of the scret part
+		 * @return The array of components
+		 */
 		private static ByteIterator[] split(String s) {
 			int vidx = s.indexOf(':');
 			if(vidx < 0)
@@ -349,7 +354,11 @@ public abstract class PartFormats {
 			};
 		}
 		
-		//TODO javadoc
+		/**
+		 * Add dashes to a string, every 5 characters
+		 * @param s The string to add dashes to
+		 * @return A string with dashes
+		 */
 		private static String dash(String s) {
 			StringBuilder sb = new StringBuilder(s.length() * 6 / 5 + 1);
 			for(int i = 0; i < s.length(); i += 5) {
@@ -369,7 +378,11 @@ public abstract class PartFormats {
 		@Override
 		public abstract int getVersion();
 		
-		//TODO javadoc
+		/**
+		 * Detect the version of a string-formatted secret part
+		 * @param data The formatted part
+		 * @return The version number
+		 */
 		public static int detectVersion(String data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
 			int vidx = data.indexOf(':');
@@ -378,8 +391,20 @@ public abstract class PartFormats {
 			return new BytesReadable(bi).readInt();
 		}
 		
-		//TODO javadoc
+		/**
+		 * Subclass of {@link StringByteIterator} that removes dashes
+		 * from the input string
+		 * @author Robin Kirkman
+		 *
+		 */
 		private static class UndashByteIterator extends StringByteIterator {
+			/**
+			 * Create a new {@link UndashByteIterator}, which removes dashes when
+			 * returning string bytes
+			 * @param data The string to return as bytes
+			 * @param start The starting position
+			 * @param stop The stopping position
+			 */
 			public UndashByteIterator(String data, int start, int stop) {
 				super(data, start, stop);
 			}
