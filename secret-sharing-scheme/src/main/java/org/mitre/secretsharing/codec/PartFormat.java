@@ -25,10 +25,14 @@ package org.mitre.secretsharing.codec;
 
 import org.mitre.secretsharing.Part;
 
+//TODO javadoc
 public interface PartFormat<T> {
 	
+	//TODO javadoc
 	public T format(Part part);
+	//TODO javadoc
 	public Part parse(T data);
+	//TODO javadoc
 	public int getVersion();
 	
 }

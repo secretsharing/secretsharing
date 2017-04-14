@@ -33,36 +33,44 @@ import org.mitre.secretsharing.PerBytePart;
 import org.mitre.secretsharing.util.BytesReadable;
 import org.mitre.secretsharing.util.BytesWritable;
 import org.mitre.secretsharing.util.InputValidation;
+//TODO javadoc
 
 public abstract class PartFormats {
+	//TODO javadoc
 	public static PartFormat<String> stringFormat(int version) {
 		return StringFormats.values()[version];
 	}
 	
+	//TODO javadoc
 	public static PartFormat<byte[]> bytesFormat(int version) {
 		return BytesFormats.values()[version];
 	}
 	
+	//TODO javadoc
 	public static Part parse(String data) {
 		InputValidation.begin().when(data == null, "data is null").validate();
 		return stringFormat(StringFormats.detectVersion(data)).parse(data);
 	}
 	
+	//TODO javadoc
 	public static Part parse(byte[] data) {
 		InputValidation.begin().when(data == null, "data is null").validate();
 		return bytesFormat(BytesFormats.detectVersion(data)).parse(data);
 	}
 	
+	//TODO javadoc
 	public static PartFormat<String> currentStringFormat() {
 		StringFormats[] fmt = StringFormats.values();
 		return fmt[fmt.length-1];
 	}
 	
+	//TODO javadoc
 	public static PartFormat<byte[]> currentBytesFormat() {
 		BytesFormats[] fmt = BytesFormats.values();
 		return fmt[fmt.length-1];
 	}
 	
+	//TODO javadoc
 	public static enum StringFormats implements PartFormat<String> {
 		VERSION_0 {
 
@@ -417,6 +425,7 @@ public abstract class PartFormats {
 		}
 	}
 	
+	//TODO javadoc
 	public static enum BytesFormats implements PartFormat<byte[]> {
 		VERSION_0 {
 
@@ -538,6 +547,7 @@ public abstract class PartFormats {
 		@Override
 		public abstract int getVersion();
 
+		//TODO javadoc
 		public static int detectVersion(byte[] data) {
 			InputValidation.begin().when(data == null, "data is null").validate();
 			return new BytesReadable(data).readInt();
