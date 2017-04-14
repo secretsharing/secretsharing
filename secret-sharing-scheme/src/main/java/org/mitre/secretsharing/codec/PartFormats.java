@@ -24,8 +24,6 @@ us know where this software is being used.
 package org.mitre.secretsharing.codec;
 
 import java.math.BigInteger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.mitre.secretsharing.BigPoint;
 import org.mitre.secretsharing.Part;

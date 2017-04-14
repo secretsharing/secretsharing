@@ -23,7 +23,6 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.codec;
 
-import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Random;
 

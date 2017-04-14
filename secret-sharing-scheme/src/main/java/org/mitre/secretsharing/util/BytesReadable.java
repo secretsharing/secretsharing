@@ -23,7 +23,6 @@ us know where this software is being used.
 
 package org.mitre.secretsharing.util;
 
-import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.math.BigInteger;
 
