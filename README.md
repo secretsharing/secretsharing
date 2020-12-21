@@ -73,6 +73,32 @@ String formatted = ...;
 Part part = PartFormats.parse(formatted);
 ```
 
+## Command-line interface (CLI)
+
+For your convenience, there is also a CLI version in artifact `org.mitre.secretsharing:secret-sharing-cli`. Even more comfortable is the shaded version (i.e. all dependencies included in the executable JAR) if you use classifier `shaded`:
+
+```xml
+<dependency>
+    <groupId>org.mitre.secretsharing</groupId>
+    <artifactId>secret-sharing-cli</artifactId>
+    <classifier>shaded</classifier>
+    <version>1.2.0</version>
+</dependency>
+```
+
+You can use it like this:
+```text
+# Step A: split secret into 8 parts, require 5+ parts to re-roin 
+java -jar secret-sharing-cli-1.2.0-shaded.jar split -t 8 -r 5 -p my-password- -s .txt
+(Enter the password, press RETURN and then Ctrl-Z to finish input)
+
+# Step B: gather 5+ files and re-join secret  
+java -jar secret-sharing-cli-1.2.0-shaded.jar join -p my-password- -s .txt
+(Password appears on screen)
+```
+
+Of course, you can also use input redirection instead of entering the password or other type of secret on the console.
+
 ## Security
 
 Shamir's Secret Sharing Scheme is an [information-theoretically secure](https://en.wikipedia.org/wiki/Information-theoretic_security) way to divide a secret into shareable parts.  For comparison, key-based cryptographic techniques are [computationally secure](https://en.wikipedia.org/wiki/Computational_hardness_assumption).
